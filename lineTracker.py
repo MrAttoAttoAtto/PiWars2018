@@ -1,3 +1,7 @@
+'''
+Indeed this isnt even required, but it is a good template for some of the other ones...
+'''
+
 import time
 
 import cv2
