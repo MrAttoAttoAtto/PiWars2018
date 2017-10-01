@@ -53,14 +53,15 @@ while True:
         cv2.drawContours(noisyImage, contours, -1, (0, 255, 0), 1)
 
         # Decides which way to go (and does it (IN THE FUTURE)) by the angle at which the line is going
+        # Also, the 3/4 and 1/4 are subject to change based on testing
 
-        if momentX >= 120:
+        if momentX >= RESOLUTIONX * 3/4:
             pass # Go LEFT
 
-        elif momentX < 120 and momentX > 50:
+        elif momentX < RESOLUTIONX * 3/4 and momentX > RESOLUTIONX * 1/4:
             pass # Go STRAIGHT
 
-        elif momentX <= 50:
+        elif momentX <= RESOLUTIONX * 1/4:
             pass # Go RIGHT
 
     else:
