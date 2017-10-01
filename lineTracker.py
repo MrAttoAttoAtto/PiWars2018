@@ -35,7 +35,7 @@ while True:
 
     ret, booleanImage = cv2.threshold(clearImage, 60, 255, cv2.THRESH_BINARY_INV)
 
-    contours, hierarchy = cv2.findContours(booleanImage.copy(), 1, cv2.CHAIN_APPROX_NONE)
+    im2, contours, hierarchy = cv2.findContours(booleanImage.copy(), 1, cv2.CHAIN_APPROX_NONE)
 
     if contours:
         # If there are countours (i.e. a line) then find the largest one (the most likely to be your line)
