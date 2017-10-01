@@ -44,24 +44,24 @@ while True:
         maxContour = max(contours, key=cv2.contourArea)
         moment = cv2.moments(maxContour)
 
-        momentX = int(moment['m10']/moment['m00'])
-        momentY = int(moment['m01']/moment['m00'])
+        centerX = int(moment['m10']/moment['m00'])
+        centerY = int(moment['m01']/moment['m00'])
 
-        cv2.line(noisyImage, (momentX, 0), (momentX, 720), (255, 0, 0), 1)
-        cv2.line(noisyImage, (0, momentY), (1280, momentY), (255, 0, 0), 1)
+        cv2.line(noisyImage, (centerX, 0), (centerX, 720), (255, 0, 0), 1)
+        cv2.line(noisyImage, (0, centerY), (1280, centerY), (255, 0, 0), 1)
 
         cv2.drawContours(noisyImage, contours, -1, (0, 255, 0), 1)
 
         # Decides which way to go (and does it (IN THE FUTURE)) by the angle at which the line is going
         # Also, the 3/4 and 1/4 are subject to change based on testing
 
-        if momentX >= RESOLUTIONX * 3/4:
+        if centerX >= RESOLUTIONX * 3/4:
             pass # Go LEFT
 
-        elif momentX < RESOLUTIONX * 3/4 and momentX > RESOLUTIONX * 1/4:
+        elif centerX < RESOLUTIONX * 3/4 and centerX > RESOLUTIONX * 1/4:
             pass # Go STRAIGHT
 
-        elif momentX <= RESOLUTIONX * 1/4:
+        elif centerX <= RESOLUTIONX * 1/4:
             pass # Go RIGHT
 
     else:
