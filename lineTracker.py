@@ -14,12 +14,14 @@ RESOLUTIONY = 120
 
 camera = PiCamera()
 
+time.sleep(2)
+
 while True:
     # Gets the camera to take a picture, and makes it an array cv2 can work with
 
     rawCapture = PiRGBArray(camera)
 
-    time.sleep(0.1) # gives time for the init and waiting a bit
+    time.sleep(0.01) # gives time for the init and waiting a bit
 
     camera.capture(rawCapture, format="bgr") # captures the photo
     image = rawCapture.array() # turns it straight into a nice array
