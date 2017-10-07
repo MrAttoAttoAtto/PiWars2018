@@ -5,12 +5,10 @@ Indeed this isnt even required, but it is a good template for some of the other 
 import time
 
 import cv2
-
 from picamera import PiCamera
 from picamera.array import PiRGBArray
 
-RESOLUTIONX = 160
-RESOLUTIONY = 120
+from settings import RESOLUTIONX, RESOLUTIONY
 
 camera = PiCamera()
 
