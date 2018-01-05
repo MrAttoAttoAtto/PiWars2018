@@ -1,2 +1,2 @@
 # PiWars2018
-Code for a most powerful machine
+Code for the most powerful machine
