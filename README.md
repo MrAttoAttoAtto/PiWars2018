@@ -5,46 +5,46 @@ This is the code for the Robot Apocalypse Committee's robot which will be entere
 
 Here is some handy info for what the challenges are, what they need etc. so you don't have to check the PiWars website again.
 
-Straight-Line Speed Test:
-    - MODE: AUTONOMOUS
-    - REQUIRES: proximity sensor, camera, and 2 driving motors
+Straight-Line Speed Test:\n
+    - MODE: AUTONOMOUS\n
+    - REQUIRES: proximity sensor, camera, and 2 driving motors\n
     - ENTAILS: Robot must travel about 7 meters (~24 feet), making small variations in motor speeds                 based off data from proximity sensor and camera looking for line, so that it stays going             straight.
 
-The Minimal Maze:
-    - MODE: AUTONOMOUS
-    - REQUIRES: proximity sensor, camera, 2 driving motors
+The Minimal Maze:\n
+    - MODE: AUTONOMOUS\n
+    - REQUIRES: proximity sensor, camera, 2 driving motors\n
     - ENTAILS: Robot must travel through a course with widths of ~36cm, deciding where it is in the                 course from the colors of the walls it sees, and the data from the proximity sensor.
 
-Somewhere Over the Rainbow:
-    - MODE: AUTONOMOUS
-    - REQUIRES: proximity sensor, camera, 2 driving motors
+Somewhere Over the Rainbow:\n
+    - MODE: AUTONOMOUS\n
+    - REQUIRES: proximity sensor, camera, 2 driving motors\n
     - ENTAILS: Robot needs to look around, determining which corners have which colored balls. It then              needs to determine it's path, and visit each corner in the (predetermined) order as                  quickly as possible.
 
-Slightly Deranged Golf:
-    - MODE: CONTROLLED
-    - REQUIRED: remote control system, ball holding rig and 2 driving motors.
+Slightly Deranged Golf:\n
+    - MODE: CONTROLLED\n
+    - REQUIRED: remote control system, ball holding rig and 2 driving motors.\n
     - ENTAILS: Robot should trap the ball (such that ball can still roll, but cannot escape the robot.)             Then, it should navigate swiftly to the hole, releasing the ball and pushing it into the             hole.
 
-Pi Noon:
-    - MODE: CONTROLLED
-    - REQUIRED: remote control system, attachment point for balloons, NOICE control system, 2 driving      motors.
+Pi Noon:\n
+    - MODE: CONTROLLED\n
+    - REQUIRED: remote control system, attachment point for balloons, NOICE control system, 2 driving      motors.\n
     - ENTAILS: Maneuver the bot to poke other balloons. Agility is key.
 
-The Obstacle Course:
-    - MODE: CONTROLLED
-    - REQUIRED: remote control system, good handling, good grip
+The Obstacle Course:\n
+    - MODE: CONTROLLED\n
+    - REQUIRED: remote control system, good handling, good grip\n
     - ENTAILS: Navigate an obstacle course quickly. That's about it
 
-The Duck Shoot:
-    - MODE: CONTROLLED
-    - REQUIRED: remote control system, easy moving horizontally (possibly an auto strafe), flywheel and              nerf darts
-    - ENTAILS: Shoot down 5 smol target with nerf darts (within a large time limit)
+The Duck Shoot:\n
+    - MODE: CONTROLLED\n
+    - REQUIRED: remote control system, easy moving horizontally (possibly an auto strafe), flywheel and              nerf darts\n
+    - ENTAILS: Shoot down 5 smol target with nerf darts (within a large time limit)\n
 
-Blogging:
-    - Basically just post things on wordpress every now and then.
+Blogging:\n
+    - Basically just post things on wordpress every now and then.\n
 
-Technical Merit:
-    - Make sure nothing is too dodgy
+Technical Merit:\n
+    - Make sure nothing is too dodgy\n
 
-Artistic Merit:
+Artistic Merit:\n
     - This is wholly irrelevant until we have functionality, but once we do, I guess just make it look niceish
