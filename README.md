@@ -6,24 +6,24 @@ This is the code for the Robot Apocalypse Committee's robot which will be entere
 Here is some handy info for what the challenges are, what they need etc. so you don't have to check the PiWars website again.
 
 Straight-Line Speed Test:<br />
-    - MODE: AUTONOMOUS<br />
-    - REQUIRES: proximity sensor, camera, and 2 driving motors<br />
-    - ENTAILS: Robot must travel about 7 meters (~24 feet), making small variations in motor speeds                 based off data from proximity sensor and camera looking for line, so that it stays going             straight.
+  - MODE: AUTONOMOUS<br />
+  - REQUIRES: proximity sensor, camera, and 2 driving motors<br />
+  - ENTAILS: Robot must travel about 7 meters (~24 feet), making small variations in motor speeds                   based off data from proximity sensor and camera looking for line, so that it stays going               straight.
 
 The Minimal Maze:<br />
-    - MODE: AUTONOMOUS<br />
-    - REQUIRES: proximity sensor, camera, 2 driving motors<br />
-    - ENTAILS: Robot must travel through a course with widths of ~36cm, deciding where it is in the                 course from the colors of the walls it sees, and the data from the proximity sensor.
+  - MODE: AUTONOMOUS<br />
+  - REQUIRES: proximity sensor, camera, 2 driving motors<br />
+  - ENTAILS: Robot must travel through a course with widths of ~36cm, deciding where it is in the                   course from the colors of the walls it sees, and the data from the proximity sensor.
 
 Somewhere Over the Rainbow:<br />
-    - MODE: AUTONOMOUS<br />
-    - REQUIRES: proximity sensor, camera, 2 driving motors<br />
-    - ENTAILS: Robot needs to look around, determining which corners have which colored balls. It then              needs to determine it's path, and visit each corner in the (predetermined) order as                  quickly as possible.
+  - MODE: AUTONOMOUS<br />
+  - REQUIRES: proximity sensor, camera, 2 driving motors<br />
+  - ENTAILS: Robot needs to look around, determining which corners have which colored balls. It then                needs to determine it's path, and visit each corner in the (predetermined) order as                    quickly as possible.
 
 Slightly Deranged Golf:<br />
   - MODE: CONTROLLED<br />
   - REQUIRED: remote control system, ball holding rig and 2 driving motors.<br />
-  - ENTAILS: Robot should trap the ball (such that ball can still roll, but cannot escape the robot.)             Then, it should navigate swiftly to the hole, releasing the ball and pushing it into the             hole.
+  - ENTAILS: Robot should trap the ball (such that ball can still roll, but cannot escape the robot.)               Then, it should navigate swiftly to the hole, releasing the ball and pushing it into the               hole.
 
 Pi Noon:<br />
   - MODE: CONTROLLED<br />
@@ -47,4 +47,4 @@ Technical Merit:<br />
   - Make sure nothing is too dodgy<br />
 
 Artistic Merit:<br />
-  - This is wholly irrelevant until we have functionality, but once we do, I guess just make it look niceish
+  - This is wholly irrelevant until we have functionality, but once we do, I guess just make it look       niceish
