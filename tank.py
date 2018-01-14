@@ -3,6 +3,8 @@ The interface for the hardware parts of the robot.
 Access motors, ultrasonics from here.
 '''
 
+import time
+
 class Tank:
     def __init__(self):
         pass
@@ -22,3 +24,33 @@ class Tank:
         '''Get the reported distance by a certain ultrasonic sensor.'''
         pass
 
+    def forwards(self, speed = 1, time=-1):
+        self.set_tank(speed, speed)
+        if time > 0:
+            time.sleep(time)
+            self.halt()
+
+    def halt(self):
+        self.set_tank(0, 0)
+    
+    def left(self, speed = 1, time=-1):
+        self.set_tank(-speed, speed)
+        if time > 0:
+            time.sleep(time)
+            self.halt()
+
+    def right(self, speed = 1, time=-1):
+        self.set_tank(speed, -speed)
+        if time > 0:
+            time.sleep(time)
+            self.halt()
+
+    def backwards(self, speed = 1, time=-1):
+        self.set_tank(-speed, -speed)
+        if time > 0:
+            time.sleep(time)
+            self.halt()
+    
+        
+        
+TANK = Tank()
