@@ -1,5 +1,15 @@
 '''rainbow.py
 Code for the "over the rainbow" challenge.
+1st time
+	turn right, until a ball of one of four colors is seen, append with angle
+	^ x3
+	check what direction to turn for red
+	turn that direction until red spotted
+	move forwards until proximity too close
+	move backwards a pre-specified distance so that rotation is a-ok
+
+	^ x3 for other colors in order
+
 '''
 
 from picamera.array import PiRGBArray
