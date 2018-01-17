@@ -4,7 +4,7 @@ import drive
 #import rainbow
 #import settings
 #import tank
-#import tools
+import tools
 import controller
 
 control = controller.Controller()
@@ -16,7 +16,7 @@ while True:
     leftX = values.get('left_axes')[0]
     leftY = values.get('left_axes')[1]
 
-    driver.turn_motors(0, int(round(leftY, 2)*100))
-    driver.turn_motors(1, int(round(leftY, 2)*100))
+    driver.turn_motors(0, int(tools.translate(leftX, -1, 1, -255, 255)))
+    driver.turn_motors(1, int(tools.translate(leftX, -1, 1, -255, 255)))
 
     
