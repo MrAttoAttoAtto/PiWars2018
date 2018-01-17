@@ -10,7 +10,7 @@ class Controller:
         values['right_axes'] = self.joy.rightStick()
         values['bumpers'] = (
             self.joy.leftBumper(),
-            self.joy.righttrigger()
+            self.joy.rightBumper()
         )
         values['triggers'] = (
             self.joy.leftTrigger(),
@@ -37,6 +37,8 @@ class Controller:
             self.joy.leftThumbstick(),
             self.joy.rightThumbstick()
         )
+
+	return values
 
     def safe_close(self):
         self.joy.close()
