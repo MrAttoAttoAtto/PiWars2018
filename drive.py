@@ -42,7 +42,7 @@ class Driver:
                 motor.run(Adafruit_MotorHAT.FORWARD)
         else:
             for motor in motors:
-                motor.run(Adafruit_DCMotor.BACKWARD)
+                motor.run(Adafruit_MotorHAT.BACKWARD)
 
 
     def safe_shutdown_motors(self):

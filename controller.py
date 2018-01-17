@@ -37,7 +37,10 @@ class Controller:
             self.joy.leftThumbstick(),
             self.joy.rightThumbstick()
         )
+<<<<<<< HEAD
 
+=======
+>>>>>>> b771a42191bca40bdc0b1001de950856eaee41d2
         return values
 
     def safe_close(self):

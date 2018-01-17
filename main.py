@@ -16,7 +16,7 @@ while True:
     leftX = values.get('left_axes')[0]
     leftY = values.get('left_axes')[1]
 
-    driver.turn_motors(0, leftY)
-    driver.turn_motors(1, leftY)
+    driver.turn_motors(0, int(round(leftY, 2)*100))
+    driver.turn_motors(1, int(round(leftY, 2)*100))
 
     
