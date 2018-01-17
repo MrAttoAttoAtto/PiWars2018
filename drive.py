@@ -1,4 +1,4 @@
-
+#!/usr/bin/python
 from Adafruit_MotorHAT import Adafruit_MotorHAT, Adafruit_DCMotor
 
 import time
@@ -8,12 +8,12 @@ class Driver:
         self.mh = Adafruit_MotorHAT(addr=address)
         
         self.left_motors = (
-            self.mh.getMotor(0),
-            self.mh.getMotor(1)
+            self.mh.getMotor(1),
+            self.mh.getMotor(2)
         )
         self.right_motors = (
-            self.mh.getMotor(2),
             self.mh.getMotor(3),
+            self.mh.getMotor(4),
         )
     
     def turn_motors(self, side, speed):
