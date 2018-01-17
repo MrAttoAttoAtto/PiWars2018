@@ -2,6 +2,8 @@
 that may be required between programs
 or are just stored here for easy tweaking'''
 
+DEBUG = False
+
 ULTRASONIC_TRIG = 23
 ULTRASONIC_ECHO = 24
 

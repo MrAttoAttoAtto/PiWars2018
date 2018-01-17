@@ -8,68 +8,64 @@ import cv2
 from picamera import PiCamera
 from picamera.array import PiRGBArray
 
-from settings import RESOLUTIONX, RESOLUTIONY
+from settings import RESOLUTIONX, RESOLUTIONY, DEBUG
+from tank import TANK
+from tools import get_centroid
 
-camera = PiCamera()
+def run():
+    # Gets the camera to take a video, and makes it an array cv2 can work with
 
-time.sleep(2)
+    camera = TANK.camera
 
-while True:
-    # Gets the camera to take a picture, and makes it an array cv2 can work with
+    raw_capture = PiRGBArray(camera)
 
-    rawCapture = PiRGBArray(camera)
+    for frame in camera.capture_continuous(raw_capture, format="bgr", use_video_port=True):
 
-    time.sleep(0.01) # gives time for the init and waiting a bit
+        image = frame.array # turns it straight into a nice array
 
-    camera.capture(rawCapture, format="bgr") # captures the photo
-    image = rawCapture.array() # turns it straight into a nice array
+        raw_capture.truncate(0)
 
-    grayscaleImage = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        grayscale_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-    # Clears the image of noise, makes it smaller (and cropped closer to the robot)
-    # Also constructs the contours from the boolean image
+        # Clears the image of noise, makes it smaller (and cropped closer to the robot)
+        # Also constructs the contours from the boolean image
 
-    noisyImage = grayscaleImage[int(RESOLUTIONX/2):RESOLUTIONX, 0:RESOLUTIONX]
+        noisy_image = grayscale_image[0:int(RESOLUTIONX/2), 0:RESOLUTIONX]
 
-    clearImage = cv2.GaussianBlur(grayscaleImage, (5, 5), 0)
+        clear_image = cv2.GaussianBlur(grayscale_image, (5, 5), 0)
 
-    ret, booleanImage = cv2.threshold(clearImage, 60, 255, cv2.THRESH_BINARY_INV)
+        ret, boolean_image = cv2.threshold(clear_image, 60, 255, cv2.THRESH_BINARY_INV)
 
-    im2, contours, hierarchy = cv2.findContours(booleanImage.copy(), 1, cv2.CHAIN_APPROX_NONE)
+        center_x, center_y = get_centroid(boolean_image, 1, cv2.CHAIN_APPROX_NONE)
 
-    if contours:
-        # If there are countours (i.e. a line) then find the largest one (the most likely to be your line)
-        # Also draws lines on the image so it can be seen by humans (not NEEDED, but good for debugging purposes)
+        if not False in (center_x, center_y):
 
-        maxContour = max(contours, key=cv2.contourArea)
-        moment = cv2.moments(maxContour)
+            # Decides which way to go (and does it (IN THE FUTURE)) by the angle at which the line is going
+            # Also, the 3/4 and 1/4 are subject to change based on testing
 
-        centerX = int(moment['m10']/moment['m00'])
-        centerY = int(moment['m01']/moment['m00'])
+            if center_x >= RESOLUTIONX * 3/4:
+                pass # Go LEFT
 
-        cv2.line(noisyImage, (centerX, 0), (centerX, 720), (255, 0, 0), 1)
-        cv2.line(noisyImage, (0, centerY), (1280, centerY), (255, 0, 0), 1)
+            elif center_x < RESOLUTIONX * 3/4 and center_x > RESOLUTIONX * 1/4:
+                pass # Go STRAIGHT
 
-        cv2.drawContours(noisyImage, contours, -1, (0, 255, 0), 1)
+            elif center_x <= RESOLUTIONX * 1/4:
+                pass # Go RIGHT
+            
 
-        # Decides which way to go (and does it (IN THE FUTURE)) by the angle at which the line is going
-        # Also, the 3/4 and 1/4 are subject to change based on testing
+            #cv2.line(noisyImage, (centerX, 0), (centerX, 720), (255, 0, 0), 1)
+            #cv2.line(noisyImage, (0, centerY), (1280, centerY), (255, 0, 0), 1)
 
-        if centerX >= RESOLUTIONX * 3/4:
-            pass # Go LEFT
+            #cv2.drawContours(noisyImage, contours, -1, (0, 255, 0), 1)
 
-        elif centerX < RESOLUTIONX * 3/4 and centerX > RESOLUTIONX * 1/4:
-            pass # Go STRAIGHT
+        else:
+            print("OH DEAR: NO LINE")
+            # LINE NOT FOUND
 
-        elif centerX <= RESOLUTIONX * 1/4:
-            pass # Go RIGHT
-
-    else:
-        pass # LINE NOT FOUND
-
-    try:
-        cv2.imshow('frame', noisyImage)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
-    except NameError:
-        pass
+        if DEBUG:
+            try:
+                cv2.imshow('frame', noisy_image)
+                if cv2.waitKey(1) & 0xFF == ord('q'):
+                    break
+            except NameError:
+                pass

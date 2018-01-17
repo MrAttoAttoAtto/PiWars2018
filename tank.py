@@ -7,7 +7,10 @@ import time
 
 class Tank:
     def __init__(self):
-        pass
+        self.camera = PiCamera()
+        camera.resolution = (640, 480)
+        camera.framerate = 32
+
     def set_tank(self, speed_left, speed_right):
         # Do speed things, get direction from neg/pos
         # Set motor pwms
@@ -16,6 +19,7 @@ class Tank:
     def enable_flywheel(self):
         '''Enables the flywheels'''
         pass
+
     def disable_flywheel(self):
         '''Disables the flywheels'''
         pass
