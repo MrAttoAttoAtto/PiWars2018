@@ -1,9 +1,9 @@
 
 from Adafruit_MotorHAT import Adafruit_MotorHAT, Adafruit_DCMotor
- 
+
 import time
 
-class Drive:
+class Driver:
     def __init__(self, address=0x60):
         self.mh = Adafruit_MotorHAT(addr=address)
         
@@ -16,22 +16,22 @@ class Drive:
             self.mh.getMotor(3),
         )
     
-    def turn_motors(self, side, direction):
-        if side and direction < 0:
-            self.run_motors(right_motors, 0)
-            self.set_motors(right_motors, abs(speed))
+    def turn_motors(self, side, speed):
+        if side and speed < 0:
+            self.run_motors(self.right_motors, 0)
+            self.set_motors(self.right_motors, abs(speed))
 
-        elif side and direction >= 0:
-            self.run_motors(right_motors, 1)
-            self.set_motors(right_motors, speed)
+        elif side and speed >= 0:
+            self.run_motors(self.right_motors, 1)
+            self.set_motors(self.right_motors, speed)
 
-        elif not side and direction < 0:
-            self.run_motors(left_motors, 0)
-            self.set_motors(left_motors, abs(speed))
+        elif not side and speed < 0:
+            self.run_motors(self.left_motors, 0)
+            self.set_motors(self.left_motors, abs(speed))
 
-        elif not side and direction >= 0:
-            self.run_motor(right_motors, 1):
-            self.set_motors(right_motors, speed)
+        elif not side and speed >= 0:
+            self.run_motors(self.right_motors, 1)
+            self.set_motors(self.right_motors, speed)
     
     def set_motors(self, motors, speed):
         for motor in motors:
@@ -48,6 +48,6 @@ class Drive:
 
     def safe_shutdown_motors(self):
         self.mh.getMotor(1).run(Adafruit_MotorHAT.RELEASE)
-	    self.mh.getMotor(2).run(Adafruit_MotorHAT.RELEASE)
-	    self.mh.getMotor(3).run(Adafruit_MotorHAT.RELEASE)
-	    self.mh.getMotor(4).run(Adafruit_MotorHAT.RELEASE)
+        self.mh.getMotor(2).run(Adafruit_MotorHAT.RELEASE)
+        self.mh.getMotor(3).run(Adafruit_MotorHAT.RELEASE)
+        self.mh.getMotor(4).run(Adafruit_MotorHAT.RELEASE)
