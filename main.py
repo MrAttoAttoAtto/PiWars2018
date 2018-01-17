@@ -7,7 +7,16 @@ import tank
 import tools
 import controller
 
-controller.Controller()
+control = controller.Controller()
+driver = drive.Driver()
 
 while True:
-    values = controller.get_values()
+    values = control.get_values()
+
+    leftX = values['left_axes'][0]
+    leftY = values['left_axes'][1]
+
+    driver.turn_motors(0, leftY)
+    driver.turn_motors(1, leftY)
+
+    
