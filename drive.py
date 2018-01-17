@@ -1,7 +1,6 @@
 #!/usr/bin/python
 from Adafruit_MotorHAT import Adafruit_MotorHAT, Adafruit_DCMotor
 
-import time
 
 class Driver:
     def __init__(self, address=0x60):
@@ -30,8 +29,8 @@ class Driver:
             self.set_motors(self.left_motors, abs(speed))
 
         elif not side and speed >= 0:
-            self.run_motors(self.right_motors, 1)
-            self.set_motors(self.right_motors, speed)
+            self.run_motors(self.left_motors, 1)
+            self.set_motors(self.left_motors, speed)
     
     def set_motors(self, motors, speed):
         for motor in motors:
