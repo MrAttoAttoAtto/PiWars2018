@@ -3,11 +3,11 @@ import drive
 import lineTracker
 import rainbow
 import settings
-import tanks
+import tank
 import tools
 import controller
 
-controller.Control()
+controller.Controller()
 
 while True:
-    values = control.get_values()
+    values = controller.get_values()
