@@ -37,8 +37,7 @@ class Controller:
             self.joy.leftThumbstick(),
             self.joy.rightThumbstick()
         )
-
-	return values
+        return values
 
     def safe_close(self):
         self.joy.close()
