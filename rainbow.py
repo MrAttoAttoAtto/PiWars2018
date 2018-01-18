@@ -79,7 +79,7 @@ def run():
 
         for colour, thresholds in colour_thresholds:
             ensure_safe_distance() # TODO
-            while not ball_aligned(hsv, thresholds):
+            while not ball_aligned(hsv, thresholds): # THIS WILL NOT WORK TODO (IT NEVER REFRESHES THE IMAGE AND WILL THEREFORE CONTINUE FOREVER)
                 TANK.left()
             while not ensure_area_touched(): # TODO
                 TANK.forwards()
