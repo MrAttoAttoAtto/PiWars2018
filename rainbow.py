@@ -32,7 +32,6 @@ def ball_aligned(image, threshold):
     mask = cv2.erode(mask, None, iterations=2)
     mask = cv2.dilate(mask, None, iterations=2)
 
-    # I'll trust joe on the [-2]...
     cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
 
 	# only proceed if at least one contour was found
