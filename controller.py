@@ -16,22 +16,22 @@ class Controller:
             self.joy.leftTrigger(),
             self.joy.rightTrigger()
         )
-        values['button_pad'] = (
-            self.joy.A(),
-            self.joy.B(),
-            self.joy.Y(),
-            self.joy.X()
-        )
-        values['d_pad'] = (
-            self.joy.dpadUp(),
-            self.joy.dpadDown(),
-            self.joy.dpadLeft(),
-            self.joy.dpadRight()
-        )
+        values['button_pad'] = {
+            'A': self.joy.A(),
+            'B': self.joy.B(),
+            'Y': self.joy.Y(),
+            'X': self.joy.X()
+        }
+        values['d_pad'] = {
+            'Up': self.joy.dpadUp(),
+            'Down': self.joy.dpadDown(),
+            'Left': self.joy.dpadLeft(),
+            'Right': self.joy.dpadRight()
+        }
         values['control_buttons'] = (
-            self.joy.Start(),
-            self.joy.Guide(),
-            self.joy.Back()
+            'Start': self.joy.Start(),
+            'Guide': self.joy.Guide(),
+            'Back': self.joy.Back()
         )
         values['thumbsticks'] = (
             self.joy.leftThumbstick(),
