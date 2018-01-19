@@ -6,7 +6,7 @@ Access motors, ultrasonics from here.
 import time
 
 class Tank:
-    def __init__(self):
+    def __init__(self, driver):
         try:
             self.camera = PiCamera()
             self.camera.resolution = (640, 480)
@@ -14,10 +14,11 @@ class Tank:
         except Exception:
             self.camera = None
 
+        self.driver = driver
+
     def set_tank(self, speed_left, speed_right):
-        # Do speed things, get direction from neg/pos
-        # Set motor pwms
-        pass
+        driver.turn_motors(0, speed_left)
+        driver.turn_motors(1, speed_right)
     
     def enable_flywheel(self):
         '''Enables the flywheels'''
@@ -31,6 +32,8 @@ class Tank:
         '''Get the reported distance by a certain ultrasonic sensor.'''
         pass
 
+    def take_picture(self):
+        
     def forwards(self, speed = 1, time=-1):
         self.set_tank(speed, speed)
         if time > 0:
