@@ -4,12 +4,10 @@ or are just stored here for easy tweaking'''
 
 DEBUG = False
 
-ULTRASONIC_TRIG = 23
-ULTRASONIC_ECHO = 24
-
 RESOLUTIONX = 160
 RESOLUTIONY = 120
 
+address = 0x04
 
 # ----RAINBOW----
 MIN_BALL_RADIUS = 10

@@ -1,39 +1,30 @@
 import time
-import RPi.GPIO as GPIO
 
-from settings import ULTRASONIC_TRIG, ULTRASONIC_ECHO
+from smbus import SMBus
+from settings import address
 
-GPIO.setmode(GPIO.BCM)
+"""
+WIRING:
+RPI's GND = PIN06 -----> ARDUINO NANO'S GND
+RPI'S SDA = GPIO02 = PIN03 -----> ARDUINO NANO'S SDA = A4
+RPI'S SCL = GPI03 = PIN05 -----> ARDUINO NANO'S SCL = A5
+"""
 
 def get_distance():
+    global address
     '''
-    Get the distance from the robot to the nearest wall
+    Uses I2C to talk to an arduino nano, getting all distances from multiple
+    ultrasonic sensors
     '''
 
-    GPIO.setup(ULTRASONIC_TRIG, GPIO.OUT)
-    GPIO.setup(ULTRASONIC_ECHO, GPIO.IN)
+    bus = SMBus(1)
+    left = bus.read_byte(address)
+    #TODO ADD MIDDLE ULTRASONIC TO ARDUINO AND WORKING RIGHT TO ARDUINO
+    middle = 1
+    right = bus.read_byte(address)
+    return [left, middle, right]
 
-    GPIO.output(ULTRASONIC_TRIG, False)
-
-    time.sleep(2*10**-6)
-
-    GPIO.output(ULTRASONIC_TRIG, True)
-    time.sleep(10**-5)
-    GPIO.output(ULTRASONIC_TRIG, False)
-
-    while not GPIO.input(ULTRASONIC_ECHO):
-        pulse_start = time.time()
-
-    while GPIO.input(ULTRASONIC_ECHO):
-        pulse_end = time.time()
-
-    duration = pulse_end - pulse_start
-
-    distance = duration * 34300/2
-
-    distance = round(distance, 2)
-
-    return distance
+    
 
 def get_centroid(boolean_image, *args):
 
