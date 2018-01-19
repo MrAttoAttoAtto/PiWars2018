@@ -1,3 +1,6 @@
+"""main.py
+The script which runs.
+"""
 import time
 import drive
 #import line
@@ -13,8 +16,8 @@ driver = drive.Driver()
 mode = {
     "line": False,
     "rainbow": False,
-    "line": False,
-    "maze": False
+    "maze": False,
+    "manual": True
 }
 
 joy_activated = True
