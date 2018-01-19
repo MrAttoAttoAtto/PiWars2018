@@ -7,9 +7,12 @@ import time
 
 class Tank:
     def __init__(self):
-        self.camera = PiCamera()
-        camera.resolution = (640, 480)
-        camera.framerate = 32
+        try:
+            self.camera = PiCamera()
+            self.camera.resolution = (640, 480)
+            self.camera.framerate = 32
+        except Exception:
+            self.camera = None
 
     def set_tank(self, speed_left, speed_right):
         # Do speed things, get direction from neg/pos

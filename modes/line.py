@@ -17,7 +17,7 @@ def run():
 
     camera = TANK.camera
 
-    raw_capture = PiRGBArray(camera)
+    raw_capture = PiRGBArray(camera, size=(640, 480))
 
     for frame in camera.capture_continuous(raw_capture, format="bgr", use_video_port=True):
 
@@ -30,7 +30,7 @@ def run():
         # Clears the image of noise, makes it smaller (and cropped closer to the robot)
         # Also constructs the contours from the boolean image
 
-        noisy_image = grayscale_image[0:int(RESOLUTIONX/2), 0:RESOLUTIONX]
+        noisy_image = grayscale_image[0:int(RESOLUTIONY/2), 0:RESOLUTIONX]
 
         clear_image = cv2.GaussianBlur(grayscale_image, (5, 5), 0)
 
