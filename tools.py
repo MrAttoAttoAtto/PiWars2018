@@ -1,7 +1,5 @@
 import time
 
-from smbus import SMBus
-from settings import address
 
 
 

@@ -5,11 +5,12 @@ Access motors, ultrasonics from here.
 from smbus import SMBus
 import time
 import camera
+from settings import address
 
 
 
 class Tank:
-    def __init__(self, driver, ultrasonic_address=0x04):
+    def __init__(self, driver, ultrasonic_address=address):
         self.ultrasonic_address = ultrasonic_address
         self.ultrasonic_connection = SMBus(1)
         try:
@@ -20,8 +21,8 @@ class Tank:
         self.driver = driver
 
     def set_tank(self, speed_left, speed_right):
-        driver.turn_motors(0, speed_left)
-        driver.turn_motors(1, speed_right)
+        self.driver.turn_motors(0, speed_left)
+        self.driver.turn_motors(1, speed_right)
     
     def enable_flywheel(self):
         '''Enables the flywheels'''
@@ -32,7 +33,7 @@ class Tank:
         pass
 
 
-    def get_distance():
+    def get_distance(self):
         '''
         Uses I2C to talk to an arduino nano, getting all distances from multiple
         ultrasonic sensors
@@ -41,10 +42,10 @@ class Tank:
             RPI'S SDA = GPIO02 = PIN03 -----> ARDUINO NANO'S SDA = A4
             RPI'S SCL = GPI03 = PIN05 -----> ARDUINO NANO'S SCL = A5
         '''
-        left = self.ultrasonic_connection.read_byte(address)
+        left = self.ultrasonic_connection.read_byte(self.ultrasonic_address)
         #TODO ADD MIDDLE ULTRASONIC TO ARDUINO AND WORKING RIGHT TO ARDUINO
         middle = 1
-        right = self.ultrasonic_connection.read_byte(address)
+        right = self.ultrasonic_connection.read_byte(self.ultrasonic_address)
         return [left, middle, right]
 
     def take_picture(self):
