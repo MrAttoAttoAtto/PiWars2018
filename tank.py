@@ -6,6 +6,7 @@ from smbus import SMBus
 import time
 import camera
 from settings import address
+from drive import Driver
 
 
 
@@ -31,6 +32,10 @@ class Robot:
     def disable_flywheel(self):
         '''Disables the flywheels'''
         pass
+
+    def set_colour(self, colour_num):
+        if 0 <= colour_num <= 5:
+            self.ultrasonic_connection.write_byte(self.ultrasonic_address, colour_num)
 
 
     def get_distance(self):
@@ -81,4 +86,4 @@ class Robot:
     
         
         
-ROBOT = Robot()
+ROBOT = Robot(Driver())

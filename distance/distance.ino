@@ -1,3 +1,6 @@
+#include <Wire.h>
+#include <Adafruit_NeoPixel.h>
+
 /*
 WIRING:
 -------------------------------------------
@@ -18,9 +21,9 @@ WIRING:
  
  */
 
-#include <Wire.h>
 
 #define SLAVE_ADDRESS 0x04
+#define NEOPIN 6
 #define echo1 7
 #define trig1 8
 
@@ -28,6 +31,22 @@ int state = 0;
 
 long distance;
 int duration;
+volatile byte colour;
+uint16_t i;
+uint16_t j = 0;
+
+ 
+// Parameter 1 = number of pixels in strip
+// Parameter 2 = pin number (most are valid)
+// Parameter 3 = pixel type flags, add together as needed:
+//   NEO_KHZ800  800 KHz bitstream (most NeoPixel products w/WS2812 LEDs)
+//   NEO_KHZ400  400 KHz (classic 'v1' (not v2) FLORA pixels, WS2811 drivers)
+//   NEO_GRB     Pixels are wired for GRB bitstream (most NeoPixel products)
+//   NEO_RGB     Pixels are wired for RGB bitstream (v1 FLORA pixels, not v2)
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(8, NEOPIN, NEO_GRB + NEO_KHZ800);
+uint32_t colour_options[] = {strip.Color(0,0,0), strip.Color(255, 0, 0), strip.Color(0, 255, 0), strip.Color(0, 0, 255), strip.Color(255, 0, 255)};
+
+
 
 void setup() {
     //Sets up pins for ultrasonic tingz
@@ -38,9 +57,14 @@ void setup() {
     Serial.begin(9600);
     Serial.println("Ready!");
 
+    strip.begin();
+    strip.show(); // Initialize all pixels to 'off'
+
+
     //Initializes i2c and has a function run whenver a request comes in
     Wire.begin(SLAVE_ADDRESS);
     Wire.onRequest(sendData);
+    Wire.onReceive(receiveEvent); // register event
 }
 
 //Continously gets a distance reading, modifiying it if it is not ok
@@ -62,6 +86,28 @@ void loop() {
     else {
         Serial.println(distance);
     }
+    if (colour == 5) {
+      j++;
+      for(i=0; i< strip.numPixels(); i++) {
+        strip.setPixelColor(i, Wheel(((i * 256 / strip.numPixels()) + j) & 255));
+      }
+      strip.show();
+      if (j == 256) {
+        j = 0;
+      }
+    }
+    strip.setPixelColor(0, colour_options[colour]);
+    strip.show();
+}
+
+// function that executes whenever data is received from master
+// this function is registered as an event, see setup()
+void receiveEvent(int howMany) {
+  byte x;
+  while (Wire.available()) {
+      x = Wire.read();
+  }
+  colour = x;
 }
 
 
@@ -79,4 +125,20 @@ void sendData(){
         state = 0;
     }
 
+}
+
+
+// Input a value 0 to 255 to get a color value.
+// The colours are a transition r - g - b - back to r.
+uint32_t Wheel(byte WheelPos) {
+  WheelPos = 255 - WheelPos;
+  if(WheelPos < 85) {
+    return strip.Color(255 - WheelPos * 3, 0, WheelPos * 3);
+  }
+  if(WheelPos < 170) {
+    WheelPos -= 85;
+    return strip.Color(0, WheelPos * 3, 255 - WheelPos * 3);
+  }
+  WheelPos -= 170;
+  return strip.Color(WheelPos * 3, 255 - WheelPos * 3, 0);
 }
