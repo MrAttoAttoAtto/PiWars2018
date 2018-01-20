@@ -9,7 +9,7 @@ from settings import address
 
 
 
-class Tank:
+class Robot:
     def __init__(self, driver, ultrasonic_address=address):
         self.ultrasonic_address = ultrasonic_address
         self.ultrasonic_connection = SMBus(1)
@@ -21,8 +21,8 @@ class Tank:
         self.driver = driver
 
     def set_tank(self, speed_left, speed_right):
-        self.driver.turn_motors(0, speed_left)
-        self.driver.turn_motors(1, speed_right)
+        self.driver.turn_motors(0, int(speed_left*255))
+        self.driver.turn_motors(1, int(speed_right*255))
     
     def enable_flywheel(self):
         '''Enables the flywheels'''
@@ -81,4 +81,4 @@ class Tank:
     
         
         
-TANK = Tank()
+TANK = Robot()
