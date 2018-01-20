@@ -11,6 +11,8 @@ RESOLUTIONY = 480
 
 address = 0x04
 
+START_HOLD_REQUIRED = 4
+
 # ----COLORS-----
 # This is a DICTIONARY of the form:
 # {"yellow":[[h_bot, s_bot, v_bot], [h_top, s_top, v_top]], "red":...}
