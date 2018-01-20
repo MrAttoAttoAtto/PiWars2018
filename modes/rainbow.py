@@ -18,7 +18,7 @@ import time
 import cv2
 import imutils
 
-from tank import ROBOT
+from robot import ROBOT
 from settings import MIN_BALL_RADIUS, BALL_OFFSET_MAX
 
 colour_thresholds = {

@@ -6,7 +6,7 @@ from settings import (MAZE_MAX_X_OFFSET, MAZE_MINIMUM_PERIMETER,
                       MAZE_ROBOT_FORWARD_SPEED, MAZE_ROBOT_FORWARD_TIME,
                       MAZE_ROBOT_TURN_SPEED, MAZE_ROBOT_TURN_TIME,
                       MAZE_WALL_DISTANCE, RESOLUTIONX, RESOLUTIONY, THRESHOLDS)
-from tank import ROBOT
+from robot import ROBOT
 from tools import get_centroid_and_perim
 
 COLOR_ORDER = [

@@ -9,7 +9,7 @@ from picamera import PiCamera
 from picamera.array import PiRGBArray
 
 from settings import RESOLUTIONX, RESOLUTIONY, DEBUG
-from tank import ROBOT
+from robot import ROBOT
 from tools import get_centroid_and_perim
 
 def initialise():

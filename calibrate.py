@@ -8,7 +8,7 @@ import cv2
 from picamera import PiRGBArray
 
 from settings import RESOLUTIONX, RESOLUTIONY, THRESHOLDS
-from tank import ROBOT
+from robot import ROBOT
 
 
 def get_main_color(img):
