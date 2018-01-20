@@ -5,25 +5,35 @@ import json
 import time
 
 import cv2
+from picamera import PiRGBArray
 
 from settings import RESOLUTIONX, RESOLUTIONY, THRESHOLDS
-from tank import TANK
+from tank import ROBOT
 
 
 def get_main_color(img):
+    '''
+    Calculates the main color by using a k-means algorythm, after having
+    formatted the image array correctly
+    '''
     flags = cv2.KMEANS_RANDOM_CENTERS
     criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 1.0)
 
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     img = img.reshape((img.shape[0] * img.shape[1], 3))
-    centers = cv2.kmeans(image, 1, None, criteria, 10, flags)[2]
+    centers = cv2.kmeans(img, 1, None, criteria, 10, flags)[2]
 
     return list(centers[0])
 
 def calibrate_spec(color):
+    '''
+    Takes a pic, gets the average color of the 20x20 middle bit, and sets,
+    if the user thinks it looks good, the threshold to around those values globally
+    '''
+
     #assert color in THRESHOLDS
 
-    camera = TANK.camera
+    camera = ROBOT.camera
     raw_capture = PiRGBArray(camera, size=(640, 480))
 
     # time to be put into place
@@ -59,6 +69,8 @@ def calibrate_spec(color):
     return False
 
 def calibrate_all():
+    '''Calibrates all of the colors in the threshold dictionary from scratch'''
+
     for key in THRESHOLDS:
         confirmation = input("The next color is \"{}\". Press q to go to the next color or anything else to start the 3 sec countdown to take the picture: ")
 
@@ -77,5 +89,3 @@ def calibrate_all():
 
             else:
                 break
-
-            

@@ -6,12 +6,14 @@ import threading
 from picamera import PiCamera
 from picamera.array import PiRGBArray
 
+from settings import RESOLUTIONX, RESOLUTIONY
+
 
 class ConstantCamera(threading.Thread):
     def __init__(self, *args, **kwargs):
         super().__init__(self)
         self.camera = PiCamera(*args, **kwargs)
-        self._camarray = PiRGBArray(self.camera)
+        self._camarray = PiRGBArray(self.camera, size=(RESOLUTIONX, RESOLUTIONY))
         self._image = None
         self._lock = threading.Lock()
         self._close_event = threading.Event()
