@@ -4,7 +4,7 @@ import time
 
 from picamera.array import PiRGBArray
 from settings import RESOLUTIONX, RESOLUTIONY, THRESHOLDS
-from tank import TANK
+from tank import ROBOT
 
 color_order = [
     "yellow",
@@ -20,7 +20,7 @@ def calculate_next_color_centroid(img, thresholds):
 
 def run():
     # get camera
-    camera = TANK.camera
+    camera = ROBOT.camera
     raw_capture = PiRGBArray(camera, size=(640, 480))
     time.sleep(0.1)
 

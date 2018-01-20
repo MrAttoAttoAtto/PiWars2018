@@ -18,7 +18,7 @@ import time
 import cv2
 import imutils
 
-from tank import TANK
+from tank import ROBOT
 from settings import MIN_BALL_RADIUS, BALL_OFFSET_MAX
 from tools import get_centroid
 
@@ -58,7 +58,7 @@ def ball_aligned(image, threshold):
 def run():
     visited = []
     # initialize the camera and grab a reference to the raw camera capture
-    camera = TANK.camera
+    camera = ROBOT.camera
     raw_capture = PiRGBArray(camera, size=(640, 480))
     
     # allow the camera to warmup
@@ -79,9 +79,9 @@ def run():
         for colour, thresholds in colour_thresholds:
             ensure_safe_distance() # TODO
             while not ball_aligned(hsv, thresholds): # THIS WILL NOT WORK TODO (IT NEVER REFRESHES THE IMAGE AND WILL THEREFORE CONTINUE FOREVER)
-                TANK.left()
+                ROBOT.left()
             while not ensure_area_touched(): # TODO
-                TANK.forwards()
+                ROBOT.forwards()
 
         # clear the stream in preparation for the next frame
         raw_capture.truncate(0)

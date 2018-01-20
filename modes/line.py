@@ -9,13 +9,13 @@ from picamera import PiCamera
 from picamera.array import PiRGBArray
 
 from settings import RESOLUTIONX, RESOLUTIONY, DEBUG
-from tank import TANK
+from tank import ROBOT
 from tools import get_centroid
 
 def initialise():
     pass
 def update():
-    image = TANK.take_picture()
+    image = ROBOT.take_picture()
     grayscale_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
     # Clears the image of noise, makes it smaller (and cropped closer to the robot)
@@ -65,7 +65,7 @@ def update():
 def run():
     # Gets the camera to take a video, and makes it an array cv2 can work with
 
-    camera = TANK.camera
+    camera = ROBOT.camera
 
     raw_capture = PiRGBArray(camera, size=(640, 480))
 

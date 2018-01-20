@@ -81,4 +81,4 @@ class Robot:
     
         
         
-TANK = Robot()
+ROBOT = Robot()

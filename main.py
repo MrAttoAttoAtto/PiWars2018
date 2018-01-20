@@ -3,7 +3,7 @@ The script which runs.
 """
 import time
 import drive
-from tank import TANK
+from tank import ROBOT
 from modes import line, manual_drive, maze, rainbow
 import tools
 import controller
