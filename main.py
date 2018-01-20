@@ -3,10 +3,8 @@ The script which runs.
 """
 import time
 import drive
-#import line
-#import rainbow
-#import settings
-#import tank
+from tank import TANK
+from modes import line, manual_drive, maze, rainbow
 import tools
 import controller
 
@@ -44,7 +42,7 @@ while True:
 
 
     if mode['line']:
-        pass
+        line.update()
     
     if mode['rainbow']:
         pass
