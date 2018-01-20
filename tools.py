@@ -22,6 +22,9 @@ def get_centroid_and_perim(boolean_image, *args):
         return (False, False, False)
 
 def translate(value, leftMin, leftMax, rightMin, rightMax):
+    '''
+        Maps a value in range x1, y1 to a value in range x2, y2
+        '''
     # Figure out how 'wide' each range is
     leftSpan = leftMax - leftMin
     rightSpan = rightMax - rightMin
