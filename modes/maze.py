@@ -2,7 +2,10 @@
 
 import time
 
+import cv2
 from picamera.array import PiRGBArray
+
+from camera import ConstantCamera
 from settings import RESOLUTIONX, RESOLUTIONY, THRESHOLDS
 from tank import TANK
 
@@ -15,25 +18,23 @@ color_order = [
     "blue"
 ]
 
-def calculate_next_color_centroid(img, thresholds):
+def calculate_next_color_centroid(img, pos):
     pass
 
 def run():
     # get camera
-    camera = TANK.camera
-    raw_capture = PiRGBArray(camera, size=(640, 480))
-    time.sleep(0.1)
+    continuous_camera = TANK.camera
 
     position = 0
 
-    for frame in camera.capture_continuous(raw_capture, format="bgr", use_video_port=True):
+    while True:
         # grab the raw NumPy array representing the image, then initialize the timestamp
         # and occupied/unoccupied text
-        image = frame.array    
+        image = continuous_camera.get_image()
 
         # blurred = cv2.GaussianBlur(frame, (11, 11), 0)
         hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
-        cropped_bgr = image[RESOLUTIONY//2-10:RESOLUTIONY//2+10, RESOLUTIONX//2-10:RESOLUTIONX//2+10]
+        cropped_bgr = image[RESOLUTIONY//3:RESOLUTIONY*2//3, 0:RESOLUTIONX]
 
-        ret, center_x, center_y = calculate_next_color_centroid()
+        ret, center_x, center_y = calculate_next_color_centroid(cropped_bgr, position)

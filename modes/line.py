@@ -8,22 +8,20 @@ import cv2
 from picamera import PiCamera
 from picamera.array import PiRGBArray
 
-from settings import RESOLUTIONX, RESOLUTIONY, DEBUG
+from camera import ConstantCamera
+from settings import DEBUG, RESOLUTIONX, RESOLUTIONY
 from tank import TANK
 from tools import get_centroid
+
 
 def run():
     # Gets the camera to take a video, and makes it an array cv2 can work with
 
-    camera = TANK.camera
+    continuous_camera = TANK.camera
 
-    raw_capture = PiRGBArray(camera, size=(640, 480))
+    while True:
 
-    for frame in camera.capture_continuous(raw_capture, format="bgr", use_video_port=True):
-
-        image = frame.array # turns it straight into a nice array
-
-        raw_capture.truncate(0)
+        image = continuous_camera.get_image() # turns it straight into a nice array
 
         grayscale_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
