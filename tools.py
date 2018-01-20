@@ -3,26 +3,7 @@ import time
 from smbus import SMBus
 from settings import address
 
-"""
-WIRING:
-RPI's GND = PIN06 -----> ARDUINO NANO'S GND
-RPI'S SDA = GPIO02 = PIN03 -----> ARDUINO NANO'S SDA = A4
-RPI'S SCL = GPI03 = PIN05 -----> ARDUINO NANO'S SCL = A5
-"""
 
-def get_distance():
-    global address
-    '''
-    Uses I2C to talk to an arduino nano, getting all distances from multiple
-    ultrasonic sensors
-    '''
-
-    bus = SMBus(1)
-    left = bus.read_byte(address)
-    #TODO ADD MIDDLE ULTRASONIC TO ARDUINO AND WORKING RIGHT TO ARDUINO
-    middle = 1
-    right = bus.read_byte(address)
-    return [left, middle, right]
 
     
 
