@@ -22,15 +22,12 @@ def calculate_next_color_centroid(img, pos):
     pass
 
 def run():
-    # get camera
-    continuous_camera = ROBOT.camera
-
     position = 0
 
     while True:
         # grab the raw NumPy array representing the image, then initialize the timestamp
         # and occupied/unoccupied text
-        image = continuous_camera.get_image()
+        image = ROBOT.take_picture()
 
         # blurred = cv2.GaussianBlur(frame, (11, 11), 0)
         hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)

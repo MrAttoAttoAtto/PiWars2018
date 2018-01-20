@@ -57,19 +57,16 @@ def update():
         try:
             cv2.imshow('frame', noisy_image)
             if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
+                pass
         except NameError:
             pass
 
 
 def run():
     # Gets the camera to take a video, and makes it an array cv2 can work with
-
-    continuous_camera = TANK.camera
-
     while True:
 
-        image = continuous_camera.get_image() # turns it straight into a nice array
+        image = ROBOT.take_picture() # turns it straight into a nice array
 
         grayscale_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
