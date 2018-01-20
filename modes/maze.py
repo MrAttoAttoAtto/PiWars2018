@@ -9,7 +9,7 @@ from settings import (MAZE_MAX_X_OFFSET, MAZE_MINIMUM_PERIMETER,
 from tank import ROBOT
 from tools import get_centroid_and_perim
 
-color_order = [
+COLOR_ORDER = [
     "maze_yellow",
     "maze_blue",
     "maze_white",
@@ -18,8 +18,11 @@ color_order = [
     "maze_blue"
 ]
 
+UPDATE_POSITION = 0
+UPDATE_GO_FORTH = False
+
 def calculate_next_color_centroid(img, pos):
-    working_color = color_order[pos]
+    working_color = COLOR_ORDER[pos]
     working_thresholds = THRESHOLDS[working_color]
 
     mask = cv2.inRange(img, working_thresholds[0], working_thresholds[1])
@@ -39,6 +42,16 @@ def go_forth():
     while frontal_sensor_dist > MAZE_WALL_DISTANCE or frontal_sensor_dist == 0:
         ROBOT.forwards(MAZE_ROBOT_FORWARD_SPEED, MAZE_ROBOT_FORWARD_TIME)
         frontal_sensor_dist = ROBOT.get_distance()[1]
+
+def no_loop_go_forth():
+    global UPDATE_GO_FORTH
+    frontal_sensor_dist = ROBOT.get_distance()[1]
+
+    if frontal_sensor_dist > MAZE_WALL_DISTANCE or frontal_sensor_dist == 0:
+        ROBOT.forwards(MAZE_ROBOT_FORWARD_SPEED, MAZE_ROBOT_FORWARD_TIME)
+    
+    else:
+        UPDATE_GO_FORTH = False
 
 
 def run():
@@ -81,4 +94,55 @@ def run():
         if ROBOT.get_distance()[1] == 0: #i.e. it's quite far
             ROBOT.forwards()
         
+        ROBOT.left(MAZE_ROBOT_TURN_SPEED, MAZE_ROBOT_TURN_TIME)
+
+def update():
+    '''No loop version for snazz'''
+    global UPDATE_POSITION, UPDATE_GO_FORTH
+
+    if UPDATE_GO_FORTH:
+        no_loop_go_forth()
+        return
+
+    almost_finished = False
+
+    if UPDATE_POSITION == 6:
+        almost_finished = True
+
+    if not almost_finished:
+
+        image = ROBOT.take_picture()
+
+        # blurred = cv2.GaussianBlur(frame, (11, 11), 0)
+        hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+
+        cropped_hsv = hsv[RESOLUTIONY//3:RESOLUTIONY*2//3, 0:RESOLUTIONX]
+
+        ret, center_x, center_y = calculate_next_color_centroid(cropped_hsv, UPDATE_POSITION)
+
+        if not ret:
+            if UPDATE_POSITION < 4:
+                ROBOT.right(MAZE_ROBOT_TURN_SPEED, MAZE_ROBOT_TURN_TIME)
+            else:
+                ROBOT.left(MAZE_ROBOT_TURN_SPEED, MAZE_ROBOT_TURN_TIME)
+
+            return
+
+        # Here, 10 is an absolute estimate, a complete guess. Testing needed TODO
+        # If this IF passes, then it will go forth (!) until it hits a wall (not hit but you get me)
+        if (RESOLUTIONX - MAZE_MAX_X_OFFSET) <= center_x <= (RESOLUTIONX + MAZE_MAX_X_OFFSET):
+            UPDATE_GO_FORTH = True
+            UPDATE_POSITION += 1
+            return
+        elif center_x < RESOLUTIONX-MAZE_MAX_X_OFFSET:
+            ROBOT.left(MAZE_ROBOT_TURN_SPEED, MAZE_ROBOT_TURN_TIME)
+        else:
+            ROBOT.right(MAZE_ROBOT_TURN_SPEED, MAZE_ROBOT_TURN_TIME)
+        
+        return
+
+    if ROBOT.get_distance()[1] == 0:
+        ROBOT.forwards()
+        UPDATE_POSITION = 0
+    else:
         ROBOT.left(MAZE_ROBOT_TURN_SPEED, MAZE_ROBOT_TURN_TIME)
