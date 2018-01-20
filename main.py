@@ -1,9 +1,9 @@
 """main.py
-The script which runs.
+The script which runs. The mainloop. Quite frightening.
 """
 import time
 import drive
-import robot
+from robot import ROBOT
 from modes import line, manual_drive, maze, rainbow
 import settings
 import tools
@@ -11,7 +11,6 @@ import controller
 import leds
 
 control = controller.Controller()
-tank = robot.Robot()
 
 mode_index = 0
 modes = ["manual", "line", "rainbow", "maze", "selection"]
@@ -75,8 +74,8 @@ while True:
         left_speed = joyX + joyY
         right_speed = joyX - joyY
 
-        tank.driver.turn_motors(0,left_speed)
-        tank.driver.turn_motors(1, right_speed)
+        ROBOT.driver.turn_motors(0,left_speed)
+        ROBOT.driver.turn_motors(1, right_speed)
 
     
 
@@ -91,4 +90,4 @@ def shift_mode(new_mode):
     leds.changecolor(new_color)
 
 
-tank.driver.safe_shutdown()
+ROBOT.driver.safe_shutdown()

@@ -11,6 +11,9 @@ import drive
 
 class Robot:
     def __init__(self, ultrasonic_address=address):
+        '''
+            All the hardware in the robot.
+            '''
         self.ultrasonic_address = ultrasonic_address
         self.ultrasonic_connection = SMBus(1)
         try:
@@ -21,6 +24,9 @@ class Robot:
         self.driver = drive.Driver()
 
     def set_tank(self, speed_left, speed_right):
+        '''
+            Manually set values for motors.
+            '''
         self.driver.turn_motors(0, int(speed_left*255))
         self.driver.turn_motors(1, int(speed_right*255))
     
