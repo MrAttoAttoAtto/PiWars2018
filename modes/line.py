@@ -29,7 +29,7 @@ def update():
 
     center_x, center_y = get_centroid(boolean_image, 1, cv2.CHAIN_APPROX_NONE)
 
-    if not False in (center_x, center_y):
+    if False not in (center_x, center_y):
 
         # Decides which way to go (and does it (IN THE FUTURE)) by the angle at which the line is going
         # Also, the 3/4 and 1/4 are subject to change based on testing

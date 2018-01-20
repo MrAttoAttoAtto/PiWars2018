@@ -1,10 +1,5 @@
 import time
 
-
-
-
-    
-
 def get_centroid(boolean_image, *args):
 
     im2, contours, hierarchy = cv2.findContours(boolean_image.copy(), *args)

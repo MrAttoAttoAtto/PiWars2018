@@ -57,18 +57,12 @@ def ball_aligned(image, threshold):
 
 def run():
     visited = []
-    # initialize the camera and grab a reference to the raw camera capture
-    camera = ROBOT.camera
-    raw_capture = PiRGBArray(camera, size=(640, 480))
-    
-    # allow the camera to warmup
-    time.sleep(0.1)
     
     # capture frames from the camera
-    for frame in camera.capture_continuous(raw_capture, format="bgr", use_video_port=True):
+    while True:
         # grab the raw NumPy array representing the image, then initialize the timestamp
         # and occupied/unoccupied text
-        image = frame.array    
+        image = ROBOT.take_picture()    
     
         # resize the frame, blur it, and convert it to the HSV
         # color space
