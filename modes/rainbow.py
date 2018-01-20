@@ -20,7 +20,6 @@ import imutils
 
 from tank import ROBOT
 from settings import MIN_BALL_RADIUS, BALL_OFFSET_MAX
-from tools import get_centroid
 
 colour_thresholds = {
     "red": ([17, 15, 100], [50, 56, 200]),

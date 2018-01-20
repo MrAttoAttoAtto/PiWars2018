@@ -1,22 +1,21 @@
 '''Code for the maze challenge'''
 
-import time
-
 import cv2
-from picamera.array import PiRGBArray
 
-from camera import ConstantCamera
-from settings import RESOLUTIONX, RESOLUTIONY, THRESHOLDS
+from settings import (MAZE_MAX_X_OFFSET, MAZE_MINIMUM_PERIMETER,
+                      MAZE_ROBOT_FORWARD_SPEED, MAZE_ROBOT_FORWARD_TIME,
+                      MAZE_ROBOT_TURN_SPEED, MAZE_ROBOT_TURN_TIME,
+                      MAZE_WALL_DISTANCE, RESOLUTIONX, RESOLUTIONY, THRESHOLDS)
 from tank import ROBOT
-from tools import get_centroid
+from tools import get_centroid_and_perim
 
 color_order = [
-    "yellow",
-    "blue",
-    "white",
-    "red",
-    "white",
-    "blue"
+    "maze_yellow",
+    "maze_blue",
+    "maze_white",
+    "maze_red",
+    "maze_white",
+    "maze_blue"
 ]
 
 def calculate_next_color_centroid(img, pos):
@@ -27,9 +26,9 @@ def calculate_next_color_centroid(img, pos):
     mask = cv2.erode(mask, None, iterations=2)
     mask = cv2.dilate(mask, None, iterations=2)
 
-    center_x, center_y = get_centroid(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    center_x, center_y, perimeter = get_centroid_and_perim(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-    if False not in (center_x, center_y):
+    if perimeter > MAZE_MINIMUM_PERIMETER: # again, a complete guess
         return True, center_x, center_y
 
     else:
@@ -37,8 +36,9 @@ def calculate_next_color_centroid(img, pos):
 
 def go_forth():
     frontal_sensor_dist = ROBOT.get_distance()[1]
-    while frontal_sensor_dist > 10 or frontal_sensor_dist == 0:
-        ROBOT.forwards()
+    while frontal_sensor_dist > MAZE_WALL_DISTANCE or frontal_sensor_dist == 0:
+        ROBOT.forwards(MAZE_ROBOT_FORWARD_SPEED, MAZE_ROBOT_FORWARD_TIME)
+        frontal_sensor_dist = ROBOT.get_distance()[1]
 
 
 def run():
@@ -47,6 +47,9 @@ def run():
     while True:
         # grab the raw NumPy array representing the image, then initialize the timestamp
         # and occupied/unoccupied text
+        if position == 6:
+            break
+
         image = ROBOT.take_picture()
 
         # blurred = cv2.GaussianBlur(frame, (11, 11), 0)
@@ -58,18 +61,24 @@ def run():
 
         if not ret:
             if position < 4:
-                ROBOT.right()
+                ROBOT.right(MAZE_ROBOT_TURN_SPEED, MAZE_ROBOT_TURN_TIME)
             else:
-                ROBOT.left()
+                ROBOT.left(MAZE_ROBOT_TURN_SPEED, MAZE_ROBOT_TURN_TIME)
             
             continue
 
         # Here, 10 is an absolute estimate, a complete guess. Testing needed TODO
         # If this IF passes, then it will go forth (!) until it hits a wall (not hit but you get me)
-        if RESOLUTIONX-10 <= center_x <= RESOLUTIONX+10:
+        if (RESOLUTIONX - MAZE_MAX_X_OFFSET) <= center_x <= (RESOLUTIONX + MAZE_MAX_X_OFFSET):
             go_forth()
             position += 1
-        elif center_x < RESOLUTIONX-10:
-            ROBOT.left()
+        elif center_x < RESOLUTIONX-MAZE_MAX_X_OFFSET:
+            ROBOT.left(MAZE_ROBOT_TURN_SPEED, MAZE_ROBOT_TURN_TIME)
         else:
-            ROBOT.right()
+            ROBOT.right(MAZE_ROBOT_TURN_SPEED, MAZE_ROBOT_TURN_TIME)
+    
+    while True:
+        if ROBOT.get_distance()[1] == 0: #i.e. it's quite far
+            ROBOT.forwards()
+        
+        ROBOT.left(MAZE_ROBOT_TURN_SPEED, MAZE_ROBOT_TURN_TIME)
