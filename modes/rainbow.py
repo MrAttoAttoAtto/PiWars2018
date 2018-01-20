@@ -12,18 +12,23 @@ Code for the "over the rainbow" challenge.
 
 '''
 
-from picamera.array import PiRGBArray
-from picamera import PiCamera
 import time
+
 import cv2
 import imutils
+from picamera import PiCamera
+from picamera.array import PiRGBArray
 
+from settings import (BALL_OFFSET_MAX, MIN_BALL_RADIUS, MINIMUM_AREA_DISTANCE,
+                      REVERSE_TIME, SPEED_SCALE, THRESHOLDS)
 from tank import ROBOT
-from settings import MIN_BALL_RADIUS, BALL_OFFSET_MAX, REVERSE_TIME, SPEED_SCALE, MINIMUM_AREA_DISTANCE
 from tools import get_centroid
 
 colour_thresholds = [
-    ('?'), ('?'), ('?'), ('?')
+    "rainbow_red",
+    "rainbow_blue",
+    "rainbow_yellow",
+    "rainbow_green"
 ]
 
 class Rainbow:
@@ -41,10 +46,10 @@ class Rainbow:
 
             if len(self.order) < 4:
                 ROBOT.right()
-                for colour, thresholds in enumerate(colour_thresholds):
-                    if (colour not in self.order) and self.ball_aligned(hsv, thresholds):
-                        self.order.append(colour)
-                        self.last = colour
+                for index, color in enumerate(colour_thresholds):
+                    if (index not in self.order) and self.ball_aligned(hsv, color):
+                        self.order.append(index)
+                        self.last = index
             else:
                 if self.last != -1:
                     cur_i = self.order.index(self.last)
@@ -80,8 +85,10 @@ class Rainbow:
         elif trigger_btn and not self.running:
             self.running = True
 
-    def ball_aligned(self, image, threshold):
-        mask = cv2.inRange(image, threshold[0], threshold[1])
+    def ball_aligned(self, image, color):
+        working_thresholds = THRESHOLDS[color]
+
+        mask = cv2.inRange(image, working_thresholds[0], working_thresholds[1])
         mask = cv2.erode(mask, None, iterations=2)
         mask = cv2.dilate(mask, None, iterations=2)
 
