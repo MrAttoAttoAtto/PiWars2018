@@ -4,11 +4,9 @@ Access motors, ultrasonics from here.
 '''
 
 import time
-import drive
 
-class Tank(drive.Driver):
+class Tank:
     def __init__(self, driver):
-        drive.Driver.__init__()
         try:
             self.camera = PiCamera()
             self.camera.resolution = (640, 480)
@@ -16,6 +14,12 @@ class Tank(drive.Driver):
         except Exception:
             self.camera = None
 
+        self.driver = driver
+
+    def set_tank(self, speed_left, speed_right):
+        driver.turn_motors(0, speed_left)
+        driver.turn_motors(1, speed_right)
+    
     def enable_flywheel(self):
         '''Enables the flywheels'''
         pass
@@ -30,19 +34,20 @@ class Tank(drive.Driver):
 
     def take_picture(self):
         
-    def forwards(self, speed = 255, time=-1):
+    def forwards(self, speed = 1, time=-1):
         self.set_tank(speed, speed)
         if time > 0:
             time.sleep(time)
             self.halt()
 
     def halt(self):
-        self.turn_motors(0, 0)
-        self.turn_motors(1, 0)
+        self.set_tank(0, 0)
     
-    def left(self, speed = 255, time = 1):
-        turn_motors(0, 255)
-        turn_motors(1, )
+    def left(self, speed = 1, time=-1):
+        self.set_tank(-speed, speed)
+        if time > 0:
+            time.sleep(time)
+            self.halt()
 
     def right(self, speed = 1, time=-1):
         self.set_tank(speed, -speed)
