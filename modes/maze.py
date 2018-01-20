@@ -7,7 +7,7 @@ from picamera.array import PiRGBArray
 
 from camera import ConstantCamera
 from settings import RESOLUTIONX, RESOLUTIONY, THRESHOLDS
-from tank import TANK
+from tank import ROBOT
 
 color_order = [
     "yellow",
@@ -23,7 +23,7 @@ def calculate_next_color_centroid(img, pos):
 
 def run():
     # get camera
-    continuous_camera = TANK.camera
+    continuous_camera = ROBOT.camera
 
     position = 0
 

@@ -2,23 +2,27 @@
 The interface for the hardware parts of the robot.
 Access motors, ultrasonics from here.
 '''
-
+from smbus import SMBus
 import time
+import camera
+from settings import address
 
-class Tank:
-    def __init__(self, driver):
+
+
+class Robot:
+    def __init__(self, driver, ultrasonic_address=address):
+        self.ultrasonic_address = ultrasonic_address
+        self.ultrasonic_connection = SMBus(1)
         try:
-            self.camera = PiCamera()
-            self.camera.resolution = (640, 480)
-            self.camera.framerate = 32
+            self.camera = camera.ConstantCamera()
         except Exception:
             self.camera = None
 
         self.driver = driver
 
     def set_tank(self, speed_left, speed_right):
-        driver.turn_motors(0, speed_left)
-        driver.turn_motors(1, speed_right)
+        self.driver.turn_motors(0, int(speed_left*255))
+        self.driver.turn_motors(1, int(speed_right*255))
     
     def enable_flywheel(self):
         '''Enables the flywheels'''
@@ -28,11 +32,25 @@ class Tank:
         '''Disables the flywheels'''
         pass
 
-    def get_distance(self, ultra_no):
-        '''Get the reported distance by a certain ultrasonic sensor.'''
-        pass
+
+    def get_distance(self):
+        '''
+        Uses I2C to talk to an arduino nano, getting all distances from multiple
+        ultrasonic sensors
+            WIRING:
+            RPI's GND = PIN06 -----> ARDUINO NANO'S GND
+            RPI'S SDA = GPIO02 = PIN03 -----> ARDUINO NANO'S SDA = A4
+            RPI'S SCL = GPI03 = PIN05 -----> ARDUINO NANO'S SCL = A5
+        '''
+        left = self.ultrasonic_connection.read_byte(self.ultrasonic_address)
+        #TODO ADD MIDDLE ULTRASONIC TO ARDUINO AND WORKING RIGHT TO ARDUINO
+        middle = 1
+        right = self.ultrasonic_connection.read_byte(self.ultrasonic_address)
+        return [left, middle, right]
 
     def take_picture(self):
+        return self.camera.get_image()
+
         
     def forwards(self, speed = 1, time=-1):
         self.set_tank(speed, speed)
@@ -63,4 +81,4 @@ class Tank:
     
         
         
-TANK = Tank()
+ROBOT = Robot()

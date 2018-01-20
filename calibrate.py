@@ -8,7 +8,7 @@ import cv2
 from picamera import PiRGBArray
 
 from settings import RESOLUTIONX, RESOLUTIONY, THRESHOLDS
-from tank import TANK
+from tank import ROBOT
 
 
 def get_main_color(img):
@@ -33,7 +33,7 @@ def calibrate_spec(color):
 
     #assert color in THRESHOLDS
 
-    camera = TANK.camera
+    camera = ROBOT.camera
     raw_capture = PiRGBArray(camera, size=(640, 480))
 
     # time to be put into place
