@@ -6,11 +6,11 @@ from smbus import SMBus
 import time
 import camera
 from settings import address
-
+import drive
 
 
 class Robot:
-    def __init__(self, driver, ultrasonic_address=address):
+    def __init__(self, ultrasonic_address=address):
         self.ultrasonic_address = ultrasonic_address
         self.ultrasonic_connection = SMBus(1)
         try:
@@ -18,7 +18,7 @@ class Robot:
         except Exception:
             self.camera = None
 
-        self.driver = driver
+        self.driver = drive.Driver()
 
     def set_tank(self, speed_left, speed_right):
         self.driver.turn_motors(0, int(speed_left*255))
