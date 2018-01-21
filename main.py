@@ -13,7 +13,7 @@ import leds
 control = controller.Controller()
 
 mode_index = 0
-modes = ["manual", "line", "rainbow", "maze", "selection"]
+modes = ["manual", "line", "rainbow", "maze", "select"]
 mode_colours = ["red", "cyan", "orange", "magenta", "white"]
 mode = "manual"
 
@@ -26,7 +26,7 @@ while True:
     values = control.get_values()
     
 
-    if values['control_buttons']['Select'] and joy_last_select_time + joy_toggle_delay < time.time() and not selection_mode:
+    if values['control_buttons']['Guide'] and joy_last_select_time + joy_toggle_delay < time.time() and not selection_mode:
 
         selection_mode = not selection_mode
         joy_last_select_time = time.time()
@@ -50,13 +50,14 @@ while True:
             mode_index += 1
             if mode_index == len(modes):
                 mode_index = 0
-            mode = modes[mode_index]
 
         if values["bumpers"][0]:
             mode_index -= 1
             if mode_index == -1:
-                mode_index = 0
-            mode = modes[mode_index]
+                mode_index = len(modes)
+        
+        if values["control_buttons"]["Guide"]:
+                shift_mode(modes[mode_index])
 
     if mode == "line":
         line.update()
