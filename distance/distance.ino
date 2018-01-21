@@ -80,7 +80,7 @@ void loop() {
       digitalWrite(triggerPins[i], HIGH);
       delayMicroseconds(50);
       digitalWrite(triggerPins[i], LOW);
-      durations[i] = pulseIn(echoPins[i], HIGH, );
+      durations[i] = pulseIn(echoPins[i], HIGH, 8000);
       distances[i] = durations[i] / 58.3;
       //makes distance 0 if it is a dodgy number
       if (distances[i] > 255 or distances[i] < 0) {
