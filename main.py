@@ -4,7 +4,7 @@ The script which runs. The mainloop. Quite frightening.
 import time
 import drive
 from robot import ROBOT
-from modes import line, manual_drive, maze, rainbow
+#from modes import line, manual_drive, maze, rainbow
 import settings
 import tools
 import controller
@@ -33,7 +33,7 @@ while True:
 
         leds.start_blinking()
 
-    if mode == "select":
+    if mode == "selection":
         if values["button_pad"]['A']:
             shift_mode("line")
             
@@ -60,8 +60,9 @@ while True:
                 shift_mode(modes[mode_index])
 
     if mode == "line":
-        line.update()
-    
+	 #       line.update()
+    	pass
+
     if mode == "rainbow":
         pass
 
