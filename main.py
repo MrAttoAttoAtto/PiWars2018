@@ -5,6 +5,7 @@ import time
 import drive
 from robot import ROBOT
 #from modes import line, manual_drive, maze, rainbow
+from modes import rainbow
 import settings
 import tools
 import controller
@@ -24,6 +25,8 @@ selected_mode = "manual"
 joy_toggle_delay = 50
 led_state = True
 led_time = 0
+
+rainbow_begin = False
 
 while True:
     values = control.get_values()
@@ -76,11 +79,14 @@ while True:
                     
 
     if mode == "line":
-	 #       line.update()
-    	pass
+        pass
 
     if mode == "rainbow":
-        pass
+        if not rainbow_begin:
+            rainbow_begin = True
+            rainbown = rainbow.Rainbow()
+        else:
+            rainbown.update(values['button_pad']['Y'])
 
     if mode == "maze":
         pass
