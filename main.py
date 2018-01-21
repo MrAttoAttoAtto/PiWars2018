@@ -33,7 +33,7 @@ while True:
 
         leds.start_blinking()
 
-    if mode == "select":
+    if mode == "selection":
         if values["button_pad"]['A']:
             shift_mode("line")
             

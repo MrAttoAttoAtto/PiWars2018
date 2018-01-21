@@ -75,11 +75,12 @@ void setup() {
 
 //Continously gets a distance reading, modifiying it if it is not ok
 void loop() {
+    Serial.println("---");
     for (i=0; i<3; i++) {
       digitalWrite(triggerPins[i], HIGH);
       delayMicroseconds(50);
       digitalWrite(triggerPins[i], LOW);
-      durations[i] = pulseIn(echoPins[i], HIGH);
+      durations[i] = pulseIn(echoPins[i], HIGH, );
       distances[i] = durations[i] / 58.3;
       //makes distance 0 if it is a dodgy number
       if (distances[i] > 255 or distances[i] < 0) {
