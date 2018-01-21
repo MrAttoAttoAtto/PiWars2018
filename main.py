@@ -4,7 +4,7 @@ The script which runs. The mainloop. Quite frightening.
 import time
 import drive
 from robot import ROBOT
-from modes import line, manual_drive, maze, rainbow
+#from modes import line, manual_drive, maze, rainbow
 import settings
 import tools
 import controller
@@ -13,7 +13,7 @@ import leds
 control = controller.Controller()
 
 mode_index = 0
-modes = ["manual", "line", "rainbow", "maze", "selection"]
+modes = ["manual", "line", "rainbow", "maze", "select"]
 mode_colours = ["red", "cyan", "orange", "magenta", "white"]
 mode = "manual"
 
@@ -29,7 +29,7 @@ while True:
     values = control.get_values()
     
 
-    if values['control_buttons']['Select'] and joy_last_select_time + joy_toggle_delay < time.time() and not selection_mode:
+    if values['control_buttons']['Guide'] and joy_last_select_time + joy_toggle_delay < time.time() and not selection_mode:
 
         selection_mode = not selection_mode
         joy_last_select_time = time.time()
@@ -76,8 +76,9 @@ while True:
                     
 
     if mode == "line":
-        line.update()
-    
+	 #       line.update()
+    	pass
+
     if mode == "rainbow":
         pass
 

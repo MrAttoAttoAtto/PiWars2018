@@ -28,11 +28,11 @@ class Controller:
             'Left': self.joy.dpadLeft(),
             'Right': self.joy.dpadRight()
         }
-        values['control_buttons'] = (
+        values['control_buttons'] = {
             'Start': self.joy.Start(),
             'Guide': self.joy.Guide(),
             'Back': self.joy.Back()
-        )
+        }
         values['thumbsticks'] = (
             self.joy.leftThumbstick(),
             self.joy.rightThumbstick()
