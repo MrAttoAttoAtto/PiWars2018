@@ -38,17 +38,28 @@ def calculate_next_color_centroid(img, pos):
         return False, 0, 0
 
 def go_forth():
-    frontal_sensor_dist = ROBOT.get_distance()[1]
+    left, frontal_sensor_dist, right = ROBOT.get_distance()
     while frontal_sensor_dist > MAZE_WALL_DISTANCE or frontal_sensor_dist == 0:
-        ROBOT.forwards(MAZE_ROBOT_FORWARD_SPEED, MAZE_ROBOT_FORWARD_TIME)
-        frontal_sensor_dist = ROBOT.get_distance()[1]
+        if 0 < left < 5:
+            ROBOT.right(MAZE_ROBOT_TURN_SPEED, MAZE_ROBOT_TURN_TIME)
+        elif 0 < right < 5:
+            ROBOT.left(MAZE_ROBOT_TURN_SPEED, MAZE_ROBOT_TURN_TIME)
+        else:
+            ROBOT.forwards(MAZE_ROBOT_FORWARD_SPEED, MAZE_ROBOT_FORWARD_TIME)
+
+        left, frontal_sensor_dist, right = ROBOT.get_distance()
 
 def no_loop_go_forth():
     global UPDATE_GO_FORTH
-    frontal_sensor_dist = ROBOT.get_distance()[1]
+    left, frontal_sensor_dist, right = ROBOT.get_distance()
 
     if frontal_sensor_dist > MAZE_WALL_DISTANCE or frontal_sensor_dist == 0:
-        ROBOT.forwards(MAZE_ROBOT_FORWARD_SPEED, MAZE_ROBOT_FORWARD_TIME)
+        if 0 < left < 5:
+            ROBOT.right(MAZE_ROBOT_TURN_SPEED, MAZE_ROBOT_TURN_TIME)
+        elif 0 < right < 5:
+            ROBOT.left(MAZE_ROBOT_TURN_SPEED, MAZE_ROBOT_TURN_TIME)
+        else:
+            ROBOT.forwards(MAZE_ROBOT_FORWARD_SPEED, MAZE_ROBOT_FORWARD_TIME)
     
     else:
         UPDATE_GO_FORTH = False
