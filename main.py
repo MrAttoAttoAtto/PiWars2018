@@ -19,7 +19,7 @@ def shift_mode(new_mode):
     selection_mode = False
     new_color = mode_colours[modes.index(new_mode)]
 
-    leds.changecolor(new_color)
+    ROBOT.set_colour(modes.index(new_mode))
 
 control = controller.Controller()
 
@@ -37,6 +37,17 @@ led_state = True
 led_time = 0
 
 rainbow_begin = False
+
+
+def shift_mode(new_mode):
+    global mode
+    global selection_mode
+    
+    mode = new_mode
+    selection_mode = False
+    new_color = mode_colours[modes.index(new_mode)]
+
+    leds.changecolor(new_color)
 
 while True:
     values = control.get_values()
