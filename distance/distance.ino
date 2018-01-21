@@ -100,9 +100,12 @@ void loop() {
       if (j == 256) {
         j = 0;
       }
+    } else {
+      for (i=0;i<strip.numPixels(); i++) {
+        strip.setPixelColor(i, colour_options[colour]);
+      }
+      strip.show();
     }
-    strip.setPixelColor(0, colour_options[colour]);
-    strip.show();
 }
 
 // function that executes whenever data is received from master
