@@ -46,7 +46,9 @@ while True:
         print("b")
         selection_mode = not selection_mode
         mode = "selection"
+        first = True
         joy_last_select_time = time.time()
+        time.sleep(1)
 
 
     if mode == "selection":
@@ -86,8 +88,7 @@ while True:
 
         if values['control_buttons']['Start']:
             shift_mode(selected_mode)
-        
-                    
+
 
     if mode == "line":
         pass
