@@ -11,6 +11,16 @@ import tools
 import controller
 import leds
 
+def shift_mode(new_mode):
+    global mode
+    global selection_mode
+    
+    mode = new_mode
+    selection_mode = False
+    new_color = mode_colours[modes.index(new_mode)]
+
+    leds.changecolor(new_color)
+
 control = controller.Controller()
 
 mode_index = 0
@@ -101,18 +111,5 @@ while True:
 
         ROBOT.driver.turn_motors(0,left_speed)
         ROBOT.driver.turn_motors(1, right_speed)
-
-    
-
-def shift_mode(new_mode):
-    global mode
-    global selection_mode
-    
-    mode = new_mode
-    selection_mode = False
-    new_color = mode_colours[modes.index(new_mode)]
-
-    leds.changecolor(new_color)
-
 
 ROBOT.driver.safe_shutdown()
