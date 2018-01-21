@@ -19,7 +19,7 @@ import imutils
 from picamera import PiCamera
 from picamera.array import PiRGBArray
 
-from settings import (BALL_OFFSET_MAX, MIN_BALL_RADIUS, MINIMUM_AREA_DISTANCE,
+from settings import (BALL_OFFSET_MAX, MIN_BALL_RADIUS,
                       REVERSE_TIME, SPEED_SCALE, THRESHOLDS)
 from robot import ROBOT
 from tools import get_centroid
