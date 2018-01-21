@@ -26,7 +26,7 @@ def get_main_color(img):
 
     return list(centers[0])
 
-def calibrate_spec(color):
+def calibrate_spec(color, cam):
     '''
     Takes a pic, gets the average color of the 20x20 middle bit, and sets,
     if the user thinks it looks good, the threshold to around those values globally
@@ -34,8 +34,7 @@ def calibrate_spec(color):
 
     #assert color in THRESHOLDS
 
-    camera = PiCamera()
-    camera.resolution = (640, 480)
+    camera = cam
     raw_capture = PiRGBArray(camera, size=(640, 480))
 
     # time to be put into place
@@ -77,6 +76,9 @@ def calibrate_spec(color):
 def calibrate_all():
     '''Calibrates all of the colors in the threshold dictionary from scratch'''
 
+    camera = PiCamera()
+    camera.resolution = (640, 480)
+
     for key in THRESHOLDS:
         confirmation = input("The next color is \"{}\". Press q to go to the next color or anything else to start the 3 sec countdown to take the picture: ".format(key))
 
@@ -85,7 +87,7 @@ def calibrate_all():
 
         while True:
 
-            ret = calibrate_spec(key)
+            ret = calibrate_spec(key, camera)
 
             if not ret:
                 redo_quest = input("You seemed to cancel that image, do you want to take it again? [Y/n] ")
