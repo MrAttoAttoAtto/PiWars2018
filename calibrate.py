@@ -5,6 +5,7 @@ import json
 import time
 
 import cv2
+import numpy as np
 from picamera.array import PiRGBArray
 from picamera import PiCamera
 
@@ -20,6 +21,7 @@ def get_main_color(img):
 
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     img = img.reshape((img.shape[0] * img.shape[1], 3))
+    img = np.float32(img)
     centers = cv2.kmeans(img, 1, None, criteria, 10, flags)[2]
 
     return list(centers[0])
@@ -33,12 +35,13 @@ def calibrate_spec(color):
     #assert color in THRESHOLDS
 
     camera = PiCamera()
+    camera.resolution = (640, 480)
     raw_capture = PiRGBArray(camera, size=(640, 480))
 
     # time to be put into place
     time.sleep(3)
 
-    frame = camera.capture(raw_capture, format='rgb')
+    frame = camera.capture(raw_capture, format='bgr')
 
     image = frame.array
 
