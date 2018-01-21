@@ -11,7 +11,7 @@ from settings import RESOLUTIONX, RESOLUTIONY
 
 class ConstantCamera(threading.Thread):
     def __init__(self, *args, **kwargs):
-        super().__init__(self)
+        super().__init__()
         self.camera = PiCamera(*args, **kwargs)
         self.camera.resolution = (RESOLUTIONX, RESOLUTIONY)
         self.camera.rotation = 180
