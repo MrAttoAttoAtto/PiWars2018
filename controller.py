@@ -6,8 +6,8 @@ class Controller:
 
     def get_values(self):
         values = {}
-        values['left_axes'] = self.joy.leftStick()
-        values['right_axes'] = self.joy.rightStick()
+        values['left_axes'] = self.joy.leftStick(2000)
+        values['right_axes'] = self.joy.rightStick(2000)
         values['bumpers'] = (
             self.joy.leftBumper(),
             self.joy.rightBumper()

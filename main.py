@@ -22,7 +22,7 @@ selection_mode = False
 joy_last_select_time = 0
 selected_mode = "manual"
 
-joy_toggle_delay = 50
+joy_toggle_delay = 1
 led_state = True
 led_time = 0
 
@@ -43,9 +43,10 @@ while True:
     values = control.get_values()
     
 
-    if values['control_buttons']['Guide'] and joy_last_select_time + joy_toggle_delay < time.time() and not selection_mode:
-
+    if values['control_buttons']['Start'] and joy_last_select_time + joy_toggle_delay < time.time() and not selection_mode:
+        print("b")
         selection_mode = not selection_mode
+        mode = "selection"
         joy_last_select_time = time.time()
 
 
@@ -54,7 +55,7 @@ while True:
             selected_mode = "line"
             
         elif values["button_pad"]['B']:
-            selected_mode "rainbow"
+            selected_mode = "rainbow"
 
         elif values["button_pad"]['Y']:
             selected_mode = "maze"
@@ -84,7 +85,7 @@ while True:
         else:
             led_time += 1
 
-        if values['control_buttons']['Select']:
+        if values['control_buttons']['Start']:
             shift_mode(selected_mode)
         
                     

@@ -22,7 +22,7 @@ from picamera.array import PiRGBArray
 from settings import (BALL_OFFSET_MAX, MIN_BALL_RADIUS,
                       REVERSE_TIME, SPEED_SCALE, THRESHOLDS)
 from robot import ROBOT
-from tools import get_centroid
+#from tools import get_centroid
 
 colour_thresholds = [
     "rainbow_red",
@@ -121,7 +121,7 @@ class Rainbow:
 
     def ensure_safe_distance(self):
         dl, dc, dr = ROBOT.get_distance()
-        return dl > 12 and dc > 12 and dr > 12:
+        return dl > 12 and dc > 12 and dr > 12
 
 
     def reset(self):
