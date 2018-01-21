@@ -19,8 +19,11 @@ mode = "manual"
 
 selection_mode = False
 joy_last_select_time = 0
+selected_mode = "manual"
 
 joy_toggle_delay = 50
+led_state = True
+led_time = 0
 
 while True:
     values = control.get_values()
@@ -31,32 +34,46 @@ while True:
         selection_mode = not selection_mode
         joy_last_select_time = time.time()
 
-        leds.start_blinking()
 
     if mode == "selection":
         if values["button_pad"]['A']:
-            shift_mode("line")
+            selected_mode = "line"
             
         elif values["button_pad"]['B']:
-            shift_mode("rainbow")
+            selected_mode "rainbow"
 
         elif values["button_pad"]['Y']:
-            shift_mode("maze")
+            selected_mode = "maze"
 
         elif values["button_pad"]['X']:
-            shift_mode("manual")
+            selected_mode = "manual"
         
         if values["bumpers"][1]:
             mode_index += 1
             if mode_index == len(modes):
                 mode_index = 0
-            mode = modes[mode_index]
+            selected_mode = modes[mode_index]
 
         if values["bumpers"][0]:
             mode_index -= 1
             if mode_index == -1:
                 mode_index = 0
-            mode = modes[mode_index]
+            selected_mode = modes[mode_index]
+
+        if led_time == 20:
+            if led_state:
+                ROBOT.set_colour(0)
+            else:
+                ROBOT.set_colour(modes.index(selected_mode)+1)
+            led_state = not led_state
+            led_time = 0
+        else:
+            led_time += 1
+
+        if values['control_buttons']['Select']:
+            shift_mode(selected_mode)
+        
+                    
 
     if mode == "line":
         line.update()
