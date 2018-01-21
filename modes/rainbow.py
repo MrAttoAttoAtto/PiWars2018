@@ -118,6 +118,9 @@ class Rainbow:
     def reset(self):
         self.order = []
         self.running = False
+        self.last = -1
+        self.next = 0
+        self.turn = -1
 
     
 
