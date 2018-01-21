@@ -5,7 +5,7 @@ import json
 import time
 
 import cv2
-from picamera import PiRGBArray
+from picamera.array import PiRGBArray
 
 from settings import RESOLUTIONX, RESOLUTIONY, THRESHOLDS
 from robot import ROBOT
