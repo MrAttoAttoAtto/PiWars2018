@@ -5,11 +5,10 @@ import json
 import time
 
 import cv2
-from picamera import PiRGBArray
+from picamera.array import PiRGBArray
+from picamera import PiCamera
 
 from settings import RESOLUTIONX, RESOLUTIONY, THRESHOLDS
-from robot import ROBOT
-
 
 def get_main_color(img):
     '''
@@ -33,7 +32,7 @@ def calibrate_spec(color):
 
     #assert color in THRESHOLDS
 
-    camera = ROBOT.camera
+    camera = PiCamera()
     raw_capture = PiRGBArray(camera, size=(640, 480))
 
     # time to be put into place
