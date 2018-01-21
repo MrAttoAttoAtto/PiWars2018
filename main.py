@@ -86,7 +86,7 @@ while True:
         else:
             led_time += 1
 
-        if values['control_buttons']['Start']:
+        if values['control_buttons']['Back']:
             shift_mode(selected_mode)
 
 
