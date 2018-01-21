@@ -67,10 +67,13 @@ class Rainbow:
                     self.last = -1
                     self.turn = -1
                 else:
-                    if self.turn == 0:
-                        ROBOT.right()
+                    if self.ensure_safe_distance():
+                        if self.turn == 0:
+                            ROBOT.right()
+                        else:
+                            ROBOT.left()
                     else:
-                        ROBOT.left()
+                        ROBOT.backwards(SPEED_SCALE)
                     if self.ball_aligned(hsv, colour_thresholds[self.next]):
                         self.turn = 2
                     if self.turn == 2:
@@ -113,7 +116,13 @@ class Rainbow:
         return False
 
     def ensure_area_touched(self):
-        if 
+        dl, dc, dr = ROBOT.get_distance()
+        return dc < 16
+
+    def ensure_safe_distance(self):
+        dl, dc, dr = ROBOT.get_distance()
+        return dl > 12 and dc > 12 and dr > 12:
+
 
     def reset(self):
         self.order = []
