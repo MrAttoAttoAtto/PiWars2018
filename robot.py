@@ -21,7 +21,8 @@ class Robot:
         self.ultrasonic_connection = SMBus(1)
         try:
             self.camera = camera.ConstantCamera()
-        except Exception:
+        except Exception as e:
+            raise e
             self.camera = None
 
         self.driver = drive.Driver()
