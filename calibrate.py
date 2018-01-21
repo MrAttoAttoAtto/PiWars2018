@@ -43,9 +43,13 @@ def calibrate_spec(color):
 
     frame = camera.capture(raw_capture, format='bgr')
 
-    image = frame.array
+    image = raw_capture.array
 
     cropped_bgr = image[RESOLUTIONY//2-10:RESOLUTIONY//2+10, RESOLUTIONX//2-10:RESOLUTIONX//2+10]
+
+    image = cv2.rectangle(image, (RESOLUTIONX//2+10, RESOLUTIONY//2+10), (RESOLUTIONX//2-10, RESOLUTIONY//2-10), (255, 255, 255))
+    cv2.imshow("YOO", image)
+    cv2.waitKey()
 
     major_color = get_main_color(cropped_bgr)
     print("RGB: " + str(major_color))
@@ -74,7 +78,7 @@ def calibrate_all():
     '''Calibrates all of the colors in the threshold dictionary from scratch'''
 
     for key in THRESHOLDS:
-        confirmation = input("The next color is \"{}\". Press q to go to the next color or anything else to start the 3 sec countdown to take the picture: ")
+        confirmation = input("The next color is \"{}\". Press q to go to the next color or anything else to start the 3 sec countdown to take the picture: ".format(key))
 
         if confirmation.lower() == "q":
             continue
