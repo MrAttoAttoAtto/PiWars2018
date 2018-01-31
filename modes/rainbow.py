@@ -20,7 +20,7 @@ from picamera import PiCamera
 from picamera.array import PiRGBArray
 
 from settings import (BALL_OFFSET_MAX, MIN_BALL_RADIUS,
-                      REVERSE_TIME, SPEED_SCALE, THRESHOLDS)
+                      SPEED_SCALE, THRESHOLDS, DEBUG)
 from robot import ROBOT
 #from tools import get_centroid
 
@@ -38,18 +38,16 @@ class Rainbow:
     def update(self, trigger_btn):
         if self.running:
             image = ROBOT.take_picture()
-            # resize the frame, blur it, and convert it to the HSV
-            # color space
+            # resize the frame
             image = imutils.resize(image, width=600)
-            # blurred = cv2.GaussianBlur(frame, (11, 11), 0)
-            hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
             if len(self.order) < 4:
                 ROBOT.right()
                 for index, color in enumerate(colour_thresholds):
-                    if (index not in self.order) and self.ball_aligned(hsv, color):
-                        self.order.append(index)
-                        self.last = index
+                    if (index not in self.order):
+                        if self.ball_aligned(image, color)[1] < BALL_OFFSET_MAX:
+                            self.order.append(index)
+                            self.last = index
             else:
                 if self.last != -1:
                     cur_i = self.order.index(self.last)
@@ -74,12 +72,11 @@ class Rainbow:
                             ROBOT.left()
                     else:
                         ROBOT.backwards(SPEED_SCALE)
-                    if self.ball_aligned(hsv, colour_thresholds[self.next]):
+                    if self.ball_aligned(image, colour_thresholds[self.next]) < BALL_OFFSET_MAX:
                         self.turn = 2
                     if self.turn == 2:
                         ROBOT.forwards(SPEED_SCALE)
                         if self.ensure_area_touched():
-                            ROBOT.backwards(time=REVERSE_TIME)
                             self.last = self.next
                             self.next = self.last + 1
 
@@ -91,12 +88,20 @@ class Rainbow:
     def ball_aligned(self, image, color):
         working_thresholds = THRESHOLDS[color]
 
+        # blurred = cv2.GaussianBlur(frame, (11, 11), 0)
+        hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+
+        # Get the parts of the image in the specified colour range.
         mask = cv2.inRange(image, working_thresholds[0], working_thresholds[1])
+        # Make the shapes more regular
         mask = cv2.erode(mask, None, iterations=2)
         mask = cv2.dilate(mask, None, iterations=2)
+        # Show debug image.
+        if DEBUG:
+            cv2.imshow("MASK", mask)
+            cv2.waitKey(0)
 
         cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
-
         # only proceed if at least one contour was found
         if len(cnts) > 0:
             # find the largest contour in the mask, then use
@@ -109,10 +114,19 @@ class Rainbow:
 
             # only proceed if the radius meets a minimum size
             if radius > MIN_BALL_RADIUS:
-                # WHere is the circle?
+                # Show debug image
+                if DEBUG:
+                    # draw the circle
+                    cv2.circle(image, (int(x), int(y)), int(radius),
+                        (0, 255, 255), 2)
+                    cv2.imshow("Image", image)
+                    cv2.waitKey(0)
+
+                # Where is the circle?
                 width, height = cv2.GetSize(mask)
-                if abs(width/2 - center[0]) < BALL_OFFSET_MAX:
-                    return True
+                direction = (width/2 < int(x))
+                extent = int(abs(width/2 - int(x))/(width/2))
+                return (direction, extent)
         return False
 
     def ensure_area_touched(self):
@@ -131,33 +145,3 @@ class Rainbow:
         self.next = 0
         self.turn = -1
 
-    
-
-
-
-
-
-def run():
-    visited = []
-    
-    # capture frames from the camera
-    while True:
-        # grab the raw NumPy array representing the image, then initialize the timestamp
-        # and occupied/unoccupied text
-        image = ROBOT.take_picture()    
-    
-        # resize the frame, blur it, and convert it to the HSV
-        # color space
-        image = imutils.resize(image, width=600)
-        # blurred = cv2.GaussianBlur(frame, (11, 11), 0)
-        hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-
-        for colour, thresholds in colour_thresholds:
-            ensure_safe_distance() # TODO
-            while not ball_aligned(hsv, thresholds): # THIS WILL NOT WORK TODO (IT NEVER REFRESHES THE IMAGE AND WILL THEREFORE CONTINUE FOREVER)
-                ROBOT.left()
-            while not ensure_area_touched(): # TODO
-                ROBOT.forwards()
-
-        # clear the stream in preparation for the next frame
-        raw_capture.truncate(0)
