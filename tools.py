@@ -16,10 +16,10 @@ def get_centroid_and_perim(boolean_image, *args):
 
         perimeter = cv2.arcLength(max_contour ,True)
 
-        return center_x, center_y, perimeter
+        return center_x, center_y, perimeter, contours
     
     else:
-        return (False, False, False)
+        return (False, False, False, False)
 
 def translate(value, leftMin, leftMax, rightMin, rightMax):
     '''

@@ -26,34 +26,40 @@ def update():
 
     clear_image = cv2.GaussianBlur(grayscale_image, (5, 5), 0)
 
-    ret, boolean_image = cv2.threshold(clear_image, 60, 255, cv2.THRESH_BINARY) #THRESH_BINARY_INV
+    reversed_image = cv2.bitwise_not(clear_image)
 
-    center_x, center_y, perimeter = get_centroid_and_perim(boolean_image, 1, cv2.CHAIN_APPROX_NONE)
+    ret, boolean_image = cv2.threshold(reversed_image, 60, 255, cv2.THRESH_BINARY_INV) #THRESH_BINARY_INV
+
+    center_x, center_y, perimeter, contours = get_centroid_and_perim(boolean_image, 1, cv2.CHAIN_APPROX_NONE)
 
     if False not in (center_x, center_y):
 
         # Decides which way to go (and does it (IN THE FUTURE)) by the angle at which the line is going
         # Also, the 3/4 and 1/4 are subject to change based on testing
 
-        if center_x >= RESOLUTIONX * 3/4:
-            ROBOT.set_tank(1, 1)
+        half_x = RESOLUTIONX//2
+        going = 1
+
+        if center_x <= half_x-15 and going != 0:
             ROBOT.bear_left(75)
+            going = 0
             pass # Go LEFT
 
-        elif center_x < RESOLUTIONX * 3/4 and center_x > RESOLUTIONX * 1/4:
-            ROBOT.set_tank(1, 1)
+        elif center_x < half_x+15 and center_x > half_x-15 and going != 1:
+            ROBOT.forwards()
+            going = 1
             pass # Go STRAIGHT
 
-        elif center_x <= RESOLUTIONX * 1/4:
-            ROBOT.set_tank(1, 1)
+        elif center_x >= half_x+15 and going != 2:
             ROBOT.bear_right(75)
+            going = 2
             pass # Go RIGHT
         
 
-        #cv2.line(noisyImage, (centerX, 0), (centerX, 720), (255, 0, 0), 1)
-        #cv2.line(noisyImage, (0, centerY), (1280, centerY), (255, 0, 0), 1)
+        cv2.line(noisy_image, (center_x, 0), (center_x, 720), (255, 0, 0), 1)
+        cv2.line(noisy_image, (0, center_y), (1280, center_y), (255, 0, 0), 1)
 
-        #cv2.drawContours(noisyImage, contours, -1, (0, 255, 0), 1)
+        cv2.drawContours(noisy_image, contours, -1, (0, 255, 0), 1)
 
     else:
         print("OH DEAR: NO LINE")
@@ -68,7 +74,7 @@ def update():
             pass
 
 
-def run():
+def run(): #deprecated
     # Gets the camera to take a video, and makes it an array cv2 can work with
     while True:
 
@@ -85,7 +91,7 @@ def run():
 
         ret, boolean_image = cv2.threshold(clear_image, 60, 255, cv2.THRESH_BINARY_INV)
 
-        center_x, center_y, perimeter = get_centroid_and_perim(boolean_image, 1, cv2.CHAIN_APPROX_NONE)
+        center_x, center_y, perimeter, contours = get_centroid_and_perim(boolean_image, 1, cv2.CHAIN_APPROX_NONE)
 
         if not False in (center_x, center_y):
 
@@ -102,10 +108,10 @@ def run():
                 pass # Go RIGHT
             
 
-            #cv2.line(noisyImage, (centerX, 0), (centerX, 720), (255, 0, 0), 1)
-            #cv2.line(noisyImage, (0, centerY), (1280, centerY), (255, 0, 0), 1)
+            cv2.line(noisyImage, (centerX, 0), (centerX, 720), (255, 0, 0), 1)
+            cv2.line(noisyImage, (0, centerY), (1280, centerY), (255, 0, 0), 1)
 
-            #cv2.drawContours(noisyImage, contours, -1, (0, 255, 0), 1)
+            cv2.drawContours(noisyImage, contours, -1, (0, 255, 0), 1)
 
         else:
             print("OH DEAR: NO LINE")

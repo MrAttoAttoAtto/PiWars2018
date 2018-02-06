@@ -29,7 +29,7 @@ def calculate_next_color_centroid(img, pos):
     mask = cv2.erode(mask, None, iterations=2)
     mask = cv2.dilate(mask, None, iterations=2)
 
-    center_x, center_y, perimeter = get_centroid_and_perim(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    center_x, center_y, perimeter, contours = get_centroid_and_perim(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     if perimeter > MAZE_MINIMUM_PERIMETER: # again, a complete guess
         return True, center_x, center_y
