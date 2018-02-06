@@ -14,6 +14,7 @@ from tools import get_centroid_and_perim
 
 def initialise():
     pass
+
 def update():
     image = ROBOT.take_picture()
     grayscale_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -25,7 +26,7 @@ def update():
 
     clear_image = cv2.GaussianBlur(grayscale_image, (5, 5), 0)
 
-    ret, boolean_image = cv2.threshold(clear_image, 60, 255, cv2.THRESH_BINARY_INV)
+    ret, boolean_image = cv2.threshold(clear_image, 60, 255, cv2.THRESH_BINARY) #THRESH_BINARY_INV
 
     center_x, center_y, perimeter = get_centroid_and_perim(boolean_image, 1, cv2.CHAIN_APPROX_NONE)
 
@@ -35,12 +36,17 @@ def update():
         # Also, the 3/4 and 1/4 are subject to change based on testing
 
         if center_x >= RESOLUTIONX * 3/4:
+            ROBOT.set_tank(1, 1)
+            ROBOT.bear_left(75)
             pass # Go LEFT
 
         elif center_x < RESOLUTIONX * 3/4 and center_x > RESOLUTIONX * 1/4:
+            ROBOT.set_tank(1, 1)
             pass # Go STRAIGHT
 
         elif center_x <= RESOLUTIONX * 1/4:
+            ROBOT.set_tank(1, 1)
+            ROBOT.bear_right(75)
             pass # Go RIGHT
         
 
