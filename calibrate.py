@@ -38,7 +38,7 @@ def calibrate_spec(color, cam):
     raw_capture = PiRGBArray(camera, size=(640, 480))
 
     # time to be put into place
-    time.sleep(3)
+    input("Press enter to take photograph")
 
     frame = camera.capture(raw_capture, format='bgr')
 
