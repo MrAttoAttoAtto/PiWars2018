@@ -5,7 +5,7 @@ import time
 import drive
 from robot import ROBOT
 #from modes import line, manual_drive, maze, rainbow
-from modes import rainbow
+from modes import rainbow, line
 import settings
 import tools
 import controller
@@ -91,6 +91,7 @@ while True:
 
 
     if mode == "line":
+        line.update()
         pass
 
     if mode == "rainbow":
