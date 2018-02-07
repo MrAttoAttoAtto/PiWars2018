@@ -68,8 +68,7 @@ def update():
     if DEBUG:
         try:
             cv2.imshow('frame', noisy_image)
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                pass
+            cv2.waitKey(0)
         except NameError:
             pass
 
