@@ -36,8 +36,10 @@ MAZE_MINIMUM_PERIMETER = 25
 # stops moving and turns again (in cm)
 MAZE_WALL_DISTANCE = 10
 
+# Vars for the turn speed specific to the maze challenge
 MAZE_ROBOT_TURN_SPEED = 1
 MAZE_ROBOT_TURN_TIME = 0.25
 
+# Vars for the forward-moving speed specific to the maze challenge
 MAZE_ROBOT_FORWARD_SPEED = 1
 MAZE_ROBOT_FORWARD_TIME = 0.25

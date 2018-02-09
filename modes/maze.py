@@ -22,28 +22,48 @@ UPDATE_POSITION = 0
 UPDATE_GO_FORTH = False
 
 def calculate_next_color_centroid(img, pos):
+    '''
+    Basically takes an images and the position of the robot (as a number)
+    and outputs the centers of the colored wall if it is valid and exists
+    '''
+
+    # gets the relevant threshold from the central database
     working_color = COLOR_ORDER[pos]
     working_thresholds = THRESHOLDS[working_color]
 
+    # does the masking to get the part which falls into that category
     mask = cv2.inRange(img, working_thresholds[0], working_thresholds[1])
     mask = cv2.erode(mask, None, iterations=2)
     mask = cv2.dilate(mask, None, iterations=2)
 
+    # actually gets the centers and perimeter
     center_x, center_y, perimeter = get_centroid_and_perim(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-    if perimeter > MAZE_MINIMUM_PERIMETER: # again, a complete guess
+    # again, a complete guess, but this filters out really small ones that are not actually real
+    if perimeter > MAZE_MINIMUM_PERIMETER:
         return True, center_x, center_y
 
     else:
         return False, 0, 0
 
 def go_forth():
+    '''
+    Code for making the robot continue forward until more computation is required
+    i.e. when it hits a wall
+    '''
     frontal_sensor_dist = ROBOT.get_distance()[1]
+
+    # while the distance gotten is larger than a var (or 0 which means further than 2.55m)...
     while frontal_sensor_dist > MAZE_WALL_DISTANCE or frontal_sensor_dist == 0:
+
+        # move the robot forwards a certain amount and recalculate the distance left
         ROBOT.forwards(MAZE_ROBOT_FORWARD_SPEED, MAZE_ROBOT_FORWARD_TIME)
         frontal_sensor_dist = ROBOT.get_distance()[1]
 
 def no_loop_go_forth():
+    '''
+    Same as above, but made for the no-loop system that Joe likes
+    '''
     global UPDATE_GO_FORTH
     frontal_sensor_dist = ROBOT.get_distance()[1]
 
@@ -51,17 +71,25 @@ def no_loop_go_forth():
         ROBOT.forwards(MAZE_ROBOT_FORWARD_SPEED, MAZE_ROBOT_FORWARD_TIME)
     
     else:
+        # updates the variable to stop the go_forthyness of the next run
         UPDATE_GO_FORTH = False
 
 
 def run():
+    '''
+    Guess.
+
+    But seriously it runs the loopy version of the maze navigation code
+    '''
     position = 0
 
     while True:
-        # grab the raw NumPy array representing the image, then initialize the timestamp
-        # and occupied/unoccupied text
+        # if this statement is fulfilled, it means its at the final stretch
         if position == 6:
             break
+
+        # grab the raw NumPy array representing the image, 
+        # then convert and crop it for processing
 
         image = ROBOT.take_picture()
 
@@ -70,18 +98,23 @@ def run():
 
         cropped_hsv = hsv[RESOLUTIONY//3:RESOLUTIONY*2//3, 0:RESOLUTIONX]
 
+        # actually process the image for the centroids
         ret, center_x, center_y = calculate_next_color_centroid(cropped_hsv, position)
 
+        # if there were no valid thresholds, just make it turn
+        # ased on where it is in the maze and then restart the loop
         if not ret:
             if position < 4:
                 ROBOT.right(MAZE_ROBOT_TURN_SPEED, MAZE_ROBOT_TURN_TIME)
             else:
                 ROBOT.left(MAZE_ROBOT_TURN_SPEED, MAZE_ROBOT_TURN_TIME)
-            
+
             continue
 
         # Here, 10 is an absolute estimate, a complete guess. Testing needed TODO
         # If this IF passes, then it will go forth (!) until it hits a wall (not hit but you get me)
+        # basically calculates whether it's pointing directly at the wall, and if so, gogogo!
+        # otherwise turn in the relevant direction (actually this should probably be slow TODO)
         if (RESOLUTIONX - MAZE_MAX_X_OFFSET) <= center_x <= (RESOLUTIONX + MAZE_MAX_X_OFFSET):
             go_forth()
             position += 1
@@ -97,7 +130,9 @@ def run():
         ROBOT.left(MAZE_ROBOT_TURN_SPEED, MAZE_ROBOT_TURN_TIME)
 
 def update():
-    '''No loop version for snazz'''
+    '''
+    No loop version of the above for snazz
+    '''
     global UPDATE_POSITION, UPDATE_GO_FORTH
 
     if UPDATE_GO_FORTH:
@@ -138,7 +173,7 @@ def update():
             ROBOT.left(MAZE_ROBOT_TURN_SPEED, MAZE_ROBOT_TURN_TIME)
         else:
             ROBOT.right(MAZE_ROBOT_TURN_SPEED, MAZE_ROBOT_TURN_TIME)
-        
+
         return
 
     if ROBOT.get_distance()[1] == 0:
