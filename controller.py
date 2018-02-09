@@ -6,8 +6,8 @@ class Controller:
 
     def get_values(self):
         values = {}
-        values['left_axes'] = self.joy.leftStick()
-        values['right_axes'] = self.joy.rightStick()
+        values['left_axes'] = self.joy.leftStick(2000)
+        values['right_axes'] = self.joy.rightStick(2000)
         values['bumpers'] = (
             self.joy.leftBumper(),
             self.joy.rightBumper()
@@ -28,11 +28,11 @@ class Controller:
             'Left': self.joy.dpadLeft(),
             'Right': self.joy.dpadRight()
         }
-        values['control_buttons'] = (
+        values['control_buttons'] = {
             'Start': self.joy.Start(),
             'Guide': self.joy.Guide(),
             'Back': self.joy.Back()
-        )
+        }
         values['thumbsticks'] = (
             self.joy.leftThumbstick(),
             self.joy.rightThumbstick()

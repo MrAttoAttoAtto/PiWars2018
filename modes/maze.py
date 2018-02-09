@@ -36,8 +36,7 @@ def calculate_next_color_centroid(img, pos):
     mask = cv2.erode(mask, None, iterations=2)
     mask = cv2.dilate(mask, None, iterations=2)
 
-    # actually gets the centers and perimeter
-    center_x, center_y, perimeter = get_centroid_and_perim(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    center_x, center_y, perimeter, contours = get_centroid_and_perim(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     # again, a complete guess, but this filters out really small ones that are not actually real
     if perimeter > MAZE_MINIMUM_PERIMETER:
@@ -47,28 +46,31 @@ def calculate_next_color_centroid(img, pos):
         return False, 0, 0
 
 def go_forth():
-    '''
-    Code for making the robot continue forward until more computation is required
-    i.e. when it hits a wall
-    '''
-    frontal_sensor_dist = ROBOT.get_distance()[1]
-
-    # while the distance gotten is larger than a var (or 0 which means further than 2.55m)...
+    left, frontal_sensor_dist, right = ROBOT.get_distance()
     while frontal_sensor_dist > MAZE_WALL_DISTANCE or frontal_sensor_dist == 0:
+        if 0 < left < 5:
+            ROBOT.right(MAZE_ROBOT_TURN_SPEED, MAZE_ROBOT_TURN_TIME)
+        elif 0 < right < 5:
+            ROBOT.left(MAZE_ROBOT_TURN_SPEED, MAZE_ROBOT_TURN_TIME)
+        else:
+            ROBOT.forwards(MAZE_ROBOT_FORWARD_SPEED, MAZE_ROBOT_FORWARD_TIME)
 
-        # move the robot forwards a certain amount and recalculate the distance left
-        ROBOT.forwards(MAZE_ROBOT_FORWARD_SPEED, MAZE_ROBOT_FORWARD_TIME)
-        frontal_sensor_dist = ROBOT.get_distance()[1]
+        left, frontal_sensor_dist, right = ROBOT.get_distance()
 
 def no_loop_go_forth():
     '''
     Same as above, but made for the no-loop system that Joe likes
     '''
     global UPDATE_GO_FORTH
-    frontal_sensor_dist = ROBOT.get_distance()[1]
+    left, frontal_sensor_dist, right = ROBOT.get_distance()
 
     if frontal_sensor_dist > MAZE_WALL_DISTANCE or frontal_sensor_dist == 0:
-        ROBOT.forwards(MAZE_ROBOT_FORWARD_SPEED, MAZE_ROBOT_FORWARD_TIME)
+        if 0 < left < 5:
+            ROBOT.right(MAZE_ROBOT_TURN_SPEED, MAZE_ROBOT_TURN_TIME)
+        elif 0 < right < 5:
+            ROBOT.left(MAZE_ROBOT_TURN_SPEED, MAZE_ROBOT_TURN_TIME)
+        else:
+            ROBOT.forwards(MAZE_ROBOT_FORWARD_SPEED, MAZE_ROBOT_FORWARD_TIME)
     
     else:
         # updates the variable to stop the go_forthyness of the next run

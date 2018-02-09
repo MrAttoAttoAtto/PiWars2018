@@ -12,69 +12,136 @@ Code for the "over the rainbow" challenge.
 
 '''
 
-from picamera.array import PiRGBArray
-from picamera import PiCamera
 import time
+
 import cv2
 import imutils
+from picamera import PiCamera
+from picamera.array import PiRGBArray
 
+from settings import (BALL_OFFSET_MAX, MIN_BALL_RADIUS,
+                      SPEED_SCALE, THRESHOLDS, DEBUG)
 from robot import ROBOT
-from settings import MIN_BALL_RADIUS, BALL_OFFSET_MAX
+#from tools import get_centroid
 
-colour_thresholds = {
-    "red": ([17, 15, 100], [50, 56, 200]),
+colour_thresholds = [
+    "rainbow_red",
+    "rainbow_blue",
+    "rainbow_yellow",
+    "rainbow_green"
+]
 
-}
-
-def ball_aligned(image, threshold):
-    mask = cv2.inRange(image, threshold[0], threshold[1])
-    mask = cv2.erode(mask, None, iterations=2)
-    mask = cv2.dilate(mask, None, iterations=2)
-
-    cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
-
-	# only proceed if at least one contour was found
-    if len(cnts) > 0:
-		# find the largest contour in the mask, then use
-		# it to compute the minimum enclosing circle and
-		# centroid
-        c = max(cnts, key=cv2.contourArea)
-        ((x, y), radius) = cv2.minEnclosingCircle(c)
-        M = cv2.moments(c)
-        center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
-
-        # only proceed if the radius meets a minimum size
-        if radius > MIN_BALL_RADIUS:
-            # WHere is the circle?
-            width, height = cv2.GetSize(mask)
-            if abs(width/2 - center[0]) < BALL_OFFSET_MAX:
-                return True
+class Rainbow:
+    def __init__(self):
+        self.reset()
     
-    return False
+    def update(self, trigger_btn):
+        if self.running:
+            image = ROBOT.take_picture()
+            # resize the frame
+            image = imutils.resize(image, width=600)
 
+            if len(self.order) < 4:
+                ROBOT.right()
+                for index, color in enumerate(colour_thresholds):
+                    if (index not in self.order):
+                        if self.ball_aligned(image, color)[1] < BALL_OFFSET_MAX:
+                            self.order.append(index)
+                            self.last = index
+            else:
+                if self.last != -1:
+                    cur_i = self.order.index(self.last)
+                    dist_list = self.order[cur_i:] + self.order[:cur_i]
+                    dist_cw = self.order.index(self.next)
+                    dist_ccw = len(self.order) - self.order.index(self.next)
+                    if dist_cw < dist_ccw:
+                        self.turn = 0
+                    else:
+                        self.turn = 1
+                    self.last = -1
+                elif self.last == len(self.order):
+                    self.running = False
+                    self.next = 0
+                    self.last = -1
+                    self.turn = -1
+                else:
+                    if self.ensure_safe_distance():
+                        if self.turn == 0:
+                            ROBOT.right()
+                        else:
+                            ROBOT.left()
+                    else:
+                        ROBOT.backwards(SPEED_SCALE)
+                    if self.ball_aligned(image, colour_thresholds[self.next]) < BALL_OFFSET_MAX:
+                        self.turn = 2
+                    if self.turn == 2:
+                        ROBOT.forwards(SPEED_SCALE)
+                        if self.ensure_area_touched():
+                            self.last = self.next
+                            self.next = self.last + 1
 
+        if self.running and trigger_btn:
+            self.reset()
+        elif trigger_btn and not self.running:
+            self.running = True
 
-def run():
-    visited = []
-    
-    # capture frames from the camera
-    while True:
-        # grab the raw NumPy array representing the image, then initialize the timestamp
-        # and occupied/unoccupied text
-        image = ROBOT.take_picture()    
-    
-        # resize the frame, blur it, and convert it to the HSV
-        # color space
-        image = imutils.resize(image, width=600)
+    def ball_aligned(self, image, color):
+        working_thresholds = THRESHOLDS[color]
+
         # blurred = cv2.GaussianBlur(frame, (11, 11), 0)
         hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
-        for colour, thresholds in colour_thresholds:
-            ensure_safe_distance() # TODO
-            while not ball_aligned(hsv, thresholds): # THIS WILL NOT WORK TODO (IT NEVER REFRESHES THE IMAGE AND WILL THEREFORE CONTINUE FOREVER)
-                ROBOT.left()
-            while not ensure_area_touched(): # TODO
-                ROBOT.forwards()
+        # Get the parts of the image in the specified colour range.
+        mask = cv2.inRange(image, working_thresholds[0], working_thresholds[1])
+        # Make the shapes more regular
+        mask = cv2.erode(mask, None, iterations=2)
+        mask = cv2.dilate(mask, None, iterations=2)
+        # Show debug image.
+        if DEBUG:
+            cv2.imshow("MASK", mask)
+            cv2.waitKey(0)
 
-        # clear the stream in preparation for the next frame
-        raw_capture.truncate(0)
+        cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
+        # only proceed if at least one contour was found
+        if len(cnts) > 0:
+            # find the largest contour in the mask, then use
+            # it to compute the minimum enclosing circle and
+            # centroid
+            c = max(cnts, key=cv2.contourArea)
+            ((x, y), radius) = cv2.minEnclosingCircle(c)
+            M = cv2.moments(c)
+            center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
+
+            # only proceed if the radius meets a minimum size
+            if radius > MIN_BALL_RADIUS:
+                # Show debug image
+                if DEBUG:
+                    # draw the circle
+                    cv2.circle(image, (int(x), int(y)), int(radius),
+                        (0, 255, 255), 2)
+                    cv2.imshow("Image", image)
+                    cv2.waitKey(0)
+
+                # Where is the circle?
+                width, height = cv2.GetSize(mask)
+                direction = (width/2 < int(x))
+                extent = int(abs(width/2 - int(x))/(width/2))
+                return (direction, extent)
+        return False
+
+    def ensure_area_touched(self):
+        dl, dc, dr = ROBOT.get_distance()
+        return dc < 16
+
+    def ensure_safe_distance(self):
+        dl, dc, dr = ROBOT.get_distance()
+        return dl > 12 and dc > 12 and dr > 12
+
+
+    def reset(self):
+        self.order = []
+        self.running = False
+        self.last = -1
+        self.next = 0
+        self.turn = -1
+

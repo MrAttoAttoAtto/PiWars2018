@@ -5,16 +5,20 @@ import threading
 
 from picamera import PiCamera
 from picamera.array import PiRGBArray
+import cv2
 
 from settings import RESOLUTIONX, RESOLUTIONY
 
 
 class ConstantCamera(threading.Thread):
     def __init__(self, *args, **kwargs):
-        super().__init__(self)
+        super().__init__()
         self.camera = PiCamera(*args, **kwargs)
+        self.camera.resolution = (RESOLUTIONX, RESOLUTIONY)
+        self.camera.rotation = 180
         self._camarray = PiRGBArray(self.camera, size=(RESOLUTIONX, RESOLUTIONY))
         self._image = None
+        self.preview = False
         self._lock = threading.Lock()
         self._close_event = threading.Event()
 
@@ -26,6 +30,10 @@ class ConstantCamera(threading.Thread):
             with self._lock:
                 # capture_continuous yields buffer array
                 self._image = frame.array
+
+            if self.preview:
+                cv2.imshow("PREVIEW", self._image)
+                cv2.waitKey(0)
             
             # clear the stream in preparation for the next frame
             self._camarray.truncate(0)
@@ -39,3 +47,10 @@ class ConstantCamera(threading.Thread):
             returnval = self._image
         # Return appropriate array...
         return returnval
+
+    def start_preview(self):
+        with self._lock:
+            self.preview = True
+    def stop_preview(self):
+        with self._lock:
+            self.preview = False

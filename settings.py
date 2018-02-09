@@ -21,6 +21,8 @@ THRESHOLDS = json.load(open("thresholds.json"))
 # ----RAINBOW----
 MIN_BALL_RADIUS = 10
 BALL_OFFSET_MAX = 50
+REVERSE_TIME = 1
+SPEED_SCALE = 0.5
 
 #------MAZE------
 

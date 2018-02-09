@@ -3,7 +3,7 @@ import time
 
 Stukov = drive.Driver()
 
-while (True):
+while True:
     print("Forward! ")
 
     print("\tSpeed up...")
@@ -32,5 +32,4 @@ while (True):
         Stukov.turn_motors(2, i)
         time.sleep(0.01)
         print ("Release")
-        myMotor.run(Adafruit_MotorHAT.RELEASE)
     time.sleep(1.0)
