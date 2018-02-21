@@ -29,7 +29,7 @@ class Robot:
             self.camera = None
 
         self.driver = drive.Driver()
-        atexit.register(self.halt)
+        atexit.register(self.shutdown)
 
     def set_tank(self, speed_left, speed_right):
         '''
@@ -118,6 +118,10 @@ class Robot:
         if duration > 0:
             time.sleep(duration)
             self.halt()
+
+    def shutdown(self):
+        self.camera._close_event.set()
+        self.halt()
 
 
 ROBOT = Robot()
