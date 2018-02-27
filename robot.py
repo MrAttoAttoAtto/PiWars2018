@@ -7,6 +7,7 @@ import time
 import camera
 from settings import address
 import drive
+import atexit
 
 
 class Robot:
@@ -22,11 +23,13 @@ class Robot:
         try:
             self.camera = camera.ConstantCamera()
             self.camera.start()
+            self.camera.wait_for_ready()
         except Exception as e:
             raise e
             self.camera = None
 
         self.driver = drive.Driver()
+        atexit.register(self.shutdown)
 
     def set_tank(self, speed_left, speed_right):
         '''
@@ -121,5 +124,10 @@ class Robot:
         if duration > 0:
             time.sleep(duration)
             self.halt()
+
+    def shutdown(self):
+        self.camera._close_event.set()
+        self.halt()
+
 
 ROBOT = Robot()

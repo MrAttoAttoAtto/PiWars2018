@@ -22,6 +22,7 @@ class ConstantCamera(threading.Thread):
         self._imgot = False
         self._lock = threading.Lock()
         self._close_event = threading.Event()
+        self._ready_event = threading.Event()
 
     def run(self):
         # capture frames from the camera
@@ -31,10 +32,13 @@ class ConstantCamera(threading.Thread):
             with self._lock:
                 # capture_continuous yields buffer array
                 self._image = frame.array
-                self._imgot = True
+
+            if not self._ready_event.is_set():
+                self._ready_event.set()
+
             if self.preview:
                 cv2.imshow("PREVIEW", self._image)
-                cv2.waitKey(0)
+                cv2.waitKey(1)
             
             # clear the stream in preparation for the next frame
             self._camarray.truncate(0)
@@ -49,10 +53,12 @@ class ConstantCamera(threading.Thread):
         # Return appropriate array...
         return returnval
 
-    def gotten_image(self):
-        with self._lock:
-            returnval = self._imgot
-        return returnval
+
+    def is_ready(self):
+        return self._ready_event.is_set()
+    
+    def wait_for_ready(self):
+        self._ready_event.wait()
 
     def start_preview(self):
         with self._lock:
