@@ -21,16 +21,13 @@ BEAR_NUM = 25 #le % of bear
 def update():
     image = ROBOT.take_picture()
 
-    if not ROBOT.image_gotten():
-        print("NONE")
-        return
 
     grayscale_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
     # Clears the image of noise, makes it smaller (and cropped closer to the robot)
     # Also constructs the contours from the boolean image
 
-    noisy_image = grayscale_image[0:int(RESOLUTIONY/2), 0:RESOLUTIONX]
+    noisy_image = grayscale_image[int(RESOLUTIONY/4):int(RESOLUTIONY/2), 0:RESOLUTIONX]
 
     clear_image = cv2.GaussianBlur(grayscale_image, (5, 5), 0)
 
@@ -52,27 +49,27 @@ def update():
             ROBOT.bear_left(BEAR_NUM)
             going = 0
             print("LEFT")
-            pass # Go LEFT
+            # Go LEFT
 
         elif center_x < half_x+SENSITIVITY and center_x > half_x-SENSITIVITY and going != 1:
             ROBOT.forwards()
             going = 1
             print("FORTH")
-            pass # Go STRAIGHT
+            # Go STRAIGHT
 
         elif center_x >= half_x+SENSITIVITY and going != 2:
             ROBOT.bear_right(BEAR_NUM)
             going = 2
             print("RIGHT")
-            pass # Go RIGHT
+            # Go RIGHT
 
         else:
             print("??????????????????????????")
 
-        #cv2.line(noisy_image, (center_x, 0), (center_x, 720), (255, 0, 0), 1)
-        #cv2.line(noisy_image, (0, center_y), (1280, center_y), (255, 0, 0), 1)
+        cv2.line(noisy_image, (center_x, 0), (center_x, 720), (255, 0, 0), 1)
+        cv2.line(noisy_image, (0, center_y), (1280, center_y), (255, 0, 0), 1)
 
-        #cv2.drawContours(noisy_image, contours, -1, (0, 255, 0), 1)
+        cv2.drawContours(noisy_image, contours, -1, (0, 255, 0), 1)
 
     else:
         print("OH DEAR: NO LINE")
@@ -81,8 +78,7 @@ def update():
     if DEBUG:
         try:
             cv2.imshow('frame', noisy_image)
-            print("LE D")
-            cv2.waitKey(0)
+            cv2.waitKey(1)
         except NameError:
             pass
 

@@ -36,10 +36,8 @@ class Robot:
             Manually set values for motors.
         '''
 
-        speed_right = -speed_right
-
         self.driver.turn_motors(0, int(speed_left*255))
-        self.driver.turn_motors(1, int(speed_right*255))
+        self.driver.turn_motors(1, int(-speed_right*255))
 
         self.last_left = speed_left
         self.last_right = speed_right
@@ -101,6 +99,7 @@ class Robot:
 
     def bear_left(self, change=50, duration=-1):
         '''Change is a % of the prior speed'''
+        '''
         prior_left = self.last_left
         prior_right = self.last_right
 
@@ -108,16 +107,20 @@ class Robot:
         if duration > 0:
             time.sleep(duration)
             self.set_tank(prior_left, prior_right)
+        '''
+        self.set_tank(1-change/100, 1)
     
     def bear_right(self, change=50, duration=-1):
         '''Change is a % of the prior speed'''
+        '''
         prior_left = self.last_left
         prior_right = self.last_right
 
         self.set_tank(prior_left, prior_right*change/100)
         if duration > 0:
             time.sleep(duration)
-            self.set_tank(prior_left, prior_right)
+            self.set_tank(prior_left, prior_right)'''
+        self.set_tank(1, 1-change/100)
 
     def backwards(self, speed=1, duration=-1):
         self.set_tank(-speed, -speed)

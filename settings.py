@@ -4,7 +4,7 @@ or are just stored here for easy tweaking'''
 
 import json
 
-DEBUG = False
+DEBUG = True
 
 RESOLUTIONX = 640
 RESOLUTIONY = 480

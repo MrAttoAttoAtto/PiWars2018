@@ -43,6 +43,7 @@ class ConstantCamera(threading.Thread):
             # clear the stream in preparation for the next frame
             self._camarray.truncate(0)
             if self._close_event.is_set():
+                print("AAAAH")
                 break
         self.camera.close()
 
