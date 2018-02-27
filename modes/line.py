@@ -15,8 +15,16 @@ from tools import get_centroid_and_perim
 def initialise():
     pass
 
+SENSITIVITY = 100 #lower less sensitive
+BEAR_NUM = 25 #le % of bear
+
 def update():
     image = ROBOT.take_picture()
+
+    if not ROBOT.image_gotten():
+        print("NONE")
+        return
+
     grayscale_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
     # Clears the image of noise, makes it smaller (and cropped closer to the robot)
@@ -28,7 +36,7 @@ def update():
 
     reversed_image = cv2.bitwise_not(clear_image)
 
-    ret, boolean_image = cv2.threshold(reversed_image, 60, 255, cv2.THRESH_BINARY_INV) #THRESH_BINARY_INV
+    ret, boolean_image = cv2.threshold(reversed_image, 120, 255, cv2.THRESH_BINARY_INV) #THRESH_BINARY_INV
 
     center_x, center_y, perimeter, contours = get_centroid_and_perim(boolean_image, 1, cv2.CHAIN_APPROX_NONE)
 
@@ -38,28 +46,33 @@ def update():
         # Also, the 3/4 and 1/4 are subject to change based on testing
 
         half_x = RESOLUTIONX//2
-        going = 1
+        going = -1
 
-        if center_x <= half_x-15 and going != 0:
-            ROBOT.bear_left(75)
+        if center_x <= half_x-SENSITIVITY and going != 0:
+            ROBOT.bear_left(BEAR_NUM)
             going = 0
+            print("LEFT")
             pass # Go LEFT
 
-        elif center_x < half_x+15 and center_x > half_x-15 and going != 1:
+        elif center_x < half_x+SENSITIVITY and center_x > half_x-SENSITIVITY and going != 1:
             ROBOT.forwards()
             going = 1
+            print("FORTH")
             pass # Go STRAIGHT
 
-        elif center_x >= half_x+15 and going != 2:
-            ROBOT.bear_right(75)
+        elif center_x >= half_x+SENSITIVITY and going != 2:
+            ROBOT.bear_right(BEAR_NUM)
             going = 2
+            print("RIGHT")
             pass # Go RIGHT
-        
 
-        cv2.line(noisy_image, (center_x, 0), (center_x, 720), (255, 0, 0), 1)
-        cv2.line(noisy_image, (0, center_y), (1280, center_y), (255, 0, 0), 1)
+        else:
+            print("??????????????????????????")
 
-        cv2.drawContours(noisy_image, contours, -1, (0, 255, 0), 1)
+        #cv2.line(noisy_image, (center_x, 0), (center_x, 720), (255, 0, 0), 1)
+        #cv2.line(noisy_image, (0, center_y), (1280, center_y), (255, 0, 0), 1)
+
+        #cv2.drawContours(noisy_image, contours, -1, (0, 255, 0), 1)
 
     else:
         print("OH DEAR: NO LINE")
@@ -68,6 +81,7 @@ def update():
     if DEBUG:
         try:
             cv2.imshow('frame', noisy_image)
+            print("LE D")
             cv2.waitKey(0)
         except NameError:
             pass

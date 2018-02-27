@@ -8,7 +8,7 @@ from robot import ROBOT
 from modes import rainbow, line
 import settings
 import tools
-import controller
+#import controller
 import leds
 
 def shift_mode(new_mode):
@@ -21,7 +21,7 @@ def shift_mode(new_mode):
 
     ROBOT.set_colour(modes.index(new_mode))
 
-control = controller.Controller()
+#control = controller.Controller()
 
 mode_index = 0
 modes = ["manual", "line", "rainbow", "maze", "select"]
@@ -39,18 +39,19 @@ led_time = 0
 rainbow_begin = False
 
 while True:
-    values = control.get_values()
+    #values = control.get_values()
     
 
-    if values['control_buttons']['Start'] and joy_last_select_time + joy_toggle_delay < time.time() and not selection_mode:
-        print("b")
-        selection_mode = not selection_mode
-        mode = "selection"
-        first = True
-        joy_last_select_time = time.time()
-        time.sleep(1)
+    
+    #if values['control_buttons']['Start'] and joy_last_select_time + joy_toggle_delay < time.time() and not selection_mode:
+    #    print("b")
+    #    selection_mode = not selection_mode
+    #    mode = "selection"
+    #    first = True
+    #    joy_last_select_time = time.time()
+    #    time.sleep(1)
 
-
+    mode = 'line'
     if mode == "selection":
         if values["button_pad"]['A']:
             selected_mode = "line"

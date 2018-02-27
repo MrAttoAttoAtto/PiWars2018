@@ -1,4 +1,5 @@
 import time
+import cv2
 
 def get_centroid_and_perim(boolean_image, *args):
 

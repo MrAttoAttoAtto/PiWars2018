@@ -32,6 +32,9 @@ class Robot:
         '''
             Manually set values for motors.
         '''
+
+        speed_right = -speed_right
+
         self.driver.turn_motors(0, int(speed_left*255))
         self.driver.turn_motors(1, int(speed_right*255))
 
@@ -68,6 +71,9 @@ class Robot:
 
     def take_picture(self):
         return self.camera.get_image()
+
+    def image_gotten(self):
+        return self.camera.gotten_image()
 
     def forwards(self, speed=1, duration=-1):
         self.set_tank(speed, speed)

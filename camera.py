@@ -19,6 +19,7 @@ class ConstantCamera(threading.Thread):
         self._camarray = PiRGBArray(self.camera, size=(RESOLUTIONX, RESOLUTIONY))
         self._image = None
         self.preview = False
+        self._imgot = False
         self._lock = threading.Lock()
         self._close_event = threading.Event()
 
@@ -30,7 +31,7 @@ class ConstantCamera(threading.Thread):
             with self._lock:
                 # capture_continuous yields buffer array
                 self._image = frame.array
-
+                self._imgot = True
             if self.preview:
                 cv2.imshow("PREVIEW", self._image)
                 cv2.waitKey(0)
@@ -46,6 +47,11 @@ class ConstantCamera(threading.Thread):
         with self._lock:
             returnval = self._image
         # Return appropriate array...
+        return returnval
+
+    def gotten_image(self):
+        with self._lock:
+            returnval = self._imgot
         return returnval
 
     def start_preview(self):
