@@ -117,10 +117,10 @@ def run(): #deprecated
                 pass # Go RIGHT
             
 
-            cv2.line(noisyImage, (centerX, 0), (centerX, 720), (255, 0, 0), 1)
-            cv2.line(noisyImage, (0, centerY), (1280, centerY), (255, 0, 0), 1)
+            cv2.line(noisy_image, (center_x, 0), (center_x, 720), (255, 0, 0), 1)
+            cv2.line(noisy_image, (0, center_y), (1280, center_y), (255, 0, 0), 1)
 
-            cv2.drawContours(noisyImage, contours, -1, (0, 255, 0), 1)
+            cv2.drawContours(noisy_image, contours, -1, (0, 255, 0), 1)
 
         else:
             print("OH DEAR: NO LINE")
