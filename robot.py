@@ -73,8 +73,6 @@ class Robot:
     def take_picture(self):
         return self.camera.get_image()
 
-    def image_gotten(self):
-        return self.camera.gotten_image()
 
     def forwards(self, speed=1, duration=-1):
         self.set_tank(speed, speed)
@@ -98,28 +96,11 @@ class Robot:
             self.halt()
 
     def bear_left(self, change=50, duration=-1):
-        '''Change is a % of the prior speed'''
-        '''
-        prior_left = self.last_left
-        prior_right = self.last_right
-
-        self.set_tank(prior_left*change/100, prior_right)
-        if duration > 0:
-            time.sleep(duration)
-            self.set_tank(prior_left, prior_right)
-        '''
+        '''Change is a % of straight ahead'''
         self.set_tank(1-change/100, 1)
     
     def bear_right(self, change=50, duration=-1):
-        '''Change is a % of the prior speed'''
-        '''
-        prior_left = self.last_left
-        prior_right = self.last_right
-
-        self.set_tank(prior_left, prior_right*change/100)
-        if duration > 0:
-            time.sleep(duration)
-            self.set_tank(prior_left, prior_right)'''
+        '''Change is a % of straight ahead'''
         self.set_tank(1, 1-change/100)
 
     def backwards(self, speed=1, duration=-1):

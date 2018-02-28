@@ -12,19 +12,23 @@ Code for the "over the rainbow" challenge.
 
 '''
 
-import time
 
 import cv2
-import imutils
-from picamera import PiCamera
-from picamera.array import PiRGBArray
+from enum import Enum
 
 from settings import (BALL_OFFSET_MAX, MIN_BALL_RADIUS,
-                      SPEED_SCALE, THRESHOLDS, DEBUG)
+                      SPEED_SCALE, THRESHOLDS, DEBUG, RESOLUTIONX, RESOLUTIONY)
 from robot import ROBOT
 #from tools import get_centroid
 
-colour_thresholds = [
+class RainbowState(Enum):
+    TURNING = 1
+    READY_FOR_NEXT = 2
+    FINISHED = 3
+    MOVING_FORWARD = 4
+
+
+VISIT_COLOURS = [
     "rainbow_red",
     "rainbow_blue",
     "rainbow_yellow",
@@ -33,38 +37,63 @@ colour_thresholds = [
 
 class Rainbow:
     def __init__(self):
-        self.reset()
+        self.order = []
+        self.visited = []
+        self.running = False
+        self.last = -1
+        self.next = 0
+        self.turn = -1
+        self.state = RainbowState.READY_FOR_NEXT
+
+    def calculate_next_direction(self):
+        # Last to be spotted / visited
+        cur_i = self.order.index(self.last)
+        # Calculate more efficient distance
+        dist_cw = self.order.index(self.next)
+        dist_ccw = len(self.order) - self.order.index(self.next)
+        if dist_cw < dist_ccw:
+            self.turn = 0
+        else:
+            self.turn = 1
+
+    def find_order(self, image):
+        # Turn right
+        ROBOT.right()
+        # Try to detect balls
+        for index, color in enumerate(VISIT_COLOURS):
+            if (index not in self.order):
+                # Ball has not been detected before
+                if self.ball_aligned(image, color)[1] < BALL_OFFSET_MAX:
+                    # Ball is aligned, so add the ball to order list.
+                    self.order.append(index)
+                    self.last = index
     
     def update(self, trigger_btn):
+        # Should start
         if self.running:
             image = ROBOT.take_picture()
-            # resize the frame
-            image = imutils.resize(image, width=600)
 
-            if len(self.order) < 4:
-                ROBOT.right()
-                for index, color in enumerate(colour_thresholds):
-                    if (index not in self.order):
-                        if self.ball_aligned(image, color)[1] < BALL_OFFSET_MAX:
-                            self.order.append(index)
-                            self.last = index
+            # If robot has not figured out the order
+            if len(self.order) < len(VISIT_COLOURS):
+                self.find_order(image)
+
             else:
-                if self.last != -1:
-                    cur_i = self.order.index(self.last)
-                    dist_list = self.order[cur_i:] + self.order[:cur_i]
-                    dist_cw = self.order.index(self.next)
-                    dist_ccw = len(self.order) - self.order.index(self.next)
-                    if dist_cw < dist_ccw:
-                        self.turn = 0
+                # Order is known, proceed to visit in correct order.
+
+                if self.state == RainbowState.READY_FOR_NEXT:
+                    # Has visited all
+                    if len(self.visited) == len(VISIT_COLOURS):
+                        self.running = False
+                        self.visited = []
+                        self.next = 0
+                        self.last = -1
+                        self.turn = -1
+                        self.state = RainbowState.FINISHED
                     else:
-                        self.turn = 1
-                    self.last = -1
-                elif self.last == len(self.order):
-                    self.running = False
-                    self.next = 0
-                    self.last = -1
-                    self.turn = -1
-                else:
+                        self.next = len(self.visited)
+                        self.calculate_next_direction()
+                        self.state = RainbowState.TURNING
+                elif self.state == RainbowState.TURNING:
                     if self.ensure_safe_distance():
                         if self.turn == 0:
                             ROBOT.right()
@@ -72,13 +101,16 @@ class Rainbow:
                             ROBOT.left()
                     else:
                         ROBOT.backwards(SPEED_SCALE)
-                    if self.ball_aligned(image, colour_thresholds[self.next]) < BALL_OFFSET_MAX:
-                        self.turn = 2
-                    if self.turn == 2:
-                        ROBOT.forwards(SPEED_SCALE)
-                        if self.ensure_area_touched():
-                            self.last = self.next
-                            self.next = self.last + 1
+                    
+                    # If robot aligned with ball
+                    if self.ball_aligned(image, VISIT_COLOURS[self.next]) < BALL_OFFSET_MAX:
+                        self.last = self.next
+                        self.state = RainbowState.MOVING_FORWARD
+
+                elif self.state == RainbowState.MOVING_FORWARD:
+                    ROBOT.forwards(SPEED_SCALE)
+                    if self.ensure_area_touched():
+                        self.state = RainbowState.READY_FOR_NEXT
 
         if self.running and trigger_btn:
             self.reset()
@@ -99,7 +131,7 @@ class Rainbow:
         # Show debug image.
         if DEBUG:
             cv2.imshow("MASK", mask)
-            cv2.waitKey(0)
+            cv2.waitKey(1)
 
         cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
         # only proceed if at least one contour was found
@@ -116,11 +148,11 @@ class Rainbow:
             if radius > MIN_BALL_RADIUS:
                 # Show debug image
                 if DEBUG:
-                    # draw the circle
-                    cv2.circle(image, (int(x), int(y)), int(radius),
-                        (0, 255, 255), 2)
+                    cv2.line(image, (x, 0), (x, RESOLUTIONY), (255, 0, 0), 1)
+                    cv2.line(image, (0, y), (RESOLUTIONX, y), (255, 0, 0), 1)
+                    cv2.drawContours(image, cnts, -1, (0, 255, 0), 1)
                     cv2.imshow("Image", image)
-                    cv2.waitKey(0)
+                    cv2.waitKey(1)
 
                 # Where is the circle?
                 width, height = cv2.GetSize(mask)
@@ -139,9 +171,14 @@ class Rainbow:
 
 
     def reset(self):
-        self.order = []
+        self.visited = []
         self.running = False
-        self.last = -1
         self.next = 0
         self.turn = -1
+        self.state = RainbowState.READY_FOR_NEXT
+
+
+    def full_reset(self):
+        self.reset()
+        self.order = []
 
