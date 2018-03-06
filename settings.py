@@ -3,6 +3,7 @@ that may be required between programs
 or are just stored here for easy tweaking'''
 
 import json
+import numpy as np
 
 DEBUG = True
 
@@ -16,7 +17,14 @@ START_HOLD_REQUIRED = 4
 # ----COLORS-----
 # This is a DICTIONARY of the form:
 # {"yellow":[[h_bot, s_bot, v_bot], [h_top, s_top, v_top]], "red":...}
-THRESHOLDS = json.load(open("thresholds.json"))
+PURE_THRESHOLDS = json.load(open("thresholds.json"))
+
+THRESHOLDS = {}
+
+for key, value in PURE_THRESHOLDS.items():
+    THRESHOLDS[key] = []
+    for thresh in value:
+        THRESHOLDS[key].append(np.asarray(value))
 
 # ----RAINBOW----
 MIN_BALL_RADIUS = 10

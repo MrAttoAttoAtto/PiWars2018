@@ -65,9 +65,11 @@ def calibrate_spec(color, cam):
         min_thresh = [coolio-10 for coolio in hsv_major_color]
         max_thresh = [coolio+10 for coolio in hsv_major_color]
 
-        THRESHOLDS[color] = [min_thresh, max_thresh]
+        THRESHOLDS[color] = np.asarray([min_thresh, max_thresh])
 
-        json.dump(THRESHOLDS, open("thresholds.json", "w"), sort_keys=True, indent=4)
+        SAVE_THRESHOLDS = {key: array.tolist() for key, array in THRESHOLDS.items()}
+
+        json.dump(SAVE_THRESHOLDS, open("thresholds.json", "w"), sort_keys=True, indent=4)
 
         return True
 
