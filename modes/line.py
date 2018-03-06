@@ -2,15 +2,11 @@
 Indeed this isnt even required, but it is a good template for some of the other ones...
 '''
 
-import time
-
 import cv2
-from picamera import PiCamera
-from picamera.array import PiRGBArray
 
 from settings import RESOLUTIONX, RESOLUTIONY, DEBUG
 from robot import ROBOT
-from tools import get_centroid_and_perim
+from tools import get_centroid_and_max_contour
 
 def initialise():
     pass
@@ -35,7 +31,7 @@ def update():
 
     ret, boolean_image = cv2.threshold(reversed_image, 120, 255, cv2.THRESH_BINARY_INV) #THRESH_BINARY_INV
 
-    center_x, center_y, perimeter, contours = get_centroid_and_perim(boolean_image, 1, cv2.CHAIN_APPROX_NONE)
+    center_x, center_y, max_contour, contours = get_centroid_and_max_contour(boolean_image, 1, cv2.CHAIN_APPROX_NONE)
 
     if False not in (center_x, center_y):
 
@@ -95,7 +91,7 @@ def run(): #deprecated
 
         ret, boolean_image = cv2.threshold(clear_image, 60, 255, cv2.THRESH_BINARY_INV)
 
-        center_x, center_y, perimeter, contours = get_centroid_and_perim(boolean_image, 1, cv2.CHAIN_APPROX_NONE)
+        center_x, center_y, max_contour, contours = get_centroid_and_max_contour(boolean_image, 1, cv2.CHAIN_APPROX_NONE)
 
         if not False in (center_x, center_y):
 

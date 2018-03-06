@@ -1,7 +1,7 @@
 import time
 import cv2
 
-def get_centroid_and_perim(boolean_image, *args):
+def get_centroid_and_max_contour(boolean_image, *args):
 
     im2, contours, hierarchy = cv2.findContours(boolean_image.copy(), *args)
 
@@ -15,9 +15,7 @@ def get_centroid_and_perim(boolean_image, *args):
         center_x = int(moment['m10']/moment['m00'])
         center_y = int(moment['m01']/moment['m00'])
 
-        perimeter = cv2.arcLength(max_contour ,True)
-
-        return center_x, center_y, perimeter, contours
+        return center_x, center_y, max_contour, contours
     
     else:
         return (False, False, False, False)
