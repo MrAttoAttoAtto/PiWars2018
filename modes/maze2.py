@@ -12,6 +12,9 @@ PICKINESS = 20
 state = "forwards"
 side_dist = 0
 
+def dprint(txt):
+    if DEBUG:
+        print(txt)
 
 def update():
     distances = ROBOT.get_distance()
@@ -23,21 +26,27 @@ def update():
             ROBOT.set_tank(0.6, -0.1)
             state = "turning"
             side_dist = distances[0]
+            dprint("Left turn sighted!")
         elif distances[2] > SIDE_THRESH:
             ROBOT.set_tank(-0.1, 0.6)
             state = "turning"
             side_dist = distances[2]
+            dprint("Right turn sighted!")
 
         elif distances[0] < CLOSE_THRESH:
             ROBOT.bear_right()
+            dprint("Bearing right")
         elif distances[2] < CLOSE_THRESH:
+            dprint("Bearing left")
             ROBOT.bear_left()
 
         else:
             ROBOT.forwards()
+            dprint("Forwards!")
 
     elif state == "turning":
         if side_dist - PICKINESS < distances[1] < side_dist + PICKINESS:
+            dpront("Turning stopped!")
             ROBOT.forwards()
             state = "forwards"
             sleep(0.5)
