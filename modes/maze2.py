@@ -41,5 +41,3 @@ def update():
             ROBOT.forwards()
             state = "forwards"
             sleep(0.5)
-
-        
