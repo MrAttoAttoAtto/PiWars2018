@@ -65,7 +65,6 @@ class Robot:
             RPI'S SCL = GPI03 = PIN05 -----> ARDUINO NANO'S SCL = A5
         '''
         left = self.ultrasonic_connection.read_byte(self.ultrasonic_address)
-        #TODO ADD MIDDLE ULTRASONIC TO ARDUINO AND WORKING RIGHT TO ARDUINO
         middle = self.ultrasonic_connection.read_byte(self.ultrasonic_address)
         right = self.ultrasonic_connection.read_byte(self.ultrasonic_address)
         return [left, middle, right]
