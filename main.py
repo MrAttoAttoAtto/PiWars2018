@@ -5,7 +5,7 @@ import time
 import drive
 from robot import ROBOT
 #from modes import line, manual_drive, maze, rainbow
-from modes import rainbow, line
+from modes import rainbow, line, golf
 import settings
 import tools
 #import controller
@@ -114,5 +114,9 @@ while True:
 
         ROBOT.driver.turn_motors(0,left_speed)
         ROBOT.driver.turn_motors(1, right_speed)
+    
+    if mode == "golf":
+        golf.update(values)
+
 
 ROBOT.driver.safe_shutdown()
