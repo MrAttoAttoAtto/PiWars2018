@@ -23,12 +23,12 @@ def update():
         making sure that it is a wide turn so as not to hit a wall""" 
 
         if distances[0] > SIDE_THRESH:
-            ROBOT.set_tank(0.6, -0.1)
+            ROBOT.set_tank(-0.1, 0.6)
             state = "turning"
             side_dist = distances[0]
             dprint("Left turn sighted!")
         elif distances[2] > SIDE_THRESH:
-            ROBOT.set_tank(-0.1, 0.6)
+            ROBOT.set_tank(0.6, -0.1)
             state = "turning"
             side_dist = distances[2]
             dprint("Right turn sighted!")
