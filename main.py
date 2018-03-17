@@ -5,10 +5,10 @@ import time
 import drive
 from robot import ROBOT
 #from modes import line, manual_drive, maze, rainbow
-from modes import rainbow, line, golf
+from modes import rainbow, line, golf, manual_drive
 import settings
 import tools
-#import controller
+import controller 
 import leds
 
 def shift_mode(new_mode):
@@ -21,7 +21,7 @@ def shift_mode(new_mode):
 
     ROBOT.set_colour(modes.index(new_mode))
 
-#control = controller.Controller()
+control = controller.Controller()
 
 mode_index = 0
 modes = ["manual", "line", "rainbow", "maze", "select"]
@@ -39,7 +39,7 @@ led_time = 0
 rainbow_begin = False
 
 while True:
-    #values = control.get_values()
+    values = control.get_values()
     
 
     
@@ -93,7 +93,6 @@ while True:
 
     if mode == "line":
         line.update()
-        pass
 
     if mode == "rainbow":
         if not rainbow_begin:
@@ -106,14 +105,7 @@ while True:
         pass
 
     if mode == "manual":
-        joyX = int(tools.translate(values['left_axes'][0], -1, 1, -255, 255))
-        joyY = int(tools.translate(values['left_axes'][1], -1, 1, -255, 255))
-
-        left_speed = joyX + joyY
-        right_speed = joyX - joyY
-
-        ROBOT.driver.turn_motors(0,left_speed)
-        ROBOT.driver.turn_motors(1, right_speed)
+        manual_drive.update(values)
     
     if mode == "golf":
         golf.update(values)
