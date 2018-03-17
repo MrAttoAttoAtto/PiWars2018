@@ -4,15 +4,12 @@ Indeed this isnt even required, but it is a good template for some of the other 
 
 import cv2
 
-from settings import RESOLUTIONX, RESOLUTIONY, DEBUG
+from settings import RESOLUTIONX, RESOLUTIONY, DEBUG, LINE_SENSITIVITY, LINE_BEAR_NUM
 from robot import ROBOT
 from tools import get_centroid_and_max_contour
 
 def initialise():
     pass
-
-SENSITIVITY = 100 #lower less sensitive
-BEAR_NUM = 25 #le % of bear
 
 def update():
     image = ROBOT.take_picture()
@@ -40,19 +37,16 @@ def update():
 
         half_x = RESOLUTIONX//2
 
-        if center_x <= half_x-SENSITIVITY:
-            ROBOT.bear_left(BEAR_NUM)
-            going = 0
+        if center_x <= half_x-LINE_SENSITIVITY:
+            ROBOT.bear_left(LINE_BEAR_NUM)
             # Go LEFT
 
-        elif center_x < half_x+SENSITIVITY and center_x > half_x-SENSITIVITY:
+        elif center_x < half_x+LINE_SENSITIVITY and center_x > half_x-LINE_SENSITIVITY:
             ROBOT.forwards()
-            going = 1
             # Go STRAIGHT
 
-        elif center_x >= half_x+SENSITIVITY:
-            ROBOT.bear_right(BEAR_NUM)
-            going = 2
+        elif center_x >= half_x+LINE_SENSITIVITY:
+            ROBOT.bear_right(LINE_BEAR_NUM)
             # Go RIGHT
 
         else:
@@ -93,7 +87,7 @@ def run(): #deprecated
 
         center_x, center_y, max_contour, contours = get_centroid_and_max_contour(boolean_image, 1, cv2.CHAIN_APPROX_NONE)
 
-        if not False in (center_x, center_y):
+        if False not in (center_x, center_y):
 
             # Decides which way to go (and does it (IN THE FUTURE)) by the angle at which the line is going
             # Also, the 3/4 and 1/4 are subject to change based on testing

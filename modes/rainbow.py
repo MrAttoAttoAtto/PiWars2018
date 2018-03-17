@@ -182,7 +182,7 @@ class Rainbow:
         self.reset()
         self.order = []
 
-if __name__ = '__main__':
+if __name__ == '__main__':
     x = Rainbow()
     x.running = True
     while True:
