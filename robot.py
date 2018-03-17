@@ -25,7 +25,6 @@ class Robot:
             self.camera.start()
             self.camera.wait_for_ready()
         except Exception as e:
-            raise e
             self.camera = None
 
         self.driver = drive.Driver()
@@ -37,7 +36,7 @@ class Robot:
         '''
 
         self.driver.turn_motors(0, int(speed_left*255))
-        self.driver.turn_motors(1, int(-speed_right*255))
+        self.driver.turn_motors(1, int(speed_right*255))
 
         self.last_left = speed_left
         self.last_right = speed_right

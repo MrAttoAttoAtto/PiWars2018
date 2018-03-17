@@ -9,11 +9,11 @@ class Driver:
 
         self.motors = (
             (
-                self.mh.getMotor(1),
-                self.mh.getMotor(2)
+                self.mh.getMotor(2),
+                self.mh.getMotor(3)
             ),
             (
-                self.mh.getMotor(3),
+                self.mh.getMotor(1),
                 self.mh.getMotor(4),
             )
         )

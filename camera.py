@@ -15,7 +15,7 @@ class ConstantCamera(threading.Thread):
         super().__init__()
         self.camera = PiCamera(*args, **kwargs)
         self.camera.resolution = (RESOLUTIONX, RESOLUTIONY)
-        self.camera.rotation = 180
+        self.camera.rotation = 0
         self._camarray = PiRGBArray(self.camera, size=(RESOLUTIONX, RESOLUTIONY))
         self._image = None
         self.preview = False

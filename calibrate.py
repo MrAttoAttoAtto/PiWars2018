@@ -66,7 +66,7 @@ def calibrate_spec(color, cam):
         max_thresh = [coolio+10 for coolio in hsv_major_color]
 
         THRESHOLDS[color] = [min_thresh, max_thresh]
-
+        print(THRESHOLDS[color])
         json.dump(THRESHOLDS, open("thresholds.json", "w"), sort_keys=True, indent=4)
 
         return True

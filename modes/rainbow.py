@@ -14,6 +14,7 @@ Code for the "over the rainbow" challenge.
 
 
 import cv2
+import numpy as np
 from enum import Enum
 
 from settings import (BALL_OFFSET_MAX, MIN_BALL_RADIUS,
@@ -63,8 +64,9 @@ class Rainbow:
         for index, color in enumerate(VISIT_COLOURS):
             if (index not in self.order):
                 # Ball has not been detected before
-                if self.ball_aligned(image, color)[1] < BALL_OFFSET_MAX:
+                if self.ball_aligned(image, color)[2] < BALL_OFFSET_MAX:
                     # Ball is aligned, so add the ball to order list.
+                    print("FOUND COLOUR "+str(index))
                     self.order.append(index)
                     self.last = index
     
@@ -103,7 +105,7 @@ class Rainbow:
                         ROBOT.backwards(SPEED_SCALE)
                     
                     # If robot aligned with ball
-                    if self.ball_aligned(image, VISIT_COLOURS[self.next]) < BALL_OFFSET_MAX:
+                    if self.ball_aligned(image, VISIT_COLOURS[self.next])[2] < BALL_OFFSET_MAX:
                         self.last = self.next
                         self.state = RainbowState.MOVING_FORWARD
 
@@ -118,7 +120,7 @@ class Rainbow:
             self.running = True
 
     def ball_aligned(self, image, color):
-        working_thresholds = THRESHOLDS[color]
+        working_thresholds = np.array(THRESHOLDS[color])
 
         # blurred = cv2.GaussianBlur(frame, (11, 11), 0)
         hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
@@ -130,9 +132,9 @@ class Rainbow:
         mask = cv2.dilate(mask, None, iterations=2)
         # Show debug image.
         if DEBUG:
-            cv2.imshow("MASK", mask)
-            cv2.waitKey(1)
-
+            #cv2.imshow("MASK", mask)
+            #cv2.waitKey(1)
+            pass
         cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
         # only proceed if at least one contour was found
         if len(cnts) > 0:
@@ -142,24 +144,27 @@ class Rainbow:
             c = max(cnts, key=cv2.contourArea)
             ((x, y), radius) = cv2.minEnclosingCircle(c)
             M = cv2.moments(c)
+            x = int(x)
+            y = int(y)
             center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
 
-            # only proceed if the radius meets a minimum size
-            if radius > MIN_BALL_RADIUS:
-                # Show debug image
-                if DEBUG:
+            if DEBUG:
                     cv2.line(image, (x, 0), (x, RESOLUTIONY), (255, 0, 0), 1)
                     cv2.line(image, (0, y), (RESOLUTIONX, y), (255, 0, 0), 1)
                     cv2.drawContours(image, cnts, -1, (0, 255, 0), 1)
                     cv2.imshow("Image", image)
                     cv2.waitKey(1)
+            # only proceed if the radius meets a minimum size
+            if radius > MIN_BALL_RADIUS:
+                # Show debug image
 
                 # Where is the circle?
-                width, height = cv2.GetSize(mask)
+                height, width = RESOLUTIONY, RESOLUTIONX
                 direction = (width/2 < int(x))
                 extent = int(abs(width/2 - int(x))/(width/2))
-                return (direction, extent)
-        return False
+                return (True, direction, extent)
+            print("Not big enuph")
+        return (False, 0, 0)
 
     def ensure_area_touched(self):
         dl, dc, dr = ROBOT.get_distance()
@@ -182,8 +187,9 @@ class Rainbow:
         self.reset()
         self.order = []
 
-if __name__ = '__main__':
+if __name__ == '__main__':
     x = Rainbow()
-    x.running = True
     while True:
-        x.update(0)
+        image = ROBOT.take_picture()
+        rain.ball_aligned(image, "rainbow_blue")
+
