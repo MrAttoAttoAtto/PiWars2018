@@ -3,6 +3,7 @@ that may be required between programs
 or are just stored here for easy tweaking'''
 
 import json
+import numpy as np
 
 DEBUG = True
 
@@ -16,7 +17,14 @@ START_HOLD_REQUIRED = 4
 # ----COLORS-----
 # This is a DICTIONARY of the form:
 # {"yellow":[[h_bot, s_bot, v_bot], [h_top, s_top, v_top]], "red":...}
-THRESHOLDS = json.load(open("thresholds.json"))
+PURE_THRESHOLDS = json.load(open("thresholds.json"))
+
+THRESHOLDS = {}
+
+for key, value in PURE_THRESHOLDS.items():
+    THRESHOLDS[key] = []
+    for thresh in value:
+        THRESHOLDS[key].append(np.asarray(value))
 
 # ----RAINBOW----
 MIN_BALL_RADIUS = 10
@@ -45,3 +53,12 @@ MAZE_ROBOT_TURN_TIME = 0.25
 # Vars for the forward-moving speed specific to the maze challenge
 MAZE_ROBOT_FORWARD_SPEED = 1
 MAZE_ROBOT_FORWARD_TIME = 0.25
+
+#-------MAZE 2.0-----
+MAZE_CLOSE_THRESH = 10
+MAZE_SIDE_THRESH = 30
+MAZE_PICKINESS = 20
+
+#-------LINE---------
+LINE_SENSITIVITY = 100 #lower less sensitive
+LINE_BEAR_NUM = 25 #le % of bear

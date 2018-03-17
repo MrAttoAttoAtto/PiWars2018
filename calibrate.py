@@ -13,7 +13,7 @@ from settings import RESOLUTIONX, RESOLUTIONY, THRESHOLDS
 
 def get_main_color(img):
     '''
-    Calculates the main color by using a k-means algorythm, after having
+    Calculates the main color by using a k-means algorithm, after having
     formatted the image array correctly
     '''
     flags = cv2.KMEANS_RANDOM_CENTERS
@@ -40,7 +40,7 @@ def calibrate_spec(color, cam):
     # time to be put into place
     input("Press enter to take photograph")
 
-    frame = camera.capture(raw_capture, format='bgr')
+    camera.capture(raw_capture, format='bgr')
 
     image = raw_capture.array
 
@@ -63,11 +63,13 @@ def calibrate_spec(color, cam):
 
     if confirmation.lower() == "y":
         min_thresh = [coolio-10 for coolio in hsv_major_color]
-        max_thresh = [coolio+10 for coolio in hsv_major_color]
+        max_thresh = [hsv_major_color[0]+10, 255, 255]
+
 
         THRESHOLDS[color] = [min_thresh, max_thresh]
         print(THRESHOLDS[color])
         json.dump(THRESHOLDS, open("thresholds.json", "w"), sort_keys=True, indent=4)
+
 
         return True
 
@@ -80,13 +82,12 @@ def calibrate_all():
     camera.resolution = (640, 480)
 
     for key in THRESHOLDS:
-        confirmation = input("The next color is \"{}\". Press q to go to the next color or anything else to start the 3 sec countdown to take the picture: ".format(key))
+        confirmation = input("The next color is \"{}\". Press q + [enter] to go to the next color or [enter] to start the 3 sec countdown to take the picture: ".format(key))
 
         if confirmation.lower() == "q":
             continue
 
         while True:
-
             ret = calibrate_spec(key, camera)
 
             if not ret:
@@ -97,3 +98,6 @@ def calibrate_all():
 
             else:
                 break
+
+if __name__ == "__main__":
+    calibrate_all()

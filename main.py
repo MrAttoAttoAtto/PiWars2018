@@ -5,7 +5,7 @@ import time
 import drive
 from robot import ROBOT
 #from modes import line, manual_drive, maze, rainbow
-from modes import rainbow, line
+from modes import rainbow, line, golf, manual_drive
 import settings
 import tools
 import controller
@@ -93,7 +93,6 @@ while True:
 
     if mode == "line":
         line.update()
-        pass
 
     if mode == "rainbow":
         if not rainbow_begin:
@@ -107,15 +106,11 @@ while True:
         pass
 
     if mode == "manual":
-        joyX = int(tools.translate(values['left_axes'][0], -1, 1, -255, 255))
-        joyY = int(tools.translate(values['left_axes'][1], -1, 1, -255, 255))
-        print(joyX)
-        print(joyY)
+        manual_drive.update(values)
+    
+    if mode == "golf":
+        golf.update(values)
 
-        left_speed = joyX + joyY
-        right_speed = joyY - joyX
 
-        ROBOT.driver.turn_motors(0,left_speed)
-        ROBOT.driver.turn_motors(1, right_speed)
 
 ROBOT.driver.safe_shutdown()

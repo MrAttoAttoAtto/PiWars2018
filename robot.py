@@ -8,6 +8,7 @@ import camera
 from settings import address
 import drive
 import atexit
+import RPi.GPIO as GPIO
 
 
 class Robot:
@@ -29,6 +30,12 @@ class Robot:
 
         self.driver = drive.Driver()
         atexit.register(self.shutdown)
+
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(18, GPIO.OUT)
+        self.pwm = GPIO.PWM(18, 100)
+        self.pwm.start(5)
+
 
     def set_tank(self, speed_left, speed_right):
         '''
@@ -64,7 +71,6 @@ class Robot:
             RPI'S SCL = GPI03 = PIN05 -----> ARDUINO NANO'S SCL = A5
         '''
         left = self.ultrasonic_connection.read_byte(self.ultrasonic_address)
-        #TODO ADD MIDDLE ULTRASONIC TO ARDUINO AND WORKING RIGHT TO ARDUINO
         middle = self.ultrasonic_connection.read_byte(self.ultrasonic_address)
         right = self.ultrasonic_connection.read_byte(self.ultrasonic_address)
         return [left, middle, right]
@@ -107,6 +113,11 @@ class Robot:
         if duration > 0:
             time.sleep(duration)
             self.halt()
+
+
+    def set_servo(self, angle):
+        '''Im only doing this to satisfy pylint'''
+        self.pwm.ChangeDutyCycle((angle/180) * 14 + 6)
 
     def shutdown(self):
         self.camera._close_event.set()
