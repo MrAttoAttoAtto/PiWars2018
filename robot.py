@@ -73,7 +73,7 @@ class Robot:
         left = self.ultrasonic_connection.read_byte(self.ultrasonic_address)
         middle = self.ultrasonic_connection.read_byte(self.ultrasonic_address)
         right = self.ultrasonic_connection.read_byte(self.ultrasonic_address)
-        return [left, middle, right]
+        return [right, middle, left]
 
     def take_picture(self):
         return self.camera.get_image()

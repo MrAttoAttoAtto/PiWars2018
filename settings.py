@@ -48,16 +48,16 @@ MAZE_WALL_DISTANCE = 10
 
 # Vars for the turn speed specific to the maze challenge
 MAZE_ROBOT_TURN_SPEED = 1
-MAZE_ROBOT_TURN_TIME = 0.25
+MAZE_ROBOT_TURN_TIME = 0.55
 
 # Vars for the forward-moving speed specific to the maze challenge
 MAZE_ROBOT_FORWARD_SPEED = 1
 MAZE_ROBOT_FORWARD_TIME = 0.25
 
 #-------MAZE 2.0-----
-MAZE_CLOSE_THRESH = 10
+MAZE_CLOSE_THRESH = 15
 MAZE_SIDE_THRESH = 30
-MAZE_PICKINESS = 20
+MAZE_PICKINESS = 5
 
 #-------LINE---------
 LINE_SENSITIVITY = 100 #lower less sensitive

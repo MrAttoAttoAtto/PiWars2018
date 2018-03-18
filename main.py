@@ -5,7 +5,7 @@ import time
 import drive
 from robot import ROBOT
 #from modes import line, manual_drive, maze, rainbow
-from modes import rainbow, line, golf, manual_drive
+from modes import rainbow, line, golf, manual_drive, maze2
 import settings
 import tools
 import controller
@@ -14,7 +14,7 @@ import leds
 def shift_mode(new_mode):
     global mode
     global selection_mode
-    
+
     mode = new_mode
     selection_mode = False
     new_color = mode_colours[modes.index(new_mode)]
@@ -37,12 +37,13 @@ led_state = True
 led_time = 0
 
 rainbow_begin = False
+maze2_begin = False
 
 while True:
     values = control.get_values()
-    
 
-    
+
+
     #if values['control_buttons']['Start'] and joy_last_select_time + joy_toggle_delay < time.time() and not selection_mode:
     #    print("b")
     #    selection_mode = not selection_mode
@@ -103,7 +104,11 @@ while True:
             rainbown.update(0)
 
     if mode == "maze":
-        pass
+        if not maze2_begin:
+            maze2_begin = True
+            maze2n = maze2.Maze2()
+        else:
+            maze2n.update()
 
     if mode == "manual":
         manual_drive.update(values)
