@@ -76,10 +76,10 @@ def calibrate_spec(color):
 
     return False
 
-def calibrate_all():
+def calibrate_list(colours):
     '''Calibrates all of the colors in the threshold dictionary from scratch'''
 
-    for key in THRESHOLDS:
+    for key in colours:
         confirmation = input("The next color is \"{}\". Press q + [enter] to go to the next color or [enter] to start the 3 sec countdown to take the picture: ".format(key))
 
         if confirmation.lower() == "q":
@@ -97,14 +97,16 @@ def calibrate_all():
             else:
                 break
 
+def calibrate_all():
+    calibrate_list(THRESHOLDS)
+
 if __name__ == "__main__":
     camera = PiCamera()
     camera.resolution = (640, 480)
     raw_capture = PiRGBArray(camera, size=(640, 480))
 
     if len(sys.argv) > 1:
-        for colour in sys.argv[1:]:
-            calibrate_spec(colour)
+        calibrate_list(sys.argv[1:])
 
     else:
         calibrate_all()
