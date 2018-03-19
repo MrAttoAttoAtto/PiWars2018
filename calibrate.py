@@ -65,6 +65,7 @@ def calibrate_spec(color):
     cv2.waitKey()
 
     confirmation = input("Does this look okay? [y/N] ")
+    raw_capture.truncate(0)
 
     if confirmation.lower() == "y":
         THRESHOLDS[color] = [min_thresh, max_thresh]
