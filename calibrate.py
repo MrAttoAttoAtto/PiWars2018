@@ -3,6 +3,7 @@
 import colorsys
 import json
 import time
+import sys
 
 import cv2
 import numpy as np
@@ -10,6 +11,7 @@ from picamera.array import PiRGBArray
 from picamera import PiCamera
 
 from settings import RESOLUTIONX, RESOLUTIONY, THRESHOLDS
+
 
 def get_main_color(img):
     '''
@@ -26,16 +28,13 @@ def get_main_color(img):
 
     return list(centers[0])
 
-def calibrate_spec(color, cam):
+def calibrate_spec(color):
     '''
     Takes a pic, gets the average color of the 20x20 middle bit, and sets,
     if the user thinks it looks good, the threshold to around those values globally
     '''
 
     #assert color in THRESHOLDS
-
-    camera = cam
-    raw_capture = PiRGBArray(camera, size=(640, 480))
 
     # time to be put into place
     input("Press enter to take photograph")
@@ -51,21 +50,23 @@ def calibrate_spec(color, cam):
     cv2.waitKey()
 
     major_color = get_main_color(cropped_bgr)
-    print("RGB: " + str(major_color))
 
     hsv_major_color = list(colorsys.rgb_to_hsv(major_color[0], major_color[1], major_color[2]))
     hsv_major_color[0] = (hsv_major_color[0]*179)
     hsv_major_color[1] = (hsv_major_color[1]*255)
 
     print("HSV: " + str(hsv_major_color))
+    min_thresh = [coolio-10 for coolio in hsv_major_color]
+    max_thresh = [hsv_major_color[0]+10, 255, 255]
+
+    hsv = cv2.cvtColor(cropped_bgr, cv2.COLOR_BGR2HSV)
+    thresh = cv2.inRange(hsv, min_thresh, max_thresh)
+    cv2.imshow("YEE", thresh)
+    cv2.waitKey()
 
     confirmation = input("Does this look okay? [y/N] ")
 
     if confirmation.lower() == "y":
-        min_thresh = [coolio-10 for coolio in hsv_major_color]
-        max_thresh = [hsv_major_color[0]+10, 255, 255]
-
-
         THRESHOLDS[color] = [min_thresh, max_thresh]
         print(THRESHOLDS[color])
         json.dump(THRESHOLDS, open("thresholds.json", "w"), sort_keys=True, indent=4)
@@ -78,9 +79,6 @@ def calibrate_spec(color, cam):
 def calibrate_all():
     '''Calibrates all of the colors in the threshold dictionary from scratch'''
 
-    camera = PiCamera()
-    camera.resolution = (640, 480)
-
     for key in THRESHOLDS:
         confirmation = input("The next color is \"{}\". Press q + [enter] to go to the next color or [enter] to start the 3 sec countdown to take the picture: ".format(key))
 
@@ -88,7 +86,7 @@ def calibrate_all():
             continue
 
         while True:
-            ret = calibrate_spec(key, camera)
+            ret = calibrate_spec(key)
 
             if not ret:
                 redo_quest = input("You seemed to cancel that image, do you want to take it again? [Y/n] ")
@@ -100,4 +98,13 @@ def calibrate_all():
                 break
 
 if __name__ == "__main__":
-    calibrate_all()
+    camera = PiCamera()
+    camera.resolution = (640, 480)
+    raw_capture = PiRGBArray(camera, size=(640, 480))
+
+    if len(sys.argv) > 1:
+        for colour in sys.argv[1:]:
+            calibrate_spec(colour)
+
+    else:
+        calibrate_all()
