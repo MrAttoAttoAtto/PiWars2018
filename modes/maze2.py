@@ -39,7 +39,7 @@ class Maze2:
                     sleep(0.8)
                     ROBOT.left(duration=MAZE_ROBOT_TURN_TIME)
                     ROBOT.forwards(speed=0.5)
-                    sleep(1)
+                    sleep(0.7)
                     self.state = "forwards"
                 else:
                     self.side_dist = distances[0]
@@ -58,14 +58,29 @@ class Maze2:
             #    ROBOT.forwards(speed=0.5)
             #    sleep(0.5)
             #    self.state = "forwards"
+            
+            elif distances[2] > MAZE_SIDE_THRESH or distances[2] == 0:
+                self.dprint("Right turn sighted Wall on the right is {} away!".format(distances[2]))
+                self.state = "turning"
+                self.turn += 1
+                if self.turn == 10 or distances[2] == 0:
+                    sleep(0.8)
+                    ROBOT.right(duration=MAZE_ROBOT_TURN_TIME)
+                    ROBOT.forwards(speed=0.5)
+                    sleep(0.7)
+                    self.state = "forwards"
+                else:
+                    self.side_dist = distances[2]
+                    sleep(0.3)
+                    ROBOT.set_tank(-1, 1)
 
 
             elif 0 < distances[0] < MAZE_CLOSE_THRESH:
                 ROBOT.bear_right()
                 self.dprint("Bearing right")
-            #elif 0 < distances[2] < MAZE_CLOSE_THRESH:
-            #    self.dprint("Bearing left")
-            #    ROBOT.bear_left()
+            elif 0 < distances[2] < MAZE_CLOSE_THRESH:
+                self.dprint("Bearing left")
+                ROBOT.bear_left()
 
             else:
                 ROBOT.forwards(speed=0.5)
