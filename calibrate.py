@@ -1,14 +1,16 @@
 '''Python file for color calibration at the event'''
 
+import os
 import colorsys
 import json
-import time
 import sys
 
 import cv2
 import numpy as np
-from picamera.array import PiRGBArray
-from picamera import PiCamera
+
+if os.name != "nt":
+    from picamera.array import PiRGBArray
+    from picamera import PiCamera
 
 from settings import RESOLUTIONX, RESOLUTIONY, THRESHOLDS
 
@@ -60,7 +62,7 @@ def calibrate_spec(color):
     max_thresh = [hsv_major_color[0]+10, 255, 255]
 
     hsv = cv2.cvtColor(cropped_bgr, cv2.COLOR_BGR2HSV)
-    thresh = cv2.inRange(hsv, min_thresh, max_thresh)
+    thresh = cv2.inRange(hsv, np.array(min_thresh), np.array(max_thresh))
     cv2.imshow("YEE", thresh)
     cv2.waitKey()
 
@@ -71,7 +73,6 @@ def calibrate_spec(color):
         THRESHOLDS[color] = [min_thresh, max_thresh]
         print(THRESHOLDS[color])
         json.dump(THRESHOLDS, open("thresholds.json", "w"), sort_keys=True, indent=4)
-
 
         return True
 
