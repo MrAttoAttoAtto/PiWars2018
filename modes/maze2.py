@@ -58,7 +58,7 @@ class Maze2:
                 else:
                     self.side_dist = distances[2]
                     sleep(0.3)
-                    ROBOT.set_tank(-1, 1)
+                    ROBOT.set_tank(1, -1)
 
 
             elif 0 < distances[0] < MAZE_CLOSE_THRESH:
@@ -73,7 +73,7 @@ class Maze2:
                 self.dprint("Forwards!")
 
         elif self.state == "turning":
-            self.dprint("Turning! Waiting for {}, getting {}".format(self.side_dist, distances[1]))
+            #self.dprint("Turning! Waiting for {}, getting {}".format(self.side_dist, distances[1]))
             if distances[1] >= MAZE_PICKINESS:
                 self.dprint("Turning stopped!")
                 ROBOT.forwards(speed=0.5)
