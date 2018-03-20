@@ -36,11 +36,13 @@ class Maze2:
                 self.state = "turning"
                 self.side_dist = distances[0]
                 ROBOT.set_tank(-1, 1)
+                sleep(0.2)
             elif distances[2] > MAZE_SIDE_THRESH or distances[2] == 0:
                 self.dprint("Right turn sighted Wall on the right is {} away!".format(distances[2]))
                 self.state = "turning"
                 self.side_dist = distances[2]
                 ROBOT.set_tank(1, -1)
+                sleep(0.2)
 
 
             elif 0 < distances[0] < MAZE_CLOSE_THRESH:
