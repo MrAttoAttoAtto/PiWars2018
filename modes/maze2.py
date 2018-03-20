@@ -34,31 +34,13 @@ class Maze2:
             if distances[0] > MAZE_SIDE_THRESH or distances[0] == 0:
                 self.dprint("Left turn sighted Wall on the left is {} away!".format(distances[0]))
                 self.state = "turning"
-                self.turn += 1
-                if self.turn == 10 or distances[0] == 0:
-                    sleep(0.8)
-                    ROBOT.left(duration=MAZE_ROBOT_TURN_TIME)
-                    ROBOT.forwards(speed=0.5)
-                    sleep(0.7)
-                    self.state = "forwards"
-                else:
-                    self.side_dist = distances[0]
-                    sleep(0.3)
-                    ROBOT.set_tank(-1, 1)
+                self.side_dist = distances[0]
+                ROBOT.set_tank(-1, 1)
             elif distances[2] > MAZE_SIDE_THRESH or distances[2] == 0:
                 self.dprint("Right turn sighted Wall on the right is {} away!".format(distances[2]))
                 self.state = "turning"
-                self.turn += 1
-                if self.turn == 10 or distances[2] == 0:
-                    sleep(0.8)
-                    ROBOT.right(duration=MAZE_ROBOT_TURN_TIME)
-                    ROBOT.forwards(speed=0.5)
-                    sleep(0.7)
-                    self.state = "forwards"
-                else:
-                    self.side_dist = distances[2]
-                    sleep(0.3)
-                    ROBOT.set_tank(1, -1)
+                self.side_dist = distances[2]
+                ROBOT.set_tank(1, -1)
 
 
             elif 0 < distances[0] < MAZE_CLOSE_THRESH:
@@ -76,9 +58,8 @@ class Maze2:
             #self.dprint("Turning! Waiting for {}, getting {}".format(self.side_dist, distances[1]))
             if distances[1] >= MAZE_PICKINESS:
                 self.dprint("Turning stopped!")
-                ROBOT.forwards(speed=0.5)
+                ROBOT.set_tank(0.5, 0.5)
                 self.state = "forwards"
-                sleep(0.5)
 
 
 
