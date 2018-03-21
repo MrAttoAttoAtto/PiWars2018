@@ -21,6 +21,7 @@ class Maze2:
             print(txt)
 
     def update(self):
+        """
         self.count += 1
 
         distances = ROBOT.get_distance()
@@ -28,8 +29,8 @@ class Maze2:
             self.dprint(distances)
             self.count = 0
         if self.state == "forwards":
-            """Checks if robot has space on either side, i.e a turn, and if so, takes it
-            making sure that it is a wide turn so as not to hit a wall"""
+            Checks if robot has space on either side, i.e a turn, and if so, takes it
+            making sure that it is a wide turn so as not to hit a wall
 
             if distances[0] > MAZE_SIDE_THRESH or distances[0] == 0:
                 self.dprint("Left turn sighted Wall on the left is {} away!".format(distances[0]))
@@ -63,6 +64,14 @@ class Maze2:
                 ROBOT.forwards(speed=0.5)
                 self.state = "forwards"
                 sleep(0.5)
+         """
+        distances = ROBOT.get_distance()
+        if distances[2] > 30:
+            ROBOT.bear_right()
+        elif distances[2] <= 10:
+            ROBOT.bear_left()
+        else:
+            ROBOT.forwards(speed=0.5)
 
 
 
