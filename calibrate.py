@@ -58,10 +58,12 @@ def calibrate_spec(color):
     hsv_major_color[1] = (hsv_major_color[1]*255)
 
     print("HSV: " + str(hsv_major_color))
-    min_thresh = [coolio-10 for coolio in hsv_major_color]
-    max_thresh = [hsv_major_color[0]+10, 255, 255]
+    min_thresh = [max(coolio-70, 0) for coolio in hsv_major_color]
+    max_thresh = [min(hsv_major_color[0]+10, 178.9), 255, 255]
 
-    hsv = cv2.cvtColor(cropped_bgr, cv2.COLOR_BGR2HSV)
+    print("MIN: " + str(min_thresh) + " MAX: " +str(max_thresh))
+
+    hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
     thresh = cv2.inRange(hsv, np.array(min_thresh), np.array(max_thresh))
     cv2.imshow("YEE", thresh)
     cv2.waitKey()
