@@ -52,7 +52,7 @@ while True:
     #    joy_last_select_time = time.time()
     #    time.sleep(1)
 
-    mode = 'manual'
+    mode = 'maze'
     if mode == "selection":
         if values["button_pad"]['A']:
             selected_mode = "line"

@@ -6,6 +6,7 @@ import threading
 from picamera import PiCamera
 from picamera.array import PiRGBArray
 import cv2
+from time import sleep
 
 from settings import RESOLUTIONX, RESOLUTIONY
 
@@ -16,6 +17,16 @@ class ConstantCamera(threading.Thread):
         self.camera = PiCamera(*args, **kwargs)
         self.camera.resolution = (RESOLUTIONX, RESOLUTIONY)
         self.camera.rotation = 0
+        # Set ISO to the desired value
+        self.camera.iso = 200
+        # Wait for the automatic gain control to settle
+        sleep(2)
+        # Now fix the values
+        self.camera.shutter_speed = self.camera.exposure_speed
+        self.camera.exposure_mode = 'off'
+        g = self.camera.awb_gains
+        self.camera.awb_mode = 'off'
+        self.camera.awb_gains = g
         self._camarray = PiRGBArray(self.camera, size=(RESOLUTIONX, RESOLUTIONY))
         self._image = None
         self.preview = False

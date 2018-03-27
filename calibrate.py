@@ -4,6 +4,8 @@ import os
 import colorsys
 import json
 import sys
+import time
+sleep = time.sleep
 
 import cv2
 import numpy as np
@@ -72,9 +74,10 @@ def calibrate_spec(color):
     raw_capture.truncate(0)
 
     if confirmation.lower() == "y":
-        THRESHOLDS[color] = [min_thresh, max_thresh]
-        print(THRESHOLDS[color])
-        json.dump(THRESHOLDS, open("thresholds.json", "w"), sort_keys=True, indent=4)
+        nobj = json.load(open("thresholds.json", "r"))
+        nobj[color] = [list(min_thresh), list(max_thresh)]
+        THRESHOLDS = nobj
+        json.dump(nobj, open("thresholds.json", "w"), sort_keys=True, indent=4)
 
         return True
 
@@ -107,6 +110,16 @@ def calibrate_all():
 if __name__ == "__main__":
     camera = PiCamera()
     camera.resolution = (640, 480)
+    # Set ISO to the desired value
+    camera.iso = 200
+    # Wait for the automatic gain control to settle
+    sleep(2)
+    # Now fix the values
+    camera.shutter_speed = camera.exposure_speed
+    camera.exposure_mode = 'off'
+    g = camera.awb_gains
+    camera.awb_mode = 'off'
+    camera.awb_gains = g
     raw_capture = PiRGBArray(camera, size=(640, 480))
 
     if len(sys.argv) > 1:

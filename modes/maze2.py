@@ -13,6 +13,7 @@ class Maze2:
         self.side_dist = 0
         self.count = 0
         self.turn = 0
+        self.follow_side = 2
 
 
     @staticmethod
@@ -64,15 +65,33 @@ class Maze2:
                 ROBOT.forwards(speed=0.5)
                 self.state = "forwards"
                 sleep(0.5)
-         """
+        """
         distances = ROBOT.get_distance()
-        if distances[2] > 30:
-            ROBOT.bear_right()
-        elif distances[2] <= 10:
-            ROBOT.bear_left()
+
+        
+        if distances[self.follow_side] > 10 or distances[self.follow_side] == 0:
+            print("Bear RIGHT {}".format(distances[self.follow_side]))
+            if self.follow_side == 0:
+                ROBOT.bear_left(change=100)
+            else:
+                ROBOT.bear_right(change=100)
+        elif distances[self.follow_side] <= 5:
+            print("Bear LEFT {}".format(distances[self.follow_side]))
+            if self.follow_side == 0:
+                ROBOT.bear_right(change=100)
+            else:
+                ROBOT.bear_left(change=100)
         else:
+            print("{} From right wall, going forwards".format(distances[self.follow_side]))
             ROBOT.forwards(speed=0.5)
 
 
+        if distances[2] > 80:
+            self.follow_side = 0
+            print("Following left side now!")
+
+        
+
+            
 
 

@@ -6,7 +6,7 @@ def update(values):
     joyY = int(tools.translate(values['left_axes'][1], -1, 1, -255, 255))
 
     left_speed = joyX + joyY
-    right_speed = joyX - joyY
+    right_speed = joyY - joyX
 
     ROBOT.driver.turn_motors(0,left_speed)
     ROBOT.driver.turn_motors(1, right_speed)
