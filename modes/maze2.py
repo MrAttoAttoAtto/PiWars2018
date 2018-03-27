@@ -22,6 +22,7 @@ class Maze2:
             print(txt)
 
     def update(self):
+        #The original maze2
         """
         self.count += 1
 
@@ -66,6 +67,11 @@ class Maze2:
                 self.state = "forwards"
                 sleep(0.5)
         """
+<<<<<<< HEAD
+=======
+        #The second maze2
+        """
+>>>>>>> a1df43d25124a601623724b8b00058a0b9032020
         distances = ROBOT.get_distance()
 
         
@@ -84,7 +90,10 @@ class Maze2:
         else:
             print("{} From right wall, going forwards".format(distances[self.follow_side]))
             ROBOT.forwards(speed=0.5)
+        """
+        #the third maze2
 
+<<<<<<< HEAD
 
         if distances[2] > 80:
             self.follow_side = 0
@@ -93,5 +102,16 @@ class Maze2:
         
 
             
+=======
+        distances = ROBOT.get_distance()
+        if distances[0] <=15 and distances[1] <=15:
+            ROBOT.right(duration=0.75)
+        elif distances[0] > 30:
+            ROBOT.bear_right()
+        elif distances[0] <= 10:
+            ROBOT.bear_left()
+        else:
+            ROBOT.forwards(speed=0.5)
+>>>>>>> a1df43d25124a601623724b8b00058a0b9032020
 
 
