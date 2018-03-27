@@ -21,6 +21,7 @@ class Maze2:
             print(txt)
 
     def update(self):
+        #The original maze2
         """
         self.count += 1
 
@@ -64,7 +65,9 @@ class Maze2:
                 ROBOT.forwards(speed=0.5)
                 self.state = "forwards"
                 sleep(0.5)
-         """
+        """
+        #The second maze2
+        """
         distances = ROBOT.get_distance()
         if distances[2] > 30:
             ROBOT.bear_right()
@@ -72,7 +75,17 @@ class Maze2:
             ROBOT.bear_left()
         else:
             ROBOT.forwards(speed=0.5)
+        """
+        #the third maze2
 
-
+        distances = ROBOT.get_distance()
+        if distances[0] <=15 and distances[1] <=15:
+            ROBOT.right(duration=0.75)
+        elif distances[0] > 30:
+            ROBOT.bear_right()
+        elif distances[0] <= 10:
+            ROBOT.bear_left()
+        else:
+            ROBOT.forwards(speed=0.5)
 
 
