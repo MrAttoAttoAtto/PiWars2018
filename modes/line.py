@@ -11,6 +11,10 @@ from tools import get_centroid_and_max_contour
 def initialise():
     pass
 
+
+SENSITIVITY = 75 #lower less sensitive
+BEAR_NUM = 35 #le % of bear
+
 def update():
     image = ROBOT.take_picture()
 

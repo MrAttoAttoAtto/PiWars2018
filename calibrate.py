@@ -1,19 +1,25 @@
 '''Python file for color calibration at the event'''
 
+import os
 import colorsys
 import json
+import sys
 import time
+sleep = time.sleep
 
 import cv2
 import numpy as np
-from picamera.array import PiRGBArray
-from picamera import PiCamera
+
+if os.name != "nt":
+    from picamera.array import PiRGBArray
+    from picamera import PiCamera
 
 from settings import RESOLUTIONX, RESOLUTIONY, THRESHOLDS
 
+
 def get_main_color(img):
     '''
-    Calculates the main color by using a k-means algorythm, after having
+    Calculates the main color by using a k-means algorithm, after having
     formatted the image array correctly
     '''
     flags = cv2.KMEANS_RANDOM_CENTERS
@@ -26,7 +32,7 @@ def get_main_color(img):
 
     return list(centers[0])
 
-def calibrate_spec(color, cam):
+def calibrate_spec(color):
     '''
     Takes a pic, gets the average color of the 20x20 middle bit, and sets,
     if the user thinks it looks good, the threshold to around those values globally
@@ -34,13 +40,10 @@ def calibrate_spec(color, cam):
 
     #assert color in THRESHOLDS
 
-    camera = cam
-    raw_capture = PiRGBArray(camera, size=(640, 480))
-
     # time to be put into place
     input("Press enter to take photograph")
 
-    frame = camera.capture(raw_capture, format='bgr')
+    camera.capture(raw_capture, format='bgr')
 
     image = raw_capture.array
 
@@ -51,45 +54,46 @@ def calibrate_spec(color, cam):
     cv2.waitKey()
 
     major_color = get_main_color(cropped_bgr)
-    print("RGB: " + str(major_color))
 
     hsv_major_color = list(colorsys.rgb_to_hsv(major_color[0], major_color[1], major_color[2]))
     hsv_major_color[0] = (hsv_major_color[0]*179)
     hsv_major_color[1] = (hsv_major_color[1]*255)
 
     print("HSV: " + str(hsv_major_color))
+    min_thresh = [max(coolio-70, 0) for coolio in hsv_major_color]
+    max_thresh = [min(hsv_major_color[0]+10, 178.9), 255, 255]
+
+    print("MIN: " + str(min_thresh) + " MAX: " +str(max_thresh))
+
+    hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+    thresh = cv2.inRange(hsv, np.array(min_thresh), np.array(max_thresh))
+    cv2.imshow("YEE", thresh)
+    cv2.waitKey()
 
     confirmation = input("Does this look okay? [y/N] ")
+    raw_capture.truncate(0)
 
     if confirmation.lower() == "y":
-        min_thresh = [coolio-10 for coolio in hsv_major_color]
-        max_thresh = [coolio+10 for coolio in hsv_major_color]
-
-        THRESHOLDS[color] = np.asarray([min_thresh, max_thresh])
-
-        SAVE_THRESHOLDS = {key: array.tolist() for key, array in THRESHOLDS.items()}
-
-        json.dump(SAVE_THRESHOLDS, open("thresholds.json", "w"), sort_keys=True, indent=4)
+        nobj = json.load(open("thresholds.json", "r"))
+        nobj[color] = [list(min_thresh), list(max_thresh)]
+        THRESHOLDS = nobj
+        json.dump(nobj, open("thresholds.json", "w"), sort_keys=True, indent=4)
 
         return True
 
     return False
 
-def calibrate_all():
+def calibrate_list(colours):
     '''Calibrates all of the colors in the threshold dictionary from scratch'''
 
-    camera = PiCamera()
-    camera.resolution = (640, 480)
-
-    for key in THRESHOLDS:
-        confirmation = input("The next color is \"{}\". Press q to go to the next color or anything else to start the 3 sec countdown to take the picture: ".format(key))
+    for key in colours:
+        confirmation = input("The next color is \"{}\". Press q + [enter] to go to the next color or [enter] to start the 3 sec countdown to take the picture: ".format(key))
 
         if confirmation.lower() == "q":
             continue
 
         while True:
-
-            ret = calibrate_spec(key, camera)
+            ret = calibrate_spec(key)
 
             if not ret:
                 redo_quest = input("You seemed to cancel that image, do you want to take it again? [Y/n] ")
@@ -99,3 +103,27 @@ def calibrate_all():
 
             else:
                 break
+
+def calibrate_all():
+    calibrate_list(THRESHOLDS)
+
+if __name__ == "__main__":
+    camera = PiCamera()
+    camera.resolution = (640, 480)
+    # Set ISO to the desired value
+    camera.iso = 200
+    # Wait for the automatic gain control to settle
+    sleep(2)
+    # Now fix the values
+    camera.shutter_speed = camera.exposure_speed
+    camera.exposure_mode = 'off'
+    g = camera.awb_gains
+    camera.awb_mode = 'off'
+    camera.awb_gains = g
+    raw_capture = PiRGBArray(camera, size=(640, 480))
+
+    if len(sys.argv) > 1:
+        calibrate_list(sys.argv[1:])
+
+    else:
+        calibrate_all()
