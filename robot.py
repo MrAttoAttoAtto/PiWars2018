@@ -33,9 +33,15 @@ class Robot:
 
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(18, GPIO.OUT)
+    
         self.pwm = GPIO.PWM(18, 100)
         self.pwm.start(5)
 
+        self.flywheels = [10, 11, 14, 15] #TO BE CONFIRMED
+        # Motors across a,b and c,d
+        for motor in self.flywheels:
+            GPIO.setup(motor, GPIO.OUT)
+        
 
     def set_tank(self, speed_left, speed_right):
         '''
@@ -50,11 +56,16 @@ class Robot:
     
     def enable_flywheel(self):
         '''Enables the flywheels'''
-        pass
+        for motor in self.flywheels:
+            if motor % 2 == 0:
+                GPIO.output(motor, True)
+            else:
+                GPIO.output(motor, False)
 
     def disable_flywheel(self):
         '''Disables the flywheels'''
-        pass
+        for motor in self.flywheels:
+            GPIO.output(motor, False)
 
     def set_colour(self, colour_num):
         if 0 <= colour_num <= 5:
@@ -119,6 +130,7 @@ class Robot:
         '''Im only doing this to satisfy pylint'''
         self.pwm.ChangeDutyCycle((angle/180) * 14 + 6)
 
+         
     def shutdown(self):
         self.camera._close_event.set()
         self.halt()
