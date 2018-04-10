@@ -17,8 +17,8 @@ if __name__ == "__main__":
 
     control = controller.Controller()
 
-    MODES = ["manual", "line", "rainbow", "maze", "select", "golf"]
-    COLOURS = ["#000000", "#ffffff", "#3f32ae", "#e30ec2", "#e80200", "#16ed75", "#efe305"]
+    MODES = ["manual", "line", "rainbow", "maze", "select", "golf", "shoot"]
+    COLOURS = ["#000000", "#ffffff", "#3f32ae", "#e30ec2", "#e80200", "#16ed75", "#efe305", "#baaaff"]
 
     joy_last_select_time = 0
     selected_mode = "manual"
@@ -102,6 +102,12 @@ if __name__ == "__main__":
         if mode == "golf":
             golf.update(values)
 
+    if mode == "shoot":
+        manual_drive.update(values)
+        if values['triggers'][1]:
+            ROBOT.enable_flywheel()
+        else:
+            ROBOT.disable_flywheel()
 
 
     ROBOT.driver.safe_shutdown()
