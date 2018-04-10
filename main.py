@@ -17,7 +17,7 @@ if __name__ == "__main__":
 
     control = controller.Controller()
 
-    MODES = ["manual", "line", "rainbow", "maze", "select", "golf", "shoot"]
+    MODES = ["manual", "line", "rainbow", "maze", "golf", "shoot"]
     COLOURS = ["#000000", "#ffffff", "#3f32ae", "#e30ec2", "#e80200", "#16ed75", "#efe305", "#baaaff"]
 
     joy_last_select_time = 0
@@ -39,7 +39,6 @@ if __name__ == "__main__":
             joy_last_select_time = time.time()
             time.sleep(1)
 
-        mode = 'maze'
         if mode == "selection":
             if values["button_pad"]['A']:
                 selected_mode = "line"
