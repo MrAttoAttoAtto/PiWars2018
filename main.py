@@ -18,6 +18,7 @@ if __name__ == "__main__":
     control = controller.Controller()
 
     MODES = ["manual", "line", "rainbow", "maze", "select", "golf"]
+    COLOURS = ["#000000", "#ffffff", "#3f32ae", "#e30ec2", "#e80200", "#16ed75", "#efe305"]
 
     joy_last_select_time = 0
     selected_mode = "manual"
@@ -64,9 +65,9 @@ if __name__ == "__main__":
 
             if led_time == 20:
                 if led_state:
-                    ROBOT.set_colour(0)
+                    ROBOT.set_colour(COLOURS[0])
                 else:
-                    ROBOT.set_colour(MODES.index(selected_mode)+1)
+                    ROBOT.set_colour(COLOURS[MODES.index(selected_mode)+1])
                 led_state = not led_state
                 led_time = 0
             else:
@@ -74,7 +75,7 @@ if __name__ == "__main__":
 
             if values['control_buttons']['Back']:
                 mode = selected_mode
-                ROBOT.set_colour(MODES.index(selected_mode)+1)
+                ROBOT.set_colour(COLOURS[MODES.index(selected_mode)+1])
 
 
         if mode == "line":

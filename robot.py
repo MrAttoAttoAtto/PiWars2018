@@ -5,7 +5,7 @@ Access motors, ultrasonics from here.
 from smbus import SMBus
 import time
 import camera
-from settings import address
+from settings import address, RGB_PINS
 import drive
 import atexit
 import RPi.GPIO as GPIO
@@ -35,6 +35,9 @@ class Robot:
         GPIO.setup(18, GPIO.OUT)
         self.pwm = GPIO.PWM(18, 100)
         self.pwm.start(5)
+        self.rgb_pwms = [GPIO.PWM(x, 100) for x in RGB_PINS]
+        for pinpwm in self.rgb_pwms:
+            pinpwm.start(0)
 
 
     def set_tank(self, speed_left, speed_right):
@@ -56,9 +59,12 @@ class Robot:
         '''Disables the flywheels'''
         pass
 
-    def set_colour(self, colour_num):
-        if 0 <= colour_num <= 5:
-            self.ultrasonic_connection.write_byte(self.ultrasonic_address, colour_num)
+    def set_colour(self, hex_value):
+        '''Change the LED colour'''
+        value = hex_value.lstrip('#')
+        colour = tuple(int(value[i:i + 2], 16) * (100/255) for i in range(0, 6, 2))
+        for i, duty in enumerate(colour):
+            self.rgb_pwms[i].ChangeDutyCycle(duty)
 
 
     def get_distance(self):
