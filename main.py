@@ -24,7 +24,7 @@ def shift_mode(new_mode):
 control = controller.Controller()
 
 mode_index = 0
-modes = ["manual", "line", "rainbow", "maze", "select", "golf"]
+modes = ["manual", "line", "rainbow", "maze", "select", "golf", "shoot"]
 mode_colours = ["red", "cyan", "orange", "magenta", "white"]
 mode = "manual"
 
@@ -44,28 +44,28 @@ while True:
 
 
 
-    #if values['control_buttons']['Start'] and joy_last_select_time + joy_toggle_delay < time.time() and not selection_mode:
-    #    print("b")
-    #    selection_mode = not selection_mode
-    #    mode = "selection"
-    #    first = True
-    #    joy_last_select_time = time.time()
-    #    time.sleep(1)
+    if values['control_buttons']['Start'] and joy_last_select_time + joy_toggle_delay < time.time() and not selection_mode:
+        print("b")
+        selection_mode = not selection_mode
+        mode = "selection"
+        first = True
+        joy_last_select_time = time.time()
+        time.sleep(1)
 
     mode = 'maze'
     if mode == "selection":
-        #if values["button_pad"]['A']:
-        #    selected_mode = "line"
-        #    
-        #elif values["button_pad"]['B']:
-        #    selected_mode = "rainbow"
-#
- #       elif values["button_pad"]['Y']:
-  #          selected_mode = "maze"
-#
- #       elif values["button_pad"]['X']:
-  #          selected_mode = "manual"
-   #     
+        if values["button_pad"]['A']:
+            selected_mode = "line"
+            
+        elif values["button_pad"]['B']:
+            selected_mode = "rainbow"
+
+        elif values["button_pad"]['Y']:
+            selected_mode = "maze"
+            
+        elif values["button_pad"]['X']:
+            selected_mode = "manual"
+        
         if values["bumpers"][1]:
             mode_index += 1
             if mode_index == len(modes):
@@ -116,6 +116,12 @@ while True:
     if mode == "golf":
         golf.update(values)
 
+    if mode == "shoot":
+        manual_drive.update(values)
+        if values['triggers'][1]:
+            ROBOT.enable_flywheel()
+        else:
+            ROBOT.disable_flywheel()
 
 
 ROBOT.driver.safe_shutdown()
