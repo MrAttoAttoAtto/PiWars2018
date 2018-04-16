@@ -22,11 +22,12 @@ class Maze2:
         self.turn = 0
         self.follow_side = 2
         self.side = 0
-        self.detection_queue = queue.Queue(1)
-
+        #self.detection_queue = queue.Queue(1)
+        """
         self.detection_thread = threading.Thread(None, self.detect_marker)
         self.detection_thread.setDaemon(True)
         self.detection_thread.start()
+        """
 
     @staticmethod
     def dprint(txt):
@@ -102,36 +103,49 @@ class Maze2:
         """
         #the third maze2
 
-        '''
+        
         distances = ROBOT.get_distance()
-        if distances[0] <=15 and distances[1] <=15:
-            ROBOT.right(duration=0.75)
-        elif distances[0] > 30:
-            ROBOT.bear_right()
-        elif distances[0] <= 10:
-            ROBOT.bear_left()
+        print(distances)
+        print("LEFT = " + str(ROBOT.last_left) + " RIGHT = " + str(ROBOT.last_right))
+        if distances[2] > 60 and 0 < distances[1] <= 15:
+            ROBOT.right(duration=0.25)
+            print("turning right")
+        #if 0 < distances[0] < 30 and 0 < distances[1] <=15:
+         #   ROBOT.right(duration=0.2)
+          #  
+           # print("turning right")
+        elif 0 < distances[2] <= 10 and distances[0] > distances[2]:
+            ROBOT.left(duration=0.05)
+            print("bearing left")
+        elif 0 < distances[0] <= 10 and distances[2] > distances[0]:
+            ROBOT.right(duration=0.05)
+            print("bearing right")
         else:
-            ROBOT.forwards(speed=0.5)
-        '''
+            ROBOT.forwards(speed=0.25)
+            print("forwards")
+        
+        
 
         #the third.five maze2 (with direction changeness :))
+        """
         should_change_section = bool(self.detection_queue.qsize()) if self.side == 0 else False
 
         turn_function = ROBOT.right if self.side == 0 else ROBOT.left
         bear_function = ROBOT.bear_right if self.side == 0 else ROBOT.bear_left
         opposite_bear_function = ROBOT.bear_right if self.side != 0 else ROBOT.bear_left
-
+        
         distances = ROBOT.get_distance()
         if distances[self.side] <= 15 and distances[1] <= 15:
-            turn_function(duration=0.75)
+            #turn_function(duration=0.75)
         elif distances[self.side] > 30:
-            bear_function()
+            #bear_function()
+            
         elif distances[self.side] <= 10:
-            opposite_bear_function()
+            #opposite_bear_function()
         else:
             ROBOT.forwards(speed=0.5)
-            self.side = 2 if should_change_section else self.side
-
+            #self.side = 2 if should_change_section else self.side
+    
     def detect_marker(self):
         while True:
             image = ROBOT.take_picture()
@@ -156,3 +170,4 @@ class Maze2:
                 if radius > MIN_MARKER_RADIUS:
                     self.detection_queue.put(True)
                     break
+        """
