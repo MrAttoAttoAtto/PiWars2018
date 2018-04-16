@@ -3,5 +3,5 @@ x = Rainbow()
 while True:
     print("NOOTS")
     image = ROBOT.take_picture()
-    x.ball_aligned(image, "rainbow_blue")
+    x.ball_aligned(image, "RAINBOW_BLUE")
 

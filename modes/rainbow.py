@@ -146,7 +146,6 @@ class Rainbow:
             M = cv2.moments(c)
             x = int(x)
             y = int(y)
-            center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
 
             if DEBUG:
                     cv2.line(image, (x, 0), (x, RESOLUTIONY), (255, 0, 0), 1)
@@ -155,6 +154,7 @@ class Rainbow:
                     cv2.imshow("Image", image)
                     cv2.waitKey(1)
             # only proceed if the radius meets a minimum size
+            print("radius = " + str(radius))
             if radius > MIN_BALL_RADIUS:
                 # Show debug image
 
@@ -191,5 +191,4 @@ if __name__ == '__main__':
     x = Rainbow()
     while True:
         image = ROBOT.take_picture()
-        rain.ball_aligned(image, "rainbow_blue")
-
+        x.ball_aligned(image, "rainbow_blue")
