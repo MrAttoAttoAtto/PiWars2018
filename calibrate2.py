@@ -1,13 +1,14 @@
 import colorsys
 import json
 import tkinter as tk
+import platform
 from time import sleep
 
 import cv2
 import numpy as np
 from PIL import Image, ImageTk
 
-PI = False
+PI = platform.system() == "Linux"
 RESOLUTIONX = 640
 RESOLUTIONY = 480
 COLOURS = (
