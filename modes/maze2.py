@@ -11,7 +11,7 @@ import numpy as np
 from robot import ROBOT
 from settings import (DEBUG, MAZE_CLOSE_THRESH, MAZE_PICKINESS,
                       MAZE_ROBOT_TURN_TIME, MAZE_SIDE_THRESH,
-                      MIN_MARKER_RADIUS, THRESHOLDS)
+                      MIN_MARKER_RADIUS, RESOLUTIONX, RESOLUTIONY, THRESHOLDS)
 
 
 class Maze2:
@@ -124,7 +124,7 @@ class Maze2:
             print("forwards")
         '''
 
-        '''
+        
         #the third.five maze2 (with direction changeness :))
         should_change_section = bool(self.detection_queue.qsize()) if self.side == 0 else False
 
@@ -164,21 +164,28 @@ class Maze2:
                 x_pos = int(x_pos)
                 y_pos = int(y_pos)
 
+                if DEBUG:
+                    cv2.line(image, (x_pos, 0), (x_pos, RESOLUTIONY), (255, 0, 0), 1)
+                    cv2.line(image, (0, y_pos), (RESOLUTIONX, y_pos), (255, 0, 0), 1)
+                    cv2.drawContours(image, cnts, -1, (0, 255, 0), 1)
+                    cv2.imshow("Image", image)
+                    cv2.waitKey(1)
+
                 if radius > MIN_MARKER_RADIUS:
                     self.detection_queue.put(True)
-    '''
+    
 
     #the mazest simples
-
+    '''
     distances = ROBOT.get_distance()
     print(distances)
-    if distances[0] > distances[2] and distances[0] > 60 and distances[1] <= 15:
+    if distances[0] > distances[2] and (distances[0] > 60 or distances[0] == 0) and distances[1] <= 15:
         ROBOT.left(duration=0.1)
         print("left")
-    elif distances[2] > distances[0] and distances[2] > 60 and distances[1] <= 15:
+    elif distances[2] > distances[0] and (distances[2] > 60 or distances[2] == 0) and distances[1] <= 15:
         ROBOT.right(duration=0.1)
         print("right")
     else:
         ROBOT.forwards(speed=0.25)
         print("forwards")
-    
+    '''
