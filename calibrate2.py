@@ -16,6 +16,12 @@ COLOURS = (
     "RAINBOW_GREEN",
     "RAINBOW_YELLOW"
 )
+PROBABLY_GOOD_ALLOWANCES = {
+    "RAINBOW_BLUE":70,
+    "RAINBOW_RED":30,
+    "RAINBOW_GREEN":40,
+    "RAINBOW_YELLOW":20
+}
 FILENAME = "thresholds.json"
 
 
@@ -239,7 +245,7 @@ class ThresholdAdjuster(tk.Frame):
         hsv_major_color[1] = (hsv_major_color[1] * 255)
 
         print("HSV: " + str(hsv_major_color))
-        min_thresh = [max(coolio - 70, 0) for coolio in hsv_major_color]
+        min_thresh = [max(coolio - PROBABLY_GOOD_ALLOWANCES[self.colour_selection.get()], 0) for coolio in hsv_major_color]
         max_thresh = [min(hsv_major_color[0] + 10, 178.9), 255, 255]
 
         print("MIN: " + str(min_thresh) + " MAX: " + str(max_thresh))
