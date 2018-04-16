@@ -124,6 +124,7 @@ class Maze2:
             print("forwards")
         '''
 
+        '''
         #the third.five maze2 (with direction changeness :))
         should_change_section = bool(self.detection_queue.qsize()) if self.side == 0 else False
 
@@ -165,3 +166,19 @@ class Maze2:
 
                 if radius > MIN_MARKER_RADIUS:
                     self.detection_queue.put(True)
+    '''
+
+    #the mazest simples
+
+    distances = ROBOT.get_distance()
+    print(distances)
+    if distances[0] > distances[2] and distances[0] > 60 and distances[1] <= 15:
+        ROBOT.left(duration=0.1)
+        print("left")
+    elif distances[2] > distances[0] and distances[2] > 60 and distances[1] <= 15:
+        ROBOT.right(duration=0.1)
+        print("right")
+    else:
+        ROBOT.forwards(speed=0.25)
+        print("forwards")
+    

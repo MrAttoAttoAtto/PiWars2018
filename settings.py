@@ -24,9 +24,7 @@ PURE_THRESHOLDS = json.load(open("thresholds.json"))
 THRESHOLDS = {}
 
 for key, value in PURE_THRESHOLDS.items():
-    THRESHOLDS[key] = []
-    for thresh in value:
-        THRESHOLDS[key].append(np.asarray(value))
+    THRESHOLDS[key] = np.array(value)
 
 # ----RAINBOW----
 MIN_BALL_RADIUS = 10

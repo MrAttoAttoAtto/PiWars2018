@@ -98,9 +98,9 @@ class Rainbow:
                 elif self.state == RainbowState.TURNING:
                     if self.ensure_safe_distance():
                         if self.turn == 0:
-                            ROBOT.right()
+                            ROBOT.right(speed=SPEED_SCALE)
                         else:
-                            ROBOT.left()
+                            ROBOT.left(speed=SPEED_SCALE)
                     else:
                         ROBOT.backwards(SPEED_SCALE)
                     
