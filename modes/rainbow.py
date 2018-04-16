@@ -126,7 +126,7 @@ class Rainbow:
         hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
         # Get the parts of the image in the specified colour range.
-        mask = cv2.inRange(image, working_thresholds[0], working_thresholds[1])
+        mask = cv2.inRange(hsv, working_thresholds[0], working_thresholds[1])
         # Make the shapes more regular
         mask = cv2.erode(mask, None, iterations=2)
         mask = cv2.dilate(mask, None, iterations=2)
