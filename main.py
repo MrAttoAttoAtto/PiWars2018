@@ -1,121 +1,112 @@
 """main.py
 The script which runs. The mainloop. Quite frightening.
 """
+import sys
 import time
-import drive
-from robot import ROBOT
-#from modes import line, manual_drive, maze, rainbow
-from modes import rainbow, line, golf, manual_drive, maze2
-import settings
-import tools
+
 import controller
-import leds
+# from modes import line, manual_drive, maze, rainbow
+from modes import golf, line, manual_drive, maze2, rainbow
+from robot import ROBOT
 
-def shift_mode(new_mode):
-    global mode
-    global selection_mode
+if __name__ == "__main__":
+    if len(sys.argv) > 1:
+        mode = sys.argv[1]
+    else:
+        mode = "manual"
 
-    mode = new_mode
-    selection_mode = False
-    new_color = mode_colours[modes.index(new_mode)]
+    control = controller.Controller()
 
-    ROBOT.set_colour(modes.index(new_mode))
+    MODES = ["manual", "line", "rainbow", "maze", "golf", "shoot"]
+    COLOURS = ["#000000", "#ffffff", "#3f32ae", "#e30ec2", "#e80200", "#16ed75", "#efe305", "#baaaff"]
 
-control = controller.Controller()
+    joy_last_select_time = 0
+    selected_mode = "manual"
 
-mode_index = 0
-modes = ["manual", "line", "rainbow", "maze", "select"]
-mode_colours = ["red", "cyan", "orange", "magenta", "white"]
-mode = "manual"
+    JOY_TOGGLE_DELAY = 1
+    led_state = True
+    led_time = 0
 
-selection_mode = False
-joy_last_select_time = 0
-selected_mode = "manual"
+    rainbow_begin = False
+    maze2_begin = False
 
-joy_toggle_delay = 1
-led_state = True
-led_time = 0
+    while True:
+        values = control.get_values()
 
-rainbow_begin = False
-maze2_begin = False
+        if values['control_buttons']['Start'] and joy_last_select_time + JOY_TOGGLE_DELAY < time.time() and mode != "selection":
+            mode = "selection"
+            first = True
+            joy_last_select_time = time.time()
+            time.sleep(1)
 
-while True:
-    values = control.get_values()
+        if mode == "selection":
+            if values["button_pad"]['A']:
+                selected_mode = "line"
 
+            elif values["button_pad"]['B']:
+                selected_mode = "rainbow"
 
+            elif values["button_pad"]['Y']:
+                selected_mode = "maze"
 
-    #if values['control_buttons']['Start'] and joy_last_select_time + joy_toggle_delay < time.time() and not selection_mode:
-    #    print("b")
-    #    selection_mode = not selection_mode
-    #    mode = "selection"
-    #    first = True
-    #    joy_last_select_time = time.time()
-    #    time.sleep(1)
+            elif values["button_pad"]['X']:
+                selected_mode = "manual"
+                 
+            if values["bumpers"][1]:
+                current_index = MODES.index(selected_mode)
+                new_index = 0 if current_index+1 == len(MODES) else current_index+1
+                selected_mode = MODES[new_index]
 
-    mode = 'maze'
-    if mode == "selection":
-        if values["button_pad"]['A']:
-            selected_mode = "line"
-            
-        elif values["button_pad"]['B']:
-            selected_mode = "rainbow"
+            if values["bumpers"][0]:
+                current_index = MODES.index(selected_mode)
+                new_index = current_index-1
+                selected_mode = MODES[new_index]
 
-        elif values["button_pad"]['Y']:
-            selected_mode = "maze"
-
-        elif values["button_pad"]['X']:
-            selected_mode = "manual"
-        
-        if values["bumpers"][1]:
-            mode_index += 1
-            if mode_index == len(modes):
-                mode_index = 0
-            selected_mode = modes[mode_index]
-
-        if values["bumpers"][0]:
-            mode_index -= 1
-            if mode_index == -1:
-                mode_index = 0
-            selected_mode = modes[mode_index]
-
-        if led_time == 20:
-            if led_state:
-                ROBOT.set_colour(0)
+            if led_time == 20:
+                if led_state:
+                    ROBOT.set_colour(COLOURS[0])
+                else:
+                    ROBOT.set_colour(COLOURS[MODES.index(selected_mode)+1])
+                led_state = not led_state
+                led_time = 0
             else:
-                ROBOT.set_colour(modes.index(selected_mode)+1)
-            led_state = not led_state
-            led_time = 0
-        else:
-            led_time += 1
+                led_time += 1
 
-        if values['control_buttons']['Back']:
-            shift_mode(selected_mode)
+            if values['control_buttons']['Back']:
+                mode = selected_mode
+                ROBOT.set_colour(COLOURS[MODES.index(selected_mode)+1])
 
 
-    if mode == "line":
-        line.update()
+        if mode == "line":
+            line.update()
 
-    if mode == "rainbow":
-        if not rainbow_begin:
-            rainbow_begin = True
-            rainbown = rainbow.Rainbow()
-            rainbown.running = True
-        else:
-            rainbown.update(0)
+        if mode == "rainbow":
+            if not rainbow_begin:
+                rainbow_begin = True
+                rainbown = rainbow.Rainbow()
+                rainbown.running = True
+            else:
+                rainbown.update(0)
 
-    if mode == "maze":
-        if not maze2_begin:
-            maze2_begin = True
-            maze2n = maze2.Maze2()
-        else:
-            maze2n.update()
+        if mode == "maze":
+            if not maze2_begin:
+                maze2_begin = True
+                maze2n = maze2.Maze2()
+            else:
+                maze2n.update()
 
-    if mode == "manual":
+        if mode == "manual":
+            manual_drive.update(values)
+        
+        if mode == "golf":
+            golf.update(values)
+
+    if mode == "shoot":
         manual_drive.update(values)
-    
-    if mode == "golf":
-        golf.update(values)
+        if values['triggers'][1]:
+            ROBOT.enable_flywheel()
+        else:
+            ROBOT.disable_flywheel()
 
 
-
-ROBOT.driver.safe_shutdown()
+    ROBOT.driver.safe_shutdown()

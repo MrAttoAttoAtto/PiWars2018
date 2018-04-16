@@ -14,6 +14,8 @@ address = 0x04
 
 START_HOLD_REQUIRED = 4
 
+RGB_PINS = [21, 22, 23]
+
 # ----COLORS-----
 # This is a DICTIONARY of the form:
 # {"yellow":[[h_bot, s_bot, v_bot], [h_top, s_top, v_top]], "red":...}
@@ -58,6 +60,7 @@ MAZE_ROBOT_FORWARD_TIME = 0.25
 MAZE_CLOSE_THRESH = 15
 MAZE_SIDE_THRESH = 42
 MAZE_PICKINESS = 40
+MIN_MARKER_RADIUS = 10
 
 #-------LINE---------
 LINE_SENSITIVITY = 100 #lower less sensitive
