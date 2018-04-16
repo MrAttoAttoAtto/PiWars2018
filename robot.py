@@ -27,6 +27,7 @@ class Robot:
             self.camera.wait_for_ready()
         except Exception as e:
             self.camera = None
+            print("There is no camera")
 
         self.driver = drive.Driver()
         atexit.register(self.shutdown)
@@ -100,13 +101,13 @@ class Robot:
             time.sleep(duration)
             self.halt()
 
-    def bear_left(self, change=50, duration=-1):
+    def bear_left(self, change=50, duration=-1, speed=1):
         '''Change is a % of straight ahead'''
-        self.set_tank(1-change/100, 1)
+        self.set_tank(speed*(1-change/100), speed*1)
     
-    def bear_right(self, change=50, duration=-1):
+    def bear_right(self, change=50, duration=-1, speed=1):
         '''Change is a % of straight ahead'''
-        self.set_tank(1, 1-change/100)
+        self.set_tank(speed*1, speed*(1-change/100))
 
     def backwards(self, speed=1, duration=-1):
         self.set_tank(-speed, -speed)
