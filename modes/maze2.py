@@ -24,9 +24,9 @@ class Maze2:
         self.side = 0
         self.detection_queue = queue.Queue(1)
 
-        self.detection_thread = threading.Thread(None, self.detect_marker)
-        self.detection_thread.setDaemon(True)
-        self.detection_thread.start()
+        #self.detection_thread = threading.Thread(None, self.detect_marker)
+        #self.detection_thread.setDaemon(True)
+        #self.detection_thread.start()
 
     @staticmethod
     def dprint(txt):
@@ -176,14 +176,14 @@ class Maze2:
     '''
 
     #the mazest simples
-    distances = ROBOT.get_distance()
-    print(distances)
-    if distances[0] > distances[2] > 0 and distances[1] <= 15:
-        ROBOT.left(duration=0.1)
-        print("left")
-    elif distances[2] > distances[0] > 0 and distances[1] <= 15:
-        ROBOT.right(duration=0.1)
-        print("right")
-    else:
-        ROBOT.forwards(speed=0.25)
-        print("forwards")
+        distances = ROBOT.get_distance()
+        print(distances)
+        if (distances[0] > distances[2] > 0 or distances[0] == 0) and distances[1] <= 15:
+            ROBOT.left(duration=0.1)
+            print("left")
+        elif (distances[2] > distances[0] > 0 or distances[0] == 0) and distances[1] <= 15:
+            ROBOT.right(duration=0.1)
+            print("right")
+        else:
+            ROBOT.forwards(speed=0.25)
+            print("forwards")
