@@ -178,10 +178,10 @@ class Maze2:
     #the mazest simples
     distances = ROBOT.get_distance()
     print(distances)
-    if distances[0] > distances[2] and distances[1] <= 15:
+    if distances[0] > distances[2] > 0 and distances[1] <= 15:
         ROBOT.left(duration=0.1)
         print("left")
-    elif distances[2] > distances[0] and distances[1] <= 15:
+    elif distances[2] > distances[0] > 0 and distances[1] <= 15:
         ROBOT.right(duration=0.1)
         print("right")
     else:
