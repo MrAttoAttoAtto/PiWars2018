@@ -37,9 +37,9 @@ class Robot:
     
         self.pwm = GPIO.PWM(18, 100)
         self.pwm.start(5)
-        self.rgb_pwms = [GPIO.PWM(x, 100) for x in RGB_PINS]
-        for pinpwm in self.rgb_pwms:
-            pinpwm.start(0)
+        #self.rgb_pwms = [GPIO.PWM(x, 100) for x in RGB_PINS]
+        #for pinpwm in self.rgb_pwms:
+        #    pinpwm.start(0)
 
         self.flywheels = [10, 11, 14, 15] #TO BE CONFIRMED
         # Motors across a,b and c,d
