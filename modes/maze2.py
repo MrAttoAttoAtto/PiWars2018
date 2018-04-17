@@ -181,9 +181,15 @@ class Maze2:
         if (distances[0] > distances[2] > 0 or distances[0] == 0) and distances[1] <= 15:
             ROBOT.left(duration=0.1)
             print("left")
-        elif (distances[2] > distances[0] > 0 or distances[0] == 0) and distances[1] <= 15:
+        elif (distances[2] > distances[0] > 0 or distances[2] == 0) and distances[1] <= 15:
             ROBOT.right(duration=0.1)
             print("right")
+        elif 0 < distances[2] <= 10 and distances[0] > distances[2]:
+            ROBOT.left(duration=0.05)
+            print("bear left")
+        elif 0 < distances[0] <= 10 and distances[2] > distances[0]:
+            ROBOT.right(duration=0.05)
+            print("bear right")
         else:
             ROBOT.forwards(speed=0.25)
             print("forwards")
