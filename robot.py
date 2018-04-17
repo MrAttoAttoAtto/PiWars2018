@@ -2,25 +2,24 @@
 The interface for the hardware parts of the robot.
 Access motors, ultrasonics from here.
 '''
-from smbus import SMBus
+from serial import Serial
 import time
 import camera
-from settings import address, RGB_PINS
+from settings import SERIAL_PORT, RGB_PINS
 import drive
 import atexit
 import RPi.GPIO as GPIO
 
 
 class Robot:
-    def __init__(self, ultrasonic_address=address):
+    def __init__(self):
         '''
             All the hardware in the robot.
         '''
         self.last_left = 0
         self.last_right = 0
 
-        self.ultrasonic_address = ultrasonic_address
-        self.ultrasonic_connection = SMBus(1)
+        self.ultrasonic_ser = Serial(SERIAL_PORT)
         try:
             self.camera = camera.ConstantCamera()
             self.camera.start()
@@ -34,9 +33,10 @@ class Robot:
 
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(18, GPIO.OUT)
-    
         self.pwm = GPIO.PWM(18, 100)
         self.pwm.start(5)
+
+        for x in RGB_PINS: GPIO.setup(x)
         self.rgb_pwms = [GPIO.PWM(x, 100) for x in RGB_PINS]
         for pinpwm in self.rgb_pwms:
             pinpwm.start(0)
@@ -79,23 +79,21 @@ class Robot:
             self.rgb_pwms[i].ChangeDutyCycle(duty)
 
 
-    def get_distance(self):
+    def get_distances(self):
         '''
-        Uses I2C to talk to an arduino nano, getting all distances from multiple
-        ultrasonic sensors
-            WIRING:
-            RPI's GND = PIN06 -----> ARDUINO NANO'S GND
-            RPI'S SDA = GPIO02 = PIN03 -----> ARDUINO NANO'S SDA = A4
-            RPI'S SCL = GPI03 = PIN05 -----> ARDUINO NANO'S SCL = A5
+        Uses UART Serial over USB to communicate.
         '''
-        left = self.ultrasonic_connection.read_byte(self.ultrasonic_address)
-        middle = self.ultrasonic_connection.read_byte(self.ultrasonic_address)
-        right = self.ultrasonic_connection.read_byte(self.ultrasonic_address)
+        left = self.get_distance(0)
+        middle = self.get_distance(1)
+        right = self.get_distance(2)
         return [right, middle, left]
 
+    def get_distance(self, index):
+        self.ultrasonic_ser.write(bytes([index]))
+        return ord(self.ultrasonic_ser.read())
+    
     def take_picture(self):
         return self.camera.get_image()
-
 
     def forwards(self, speed=1, duration=-1):
         self.set_tank(speed, speed)
@@ -139,8 +137,10 @@ class Robot:
 
          
     def shutdown(self):
-        self.camera._close_event.set()
+        self.camera.halt_capture()
         self.halt()
+        self.ultrasonic_ser.close()
+        GPIO.cleanup()
 
 
 ROBOT = Robot()

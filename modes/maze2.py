@@ -176,7 +176,7 @@ class Maze2:
     '''
 
     #the mazest simples
-        distances = ROBOT.get_distance()
+        distances = ROBOT.get_distances()
         print(distances)
         if (distances[0] > distances[2] > 0 or distances[0] == 0) and distances[1] <= 15:
             ROBOT.left(duration=0.1)
