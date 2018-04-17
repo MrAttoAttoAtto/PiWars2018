@@ -167,11 +167,11 @@ class Rainbow:
         return (False, 0, 0)
 
     def ensure_area_touched(self):
-        dl, dc, dr = ROBOT.get_distance()
+        dl, dc, dr = ROBOT.get_distances()
         return dc < 16
 
     def ensure_safe_distance(self):
-        dl, dc, dr = ROBOT.get_distance()
+        dl, dc, dr = ROBOT.get_distances()
         return dl > 12 and dc > 12 and dr > 12
 
 

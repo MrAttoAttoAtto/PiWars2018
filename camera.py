@@ -78,3 +78,7 @@ class ConstantCamera(threading.Thread):
     def stop_preview(self):
         with self._lock:
             self.preview = False
+
+    def halt_capture(self):
+        self._close_event.set()
+        self.join()
