@@ -36,15 +36,13 @@ class Robot:
         self.pwm = GPIO.PWM(18, 100)
         self.pwm.start(5)
 
-        for x in RGB_PINS: GPIO.setup(x)
+        for x in RGB_PINS: GPIO.setup(x, GPIO.OUT)
         self.rgb_pwms = [GPIO.PWM(x, 100) for x in RGB_PINS]
         for pinpwm in self.rgb_pwms:
             pinpwm.start(0)
 
-        self.flywheels = [10, 11, 14, 15] #TO BE CONFIRMED
-        # Motors across a,b and c,d
-        for motor in self.flywheels:
-            GPIO.setup(motor, GPIO.OUT)
+        self.flywheels_pin = 5
+        GPIO.setup(self.flywheels_pin, GPIO.OUT)
         
 
     def set_tank(self, speed_left, speed_right):
@@ -60,16 +58,11 @@ class Robot:
     
     def enable_flywheel(self):
         '''Enables the flywheels'''
-        for motor in self.flywheels:
-            if motor % 2 == 0:
-                GPIO.output(motor, True)
-            else:
-                GPIO.output(motor, False)
+        GPIO.output(self.flywheels_pin, True)
 
     def disable_flywheel(self):
         '''Disables the flywheels'''
-        for motor in self.flywheels:
-            GPIO.output(motor, False)
+        GPIO.output(self.flywheels_pin, False)
 
     def set_colour(self, hex_value):
         '''Change the LED colour'''
