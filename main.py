@@ -122,6 +122,7 @@ while True:
             ROBOT.enable_flywheel()
         else:
             ROBOT.disable_flywheel()
-
+        if values['bumpers'][1]:
+            ROBOT.fire()
 
 ROBOT.driver.safe_shutdown()
