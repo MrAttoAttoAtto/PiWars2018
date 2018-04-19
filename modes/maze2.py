@@ -1,10 +1,17 @@
 """
 Should navigate the maze, using a hyped up hug the wall tactic (probs needs some fixing though)
 """
+import queue
+import threading
 from time import sleep
 
+import cv2
+import numpy as np
+
 from robot import ROBOT
-from settings import DEBUG, MAZE_CLOSE_THRESH, MAZE_PICKINESS, MAZE_SIDE_THRESH, MAZE_ROBOT_TURN_TIME
+from settings import (DEBUG, MAZE_CLOSE_THRESH, MAZE_PICKINESS,
+                      MAZE_ROBOT_TURN_TIME, MAZE_SIDE_THRESH,
+                      MIN_MARKER_RADIUS, RESOLUTIONX, RESOLUTIONY, THRESHOLDS)
 
 
 class Maze2:
@@ -14,7 +21,12 @@ class Maze2:
         self.count = 0
         self.turn = 0
         self.follow_side = 2
+        self.side = 0
+        self.detection_queue = queue.Queue(1)
 
+        #self.detection_thread = threading.Thread(None, self.detect_marker)
+        #self.detection_thread.setDaemon(True)
+        #self.detection_thread.start()
 
     @staticmethod
     def dprint(txt):
@@ -67,11 +79,8 @@ class Maze2:
                 self.state = "forwards"
                 sleep(0.5)
         """
-<<<<<<< HEAD
-=======
         #The second maze2
         """
->>>>>>> a1df43d25124a601623724b8b00058a0b9032020
         distances = ROBOT.get_distance()
 
         
@@ -93,25 +102,94 @@ class Maze2:
         """
         #the third maze2
 
-<<<<<<< HEAD
-
-        if distances[2] > 80:
-            self.follow_side = 0
-            print("Following left side now!")
-
-        
-
-            
-=======
+        '''
         distances = ROBOT.get_distance()
-        if distances[0] <=15 and distances[1] <=15:
-            ROBOT.right(duration=0.75)
-        elif distances[0] > 30:
-            ROBOT.bear_right()
-        elif distances[0] <= 10:
-            ROBOT.bear_left()
+        print(distances)
+        print("LEFT = " + str(ROBOT.last_left) + " RIGHT = " + str(ROBOT.last_right))
+        if distances[2] > 60 and 0 < distances[1] <= 15:
+            ROBOT.right(duration=0.25)
+            print("turning right")
+        #if 0 < distances[0] < 30 and 0 < distances[1] <=15:
+         #   ROBOT.right(duration=0.2)
+          #  
+           # print("turning right")
+        elif 0 < distances[2] <= 10 and distances[0] > distances[2]:
+            ROBOT.left(duration=0.05)
+            print("bearing left")
+        elif 0 < distances[0] <= 10 and distances[2] > distances[0]:
+            ROBOT.right(duration=0.05)
+            print("bearing right")
         else:
-            ROBOT.forwards(speed=0.5)
->>>>>>> a1df43d25124a601623724b8b00058a0b9032020
+            ROBOT.forwards(speed=0.25)
+            print("forwards")
+        '''
 
+        '''
+        #the third.five maze2 (with direction changeness :))
+        should_change_section = bool(self.detection_queue.qsize()) if self.side == 0 else False
 
+        turn_function = ROBOT.right if self.side == 0 else ROBOT.left
+    
+        distances = ROBOT.get_distance()
+        if distances[abs(self.side-2)] <= 15 and distances[1] <= 15:
+            turn_function(duration=0.25)
+        elif 0 < distances[2] <= 10 and distances[0] > distances[2]:
+            ROBOT.left(duration=0.05)
+            #print("bearing left")
+        elif 0 < distances[0] <= 10 and distances[2] > distances[0]:
+            ROBOT.right(duration=0.05)
+            #print("bearing right")
+        else:
+            ROBOT.forwards(speed=0.25)
+            self.side = 2 if should_change_section else self.side
+
+    def detect_marker(self):
+        while True:
+            image = ROBOT.take_picture()
+
+            working_thresholds = np.array(THRESHOLDS["MAZE_MARKER"])
+
+            hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+
+            mask = cv2.inRange(hsv, working_thresholds[0], working_thresholds[1])
+            # Make the shapes more regular
+            mask = cv2.erode(mask, None, iterations=2)
+            mask = cv2.dilate(mask, None, iterations=2)
+
+            cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
+
+            if cnts:
+                max_contour = max(cnts, key=cv2.contourArea)
+                ((x_pos, y_pos), radius) = cv2.minEnclosingCircle(max_contour)
+                x_pos = int(x_pos)
+                y_pos = int(y_pos)
+
+                if DEBUG:
+                    cv2.line(image, (x_pos, 0), (x_pos, RESOLUTIONY), (255, 0, 0), 1)
+                    cv2.line(image, (0, y_pos), (RESOLUTIONX, y_pos), (255, 0, 0), 1)
+                    cv2.drawContours(image, cnts, -1, (0, 255, 0), 1)
+                    cv2.imshow("Image", image)
+                    cv2.waitKey(1)
+
+                if radius > MIN_MARKER_RADIUS:
+                    self.detection_queue.put(True)
+    '''
+
+    #the mazest simples
+        distances = ROBOT.get_distances()
+        print(distances)
+        if distances[0] > distances[2] and distances[1] <= 15:
+            ROBOT.left(duration=0.1)
+            print("left")
+        elif distances[2] > distances[0] and distances[1] <= 15:
+            ROBOT.right(duration=0.1)
+            print("right")
+        elif distances[2] <= 10 and distances[0] > distances[2]:
+            ROBOT.left(duration=0.05)
+            print("bear left")
+        elif distances[0] <= 10 and distances[2] > distances[0]:
+            ROBOT.right(duration=0.05)
+            print("bear right")
+        else:
+            ROBOT.forwards(speed=0.25)
+            print("forwards")

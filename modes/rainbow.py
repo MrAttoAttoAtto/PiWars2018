@@ -98,9 +98,9 @@ class Rainbow:
                 elif self.state == RainbowState.TURNING:
                     if self.ensure_safe_distance():
                         if self.turn == 0:
-                            ROBOT.right()
+                            ROBOT.right(speed=SPEED_SCALE)
                         else:
-                            ROBOT.left()
+                            ROBOT.left(speed=SPEED_SCALE)
                     else:
                         ROBOT.backwards(SPEED_SCALE)
                     
@@ -126,7 +126,7 @@ class Rainbow:
         hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
         # Get the parts of the image in the specified colour range.
-        mask = cv2.inRange(image, working_thresholds[0], working_thresholds[1])
+        mask = cv2.inRange(hsv, working_thresholds[0], working_thresholds[1])
         # Make the shapes more regular
         mask = cv2.erode(mask, None, iterations=2)
         mask = cv2.dilate(mask, None, iterations=2)
@@ -146,7 +146,6 @@ class Rainbow:
             M = cv2.moments(c)
             x = int(x)
             y = int(y)
-            center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
 
             if DEBUG:
                     cv2.line(image, (x, 0), (x, RESOLUTIONY), (255, 0, 0), 1)
@@ -155,6 +154,7 @@ class Rainbow:
                     cv2.imshow("Image", image)
                     cv2.waitKey(1)
             # only proceed if the radius meets a minimum size
+            print("radius = " + str(radius))
             if radius > MIN_BALL_RADIUS:
                 # Show debug image
 
@@ -167,11 +167,11 @@ class Rainbow:
         return (False, 0, 0)
 
     def ensure_area_touched(self):
-        dl, dc, dr = ROBOT.get_distance()
+        dl, dc, dr = ROBOT.get_distances()
         return dc < 16
 
     def ensure_safe_distance(self):
-        dl, dc, dr = ROBOT.get_distance()
+        dl, dc, dr = ROBOT.get_distances()
         return dl > 12 and dc > 12 and dr > 12
 
 
@@ -191,5 +191,4 @@ if __name__ == '__main__':
     x = Rainbow()
     while True:
         image = ROBOT.take_picture()
-        rain.ball_aligned(image, "rainbow_blue")
-
+        x.ball_aligned(image, "rainbow_blue")

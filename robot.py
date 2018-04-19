@@ -2,45 +2,47 @@
 The interface for the hardware parts of the robot.
 Access motors, ultrasonics from here.
 '''
-from smbus import SMBus
+from serial import Serial
 import time
 import camera
-from settings import address
+from settings import SERIAL_PORT, RGB_PINS
 import drive
 import atexit
 import RPi.GPIO as GPIO
 
 
 class Robot:
-    def __init__(self, ultrasonic_address=address):
+    def __init__(self):
         '''
             All the hardware in the robot.
         '''
         self.last_left = 0
         self.last_right = 0
 
-        self.ultrasonic_address = ultrasonic_address
-        self.ultrasonic_connection = SMBus(1)
+        self.ultrasonic_ser = Serial(SERIAL_PORT)
         try:
             self.camera = camera.ConstantCamera()
             self.camera.start()
             self.camera.wait_for_ready()
         except Exception as e:
             self.camera = None
+            print("There is no camera")
 
         self.driver = drive.Driver()
         atexit.register(self.shutdown)
 
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(18, GPIO.OUT)
-    
         self.pwm = GPIO.PWM(18, 100)
         self.pwm.start(5)
 
-        self.flywheels = [10, 11, 14, 15] #TO BE CONFIRMED
-        # Motors across a,b and c,d
-        for motor in self.flywheels:
-            GPIO.setup(motor, GPIO.OUT)
+        for x in RGB_PINS: GPIO.setup(x, GPIO.OUT)
+        self.rgb_pwms = [GPIO.PWM(x, 100) for x in RGB_PINS]
+        for pinpwm in self.rgb_pwms:
+            pinpwm.start(0)
+
+        self.flywheels_pin = 5
+        GPIO.setup(self.flywheels_pin, GPIO.OUT)
         
 
     def set_tank(self, speed_left, speed_right):
@@ -56,39 +58,35 @@ class Robot:
     
     def enable_flywheel(self):
         '''Enables the flywheels'''
-        for motor in self.flywheels:
-            if motor % 2 == 0:
-                GPIO.output(motor, True)
-            else:
-                GPIO.output(motor, False)
+        GPIO.output(self.flywheels_pin, True)
 
     def disable_flywheel(self):
         '''Disables the flywheels'''
-        for motor in self.flywheels:
-            GPIO.output(motor, False)
+        GPIO.output(self.flywheels_pin, False)
 
-    def set_colour(self, colour_num):
-        if 0 <= colour_num <= 5:
-            self.ultrasonic_connection.write_byte(self.ultrasonic_address, colour_num)
+    def set_colour(self, hex_value):
+        '''Change the LED colour'''
+        value = hex_value.lstrip('#')
+        colour = tuple(int(value[i:i + 2], 16) * (100/255) for i in range(0, 6, 2))
+        for i, duty in enumerate(colour):
+            self.rgb_pwms[i].ChangeDutyCycle(duty)
 
 
-    def get_distance(self):
+    def get_distances(self):
         '''
-        Uses I2C to talk to an arduino nano, getting all distances from multiple
-        ultrasonic sensors
-            WIRING:
-            RPI's GND = PIN06 -----> ARDUINO NANO'S GND
-            RPI'S SDA = GPIO02 = PIN03 -----> ARDUINO NANO'S SDA = A4
-            RPI'S SCL = GPI03 = PIN05 -----> ARDUINO NANO'S SCL = A5
+        Uses UART Serial over USB to communicate.
         '''
-        left = self.ultrasonic_connection.read_byte(self.ultrasonic_address)
-        middle = self.ultrasonic_connection.read_byte(self.ultrasonic_address)
-        right = self.ultrasonic_connection.read_byte(self.ultrasonic_address)
+        left = self.get_distance(0)
+        middle = self.get_distance(1)
+        right = self.get_distance(2)
         return [right, middle, left]
 
+    def get_distance(self, index):
+        self.ultrasonic_ser.write(bytes([index]))
+        return ord(self.ultrasonic_ser.read())
+    
     def take_picture(self):
         return self.camera.get_image()
-
 
     def forwards(self, speed=1, duration=-1):
         self.set_tank(speed, speed)
@@ -111,13 +109,13 @@ class Robot:
             time.sleep(duration)
             self.halt()
 
-    def bear_left(self, change=50, duration=-1):
+    def bear_left(self, change=50, duration=-1, speed=1):
         '''Change is a % of straight ahead'''
-        self.set_tank(1-change/100, 1)
+        self.set_tank(speed*(1-change/100), speed*1)
     
-    def bear_right(self, change=50, duration=-1):
+    def bear_right(self, change=50, duration=-1, speed=1):
         '''Change is a % of straight ahead'''
-        self.set_tank(1, 1-change/100)
+        self.set_tank(speed*1, speed*(1-change/100))
 
     def backwards(self, speed=1, duration=-1):
         self.set_tank(-speed, -speed)
@@ -132,8 +130,10 @@ class Robot:
 
          
     def shutdown(self):
-        self.camera._close_event.set()
+        self.camera.halt_capture()
         self.halt()
+        self.ultrasonic_ser.close()
+        GPIO.cleanup()
 
 
 ROBOT = Robot()

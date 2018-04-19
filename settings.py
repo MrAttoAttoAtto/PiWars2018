@@ -10,9 +10,11 @@ DEBUG = True
 RESOLUTIONX = 640
 RESOLUTIONY = 480
 
-address = 0x04
+SERIAL_PORT = "/dev/ttyUSB0"
 
 START_HOLD_REQUIRED = 4
+
+RGB_PINS = [21, 22, 23]
 
 # ----COLORS-----
 # This is a DICTIONARY of the form:
@@ -22,9 +24,7 @@ PURE_THRESHOLDS = json.load(open("thresholds.json"))
 THRESHOLDS = {}
 
 for key, value in PURE_THRESHOLDS.items():
-    THRESHOLDS[key] = []
-    for thresh in value:
-        THRESHOLDS[key].append(np.asarray(value))
+    THRESHOLDS[key] = np.array(value)
 
 # ----RAINBOW----
 MIN_BALL_RADIUS = 10
@@ -58,6 +58,7 @@ MAZE_ROBOT_FORWARD_TIME = 0.25
 MAZE_CLOSE_THRESH = 15
 MAZE_SIDE_THRESH = 42
 MAZE_PICKINESS = 40
+MIN_MARKER_RADIUS = 10
 
 #-------LINE---------
 LINE_SENSITIVITY = 100 #lower less sensitive

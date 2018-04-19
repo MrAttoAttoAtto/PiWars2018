@@ -49,7 +49,7 @@ class Maze:
 
     @staticmethod
     def go_forth():
-        left, frontal_sensor_dist, right = ROBOT.get_distance()
+        left, frontal_sensor_dist, right = ROBOT.get_distances()
 
         while frontal_sensor_dist > MAZE_WALL_DISTANCE or frontal_sensor_dist == 0:
             if 0 < left < 5:
@@ -59,13 +59,13 @@ class Maze:
             else:
                 ROBOT.forwards(MAZE_ROBOT_FORWARD_SPEED, MAZE_ROBOT_FORWARD_TIME)
 
-            left, frontal_sensor_dist, right = ROBOT.get_distance()
+            left, frontal_sensor_dist, right = ROBOT.get_distances()
 
     def no_loop_go_forth(self):
         '''
         Same as above, but made for the no-loop system that Joe likes
         '''
-        left, frontal_sensor_dist, right = ROBOT.get_distance()
+        left, frontal_sensor_dist, right = ROBOT.get_distances()
 
         if frontal_sensor_dist > MAZE_WALL_DISTANCE or frontal_sensor_dist == 0:
             if 0 < left < 5:
@@ -128,7 +128,7 @@ class Maze:
                 ROBOT.right(MAZE_ROBOT_TURN_SPEED, MAZE_ROBOT_TURN_TIME)
         
         while True:
-            if ROBOT.get_distance()[1] == 0: #i.e. it's quite far
+            if ROBOT.get_distances()[1] == 0: #i.e. it's quite far
                 ROBOT.forwards()
             
             ROBOT.left(MAZE_ROBOT_TURN_SPEED, MAZE_ROBOT_TURN_TIME)
@@ -174,7 +174,7 @@ class Maze:
 
         # This is actually really hacky, because the way that we see whether the robot is looking at the exit (i.e. the endless tunnel)
         # is by checking if the distance sensors can not sense the wall (because it is too far away) or just is far away
-        if ROBOT.get_distance()[1] == 0 or ROBOT.get_distance()[1] > 175:
+        if ROBOT.get_distances()[1] == 0 or ROBOT.get_distances()[1] > 175:
             ROBOT.forwards()
             self.position = 7
         else:

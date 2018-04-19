@@ -5,7 +5,6 @@ import colorsys
 import json
 import sys
 import time
-sleep = time.sleep
 
 import cv2
 import numpy as np
@@ -113,7 +112,7 @@ if __name__ == "__main__":
     # Set ISO to the desired value
     camera.iso = 200
     # Wait for the automatic gain control to settle
-    sleep(2)
+    time.sleep(2)
     # Now fix the values
     camera.shutter_speed = camera.exposure_speed
     camera.exposure_mode = 'off'

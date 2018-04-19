@@ -13,7 +13,7 @@ from settings import RESOLUTIONX, RESOLUTIONY
 
 class ConstantCamera(threading.Thread):
     def __init__(self, *args, **kwargs):
-        super().__init__()
+        super().__init__(daemon=True)
         self.camera = PiCamera(*args, **kwargs)
         self.camera.resolution = (RESOLUTIONX, RESOLUTIONY)
         self.camera.rotation = 0
@@ -78,3 +78,7 @@ class ConstantCamera(threading.Thread):
     def stop_preview(self):
         with self._lock:
             self.preview = False
+
+    def halt_capture(self):
+        self._close_event.set()
+        self.join()
