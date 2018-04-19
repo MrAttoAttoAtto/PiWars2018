@@ -107,6 +107,7 @@ if __name__ == "__main__":
             ROBOT.enable_flywheel()
         else:
             ROBOT.disable_flywheel()
-
+        if values['bumpers'][1]:
+            ROBOT.fire()
 
     ROBOT.driver.safe_shutdown()
