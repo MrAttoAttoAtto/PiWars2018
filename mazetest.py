@@ -73,19 +73,19 @@ def left_left(specie=False):
 
 start = time()
 
-#follow_left_wall()
-#right_right()
-#follow_left_wall()
-#right_right()
-#follow_left_wall()
-#right_right()
-#if ROBOT.get_distances()[1] <= 18:
-#    left_left()
-#    left_left()
-#    annoying=True
-#else:
 follow_left_wall()
-left_left()
+right_right()
+follow_left_wall()
+right_right()
+follow_left_wall()
+right_right()
+if ROBOT.get_distances()[1] <= 18:
+    left_left()
+    left_left()
+    annoying=True
+else:
+    follow_left_wall()
+    left_left()
 annoying=False
 ROBOT.set_tank(0.8, 0.65)
 sleep(0.6)
