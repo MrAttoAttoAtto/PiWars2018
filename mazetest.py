@@ -84,7 +84,8 @@ start = time()
 #left_left()
 #annoying=True
 #else:
-follow_left_wall(middle=True)
+"""
+follow_left_wall()
 ROBOT.set_tank(0.6, 0.45)
 sleep(0.6)
 left_left()
@@ -96,4 +97,4 @@ follow_right_wall(True)
 diff = time()-start
 print(diff)
 print(annoying)
-
+"""
