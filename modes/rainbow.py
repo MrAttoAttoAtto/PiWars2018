@@ -13,13 +13,17 @@ Code for the "over the rainbow" challenge.
 '''
 
 
-import cv2
-import numpy as np
 from enum import Enum
 
-from settings import (BALL_OFFSET_MAX, MIN_BALL_RADIUS,
-                      SPEED_SCALE, THRESHOLDS, DEBUG, RESOLUTIONX, RESOLUTIONY)
+import cv2
+import numpy as np
+
 from robot import ROBOT
+from settings import (BALL_OFFSET_MAX, DEBUG, ENABLE_FIRST_TURN_CORRECTION,
+                      ENABLE_TURN_CORRECTION, MIN_BALL_RADIUS, RESOLUTIONX,
+                      RESOLUTIONY, SPEED_SCALE, THRESHOLDS,
+                      TURN_CORRECTION_TIME)
+
 #from tools import get_centroid
 
 class RainbowState(Enum):
@@ -108,6 +112,13 @@ class Rainbow:
                     # If robot aligned with ball
                     if self.ball_aligned(image, VISIT_COLOURS[self.next])[2] < BALL_OFFSET_MAX:
                         self.last = self.next
+                        if ENABLE_TURN_CORRECTION:
+                            if ENABLE_FIRST_TURN_CORRECTION or len(self.visited) != 0:
+                                if self.turn == 0:
+                                    ROBOT.left(speed=SPEED_SCALE/1.5, duration=TURN_CORRECTION_TIME)
+                                else:
+                                    ROBOT.right(speed=SPEED_SCALE/1.5, duration=TURN_CORRECTION_TIME)
+                                
                         self.state = RainbowState.MOVING_FORWARD
 
                 elif self.state == RainbowState.MOVING_FORWARD:
