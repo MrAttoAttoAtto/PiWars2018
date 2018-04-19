@@ -11,7 +11,7 @@ def follow_left_wall(middle=False):
             return
         
         print(distances)
-        if 0 < distances[1] <= 18:
+        if 0 < distances[1] <= 18 and not middle:
             ROBOT.halt()
             print("wallended")
             return
@@ -77,19 +77,17 @@ start = time()
 #right_right()
 #follow_left_wall()
 #right_right()
-#follow_left_wall()
+#follow_left_wall)
 #right_right()
 if ROBOT.get_distances()[1] <= 18:
     left_left()
     left_left()
     annoying=True
 else:
-    follow_left_wall()
-    left_left()
-    annoying=False
+    follow_left_wall(middle=True)
 ROBOT.set_tank(0.8, 0.65)
 sleep(0.6)
-left_left(True)
+left_left()
 ROBOT.set_tank(0.8, 0.65)
 sleep(0.4)
 follow_right_wall()
