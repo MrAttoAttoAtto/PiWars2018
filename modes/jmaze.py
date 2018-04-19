@@ -1,8 +1,8 @@
 from robot import ROBOT
 FRONT_THRESH = 10
 TURN_DURATION = 5
-CORRIDOR_THRESH = 20
-ALIGN_THRESH = 5
+CORRIDOR_THRESH = 40
+ALIGN_THRESH = 10
 def update():
     right, front, left = ROBOT.get_distances()
     if front < FRONT_THRESH:
