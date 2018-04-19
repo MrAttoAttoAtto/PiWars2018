@@ -22,7 +22,7 @@ def follow_left_wall(middle=False):
             ROBOT.left(duration=0.06)
             print("bearing left")
         else:
-            ROBOT.set_tank(0.8, 0.65)
+            ROBOT.set_tank(0.6, 0.45)
 
 def follow_right_wall(last=False):
     start = time()
@@ -52,7 +52,7 @@ def follow_right_wall(last=False):
             ROBOT.right(duration=0.06)
             print("bearing left")
         else:
-            ROBOT.set_tank(0.8, 0.65)
+            ROBOT.set_tank(0.6, 0.45)
 
 def right_right():
     """
@@ -85,10 +85,10 @@ if ROBOT.get_distances()[1] <= 18:
     annoying=True
 else:
     follow_left_wall(middle=True)
-ROBOT.set_tank(0.8, 0.65)
+ROBOT.set_tank(0.6, 0.45)
 sleep(0.6)
 left_left()
-ROBOT.set_tank(0.8, 0.65)
+ROBOT.set_tank(0.6, 0.45)
 sleep(0.4)
 follow_right_wall()
 left_left()
