@@ -18,8 +18,10 @@ class Robot:
         '''
         self.last_left = 0
         self.last_right = 0
-
-        self.ultrasonic_ser = Serial(SERIAL_PORT)
+        try:
+            self.ultrasonic_ser = Serial(SERIAL_PORT)
+        except:
+            print("There is no camera or distance")
         try:
             self.camera = camera.ConstantCamera()
             self.camera.start()
@@ -41,8 +43,10 @@ class Robot:
         for pinpwm in self.rgb_pwms:
             pinpwm.start(0)
 
-        self.flywheels_pin = 5
+        self.flywheels_pin = 17
         GPIO.setup(self.flywheels_pin, GPIO.OUT)
+
+        self.servo_angle = 90
         
 
     def set_tank(self, speed_left, speed_right):
@@ -127,6 +131,7 @@ class Robot:
     def set_servo(self, angle):
         '''Im only doing this to satisfy pylint'''
         self.pwm.ChangeDutyCycle((angle/180) * 14 + 6)
+        self.servo_angle = angle
 
          
     def shutdown(self):

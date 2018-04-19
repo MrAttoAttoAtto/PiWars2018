@@ -1,9 +1,12 @@
 from robot import ROBOT
-import tools
+from modes import manual_drive
+
 
 def update(values):
+    manual_drive.update(values)
     if values["button_pad"]['A']:
-        ROBOT.set_servo(13)
+        ROBOT.set_servo(90)
     else:
-        joyY = int(tools.translate(values['right_axes'][1], -1, 1, 6, 20))
-        ROBOT.set_servo(joyY)
+        joyY = values['right_axes'][1]
+        print(joyY)
+        ROBOT.set_servo(ROBOT.servo_angle+(joyY*6))

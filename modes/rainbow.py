@@ -30,10 +30,10 @@ class RainbowState(Enum):
 
 
 VISIT_COLOURS = [
-    "rainbow_red",
-    "rainbow_blue",
-    "rainbow_yellow",
-    "rainbow_green"
+    "RAINBOW_RED",
+    "rainbow_blue".upper(),
+    "rainbow_yellow".upper(),
+    "rainbow_green".upper()
 ]
 
 class Rainbow:
@@ -59,16 +59,17 @@ class Rainbow:
 
     def find_order(self, image):
         # Turn right
-        ROBOT.right()
+        ROBOT.right(speed=SPEED_SCALE)
         # Try to detect balls
         for index, color in enumerate(VISIT_COLOURS):
             if (index not in self.order):
                 # Ball has not been detected before
-                if self.ball_aligned(image, color)[2] < BALL_OFFSET_MAX:
+                if self.ball_aligned(image, color)[0]:
                     # Ball is aligned, so add the ball to order list.
                     print("FOUND COLOUR "+str(index))
                     self.order.append(index)
                     self.last = index
+        print(self.order)
     
     def update(self, trigger_btn):
         # Should start
@@ -98,9 +99,9 @@ class Rainbow:
                 elif self.state == RainbowState.TURNING:
                     if self.ensure_safe_distance():
                         if self.turn == 0:
-                            ROBOT.right(speed=SPEED_SCALE)
+                            ROBOT.right(speed=SPEED_SCALE/1.5)
                         else:
-                            ROBOT.left(speed=SPEED_SCALE)
+                            ROBOT.left(speed=SPEED_SCALE/1.5)
                     else:
                         ROBOT.backwards(SPEED_SCALE)
                     
@@ -112,6 +113,7 @@ class Rainbow:
                 elif self.state == RainbowState.MOVING_FORWARD:
                     ROBOT.forwards(SPEED_SCALE)
                     if self.ensure_area_touched():
+                        self.visited.append(self.last)
                         self.state = RainbowState.READY_FOR_NEXT
 
         if self.running and trigger_btn:
@@ -161,10 +163,10 @@ class Rainbow:
                 # Where is the circle?
                 height, width = RESOLUTIONY, RESOLUTIONX
                 direction = (width/2 < int(x))
-                extent = int(abs(width/2 - int(x))/(width/2))
+                extent = int(abs(width/2 - int(x)))
                 return (True, direction, extent)
             print("Not big enuph")
-        return (False, 0, 0)
+        return (False, 0, 999909999999)
 
     def ensure_area_touched(self):
         dl, dc, dr = ROBOT.get_distances()
@@ -172,7 +174,7 @@ class Rainbow:
 
     def ensure_safe_distance(self):
         dl, dc, dr = ROBOT.get_distances()
-        return dl > 12 and dc > 12 and dr > 12
+        return dc > 16
 
 
     def reset(self):
