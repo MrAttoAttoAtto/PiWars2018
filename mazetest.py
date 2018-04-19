@@ -79,12 +79,12 @@ start = time()
 #right_right()
 #follow_left_wall)
 #right_right()
-if ROBOT.get_distances()[1] <= 18:
-    left_left()
-    left_left()
-    annoying=True
-else:
-    follow_left_wall(middle=True)
+#if ROBOT.get_distances()[1] <= 18:
+#left_left()
+#left_left()
+#annoying=True
+#else:
+follow_left_wall(middle=True)
 ROBOT.set_tank(0.6, 0.45)
 sleep(0.6)
 left_left()
