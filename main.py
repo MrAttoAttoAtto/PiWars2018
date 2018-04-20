@@ -52,15 +52,17 @@ if __name__ == "__main__":
             elif values["button_pad"]['X']:
                 selected_mode = "manual"
                  
-            if values["bumpers"][1]:
+            if values["bumpers"][1] and joy_last_select_time + JOY_TOGGLE_DELAY < time.time():
                 current_index = MODES.index(selected_mode)
                 new_index = 0 if current_index+1 == len(MODES) else current_index+1
                 selected_mode = MODES[new_index]
+                joy_last_select_time = time.time()
 
-            if values["bumpers"][0]:
+            if values["bumpers"][0] and joy_last_select_time + JOY_TOGGLE_DELAY < time.time():
                 current_index = MODES.index(selected_mode)
                 new_index = current_index-1
                 selected_mode = MODES[new_index]
+                joy_last_select_time = time.time()
             print(selected_mode)
             if led_time == 200:
                 if led_state:
