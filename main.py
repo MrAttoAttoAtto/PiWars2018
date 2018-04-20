@@ -61,8 +61,8 @@ if __name__ == "__main__":
                 current_index = MODES.index(selected_mode)
                 new_index = current_index-1
                 selected_mode = MODES[new_index]
-
-            if led_time == 20:
+            print(selected_mode)
+            if led_time == 200:
                 if led_state:
                     ROBOT.set_colour(COLOURS[0])
                 else:
