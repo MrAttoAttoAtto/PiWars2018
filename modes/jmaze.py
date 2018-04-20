@@ -1,24 +1,26 @@
 from robot import ROBOT
-FRONT_THRESH = 10
-TURN_DURATION = 5
-CORRIDOR_THRESH = 20
-ALIGN_THRESH = 5
+TURN_DIST = 15
+SAFE_F_DIST = 40
+COORIDOR_DIST = 40
+FOLLOW_DIST = 10
+CLOSE_DIST = 5
+
+turning = False
 def update():
+    '''Proto for right corners... not comprehensive'''
+    global turning
     right, front, left = ROBOT.get_distances()
-    if front < FRONT_THRESH:
-        if left < right:
-            ROBOT.right(duration=TURN_DURATION)
+    if not turning:
+        if front < TURN_DIST:
+            turning = True
         else:
-            ROBOT.left(duration=TURN_DURATION)
-    else:
-        if ALIGN_THRESH < abs(left-right) < CORRIDOR_THRESH:
-            if left < right:
-                ROBOT.bear_right()
+            if left > FOLLOW_DIST:
+                ROBOT.bear_left(change=10, speed=0.5)
+            elif left < CLOSE_DIST:
+                ROBOT.bear_right(change=10, speed=0.5)
             else:
-                ROBOT.bear_left()
-        else:
-            ROBOT.forwards()
-
-
-
-        
+                ROBOT.forwards(speed=0.5)
+    else:
+        ROBOT.right(speed=0.75)
+        if front > SAFE_F_DIST:
+            turning = False

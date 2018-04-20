@@ -6,7 +6,7 @@ import time
 
 import controller
 # from modes import line, manual_drive, maze, rainbow
-from modes import golf, line, manual_drive, maze2, rainbow
+from modes import golf, line, manual_drive, maze2, rainbow, jmaze
 from robot import ROBOT
 
 if __name__ == "__main__":
@@ -89,12 +89,12 @@ if __name__ == "__main__":
                 rainbown.update(0)
 
         if mode == "maze":
-            if not maze2_begin:
-                maze2_begin = True
-                maze2n = maze2.Maze2()
-            else:
-                maze2n.update()
-
+            #if not maze2_begin:
+            #    maze2_begin = True
+            #    maze2n = maze2.Maze2()
+            #else:
+            #    maze2n.update()
+            jmaze.update()
         if mode == "manual":
             manual_drive.update(values)
         
