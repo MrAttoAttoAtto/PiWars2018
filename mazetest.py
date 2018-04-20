@@ -63,13 +63,13 @@ def right_right():
             ROBOT.right(duration=0.1)
             return
     """
-    ROBOT.right(duration=0.48)
+    ROBOT.right(duration=0.3)
 
 def left_left(specie=False):
     if specie:
-        ROBOT.left(duration=0.38)
+        ROBOT.left(duration=0.2)
     else:
-        ROBOT.left(duration=0.48)
+        ROBOT.left(duration=0.3)
 
 start = time()
 

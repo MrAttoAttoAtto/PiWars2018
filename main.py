@@ -63,7 +63,7 @@ if __name__ == "__main__":
                 new_index = current_index-1
                 selected_mode = MODES[new_index]
                 joy_last_select_time = time.time()
-
+            print(selected_mode)
             if led_time == 200:
                 if led_state:
                     ROBOT.set_colour(COLOURS[0])
