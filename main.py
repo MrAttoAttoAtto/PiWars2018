@@ -29,7 +29,7 @@ if __name__ == "__main__":
 
     rainbow_begin = False
     maze2_begin = False
-
+    ROBOT.set_colour(COLOURS[MODES.index(mode)+1])
     while True:
         values = control.get_values()
 
@@ -101,13 +101,13 @@ if __name__ == "__main__":
         if mode == "golf":
             golf.update(values)
 
-    if mode == "shoot":
-        manual_drive.update(values)
-        if values['triggers'][1]:
-            ROBOT.enable_flywheel()
-        else:
-            ROBOT.disable_flywheel()
-        if values['bumpers'][1]:
-            ROBOT.fire()
+        if mode == "shoot":
+            manual_drive.update(values)
+            if values['triggers'][1]:
+                ROBOT.enable_flywheel()
+            else:
+                ROBOT.disable_flywheel()
+            if values['bumpers'][1]:
+                ROBOT.fire()
 
     ROBOT.driver.safe_shutdown()
