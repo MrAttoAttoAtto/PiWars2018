@@ -9,6 +9,7 @@ from settings import SERIAL_PORT, RGB_PINS
 import drive
 import atexit
 import RPi.GPIO as GPIO
+from neopixel import Adafruit_Neopixel
 
 
 class Robot:
@@ -38,10 +39,8 @@ class Robot:
         self.pwm = GPIO.PWM(18, 100)
         self.pwm.start(5)
 
-        for x in RGB_PINS: GPIO.setup(x, GPIO.OUT)
-        self.rgb_pwms = [GPIO.PWM(x, 100) for x in RGB_PINS]
-        for pinpwm in self.rgb_pwms:
-            pinpwm.start(0)
+        self.neopixel = Adafruit_Neopixel(1, 12)
+        self.neopixel.begin()
 
         self.flywheels_pin = 17
         GPIO.setup(self.flywheels_pin, GPIO.OUT)
@@ -71,9 +70,9 @@ class Robot:
     def set_colour(self, hex_value):
         '''Change the LED colour'''
         value = hex_value.lstrip('#')
-        colour = tuple(int(value[i:i + 2], 16) * (100/255) for i in range(0, 6, 2))
-        for i, duty in enumerate(colour):
-            self.rgb_pwms[i].ChangeDutyCycle(duty)
+        colour = tuple(int(value[i:i + 2], 16) for i in range(0, 6, 2))
+        self.neopixel.setPixelColorRGB(0, *colour)
+        self.neopixel.show()
 
 
     def get_distances(self):
