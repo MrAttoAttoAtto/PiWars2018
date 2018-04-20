@@ -14,7 +14,7 @@ SERIAL_PORT = "/dev/ttyUSB0"
 
 START_HOLD_REQUIRED = 4
 
-RGB_PINS = [21, 22, 23]
+RGB_PINS = [25, 24, 23]
 
 # ----COLORS-----
 # This is a DICTIONARY of the form:
