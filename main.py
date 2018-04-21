@@ -104,7 +104,7 @@ if __name__ == "__main__":
             golf.update(values)
 
         if mode == "shoot":
-            manual_drive.update(values)
+            manual_drive.update(values, True)
             if values['triggers'][1]:
                 ROBOT.enable_flywheel()
             else:
