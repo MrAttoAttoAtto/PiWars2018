@@ -9,7 +9,7 @@ from settings import SERIAL_PORT, RGB_PINS
 import drive
 import atexit
 import RPi.GPIO as GPIO
-from neopixel import Adafruit_Neopixel
+from neopixel import Adafruit_NeoPixel
 
 
 class Robot:
@@ -39,7 +39,7 @@ class Robot:
         self.pwm = GPIO.PWM(18, 100)
         self.pwm.start(5)
 
-        self.neopixel = Adafruit_Neopixel(1, 12)
+        self.neopixel = Adafruit_NeoPixel(1, 12)
         self.neopixel.begin()
 
         self.flywheels_pin = 17
