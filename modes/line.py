@@ -68,7 +68,7 @@ def update(trigger_button):
 
     else:
         print("No Line Found")
-        ROBOT.halt()
+        ROBOT.set_tank(1, 0.8)
 
     if DEBUG:
         try:
