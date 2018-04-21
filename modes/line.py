@@ -29,7 +29,7 @@ def update(trigger_button):
         # Clears the image of noise, makes it smaller (and cropped closer to the robot)
         # Also constructs the contours from the boolean image
 
-        noisy_image = grayscale_image[int(RESOLUTIONY/4):int(RESOLUTIONY/2), 0:RESOLUTIONX]
+        noisy_image = grayscale_image[int(RESOLUTIONY/4):int(RESOLUTIONY/2), int(RESOLUTIONX/4):int(3*RESOLUTIONX/4)]
 
         clear_image = cv2.GaussianBlur(grayscale_image, (5, 5), 0)
 
