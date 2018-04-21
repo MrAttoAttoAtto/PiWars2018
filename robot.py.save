@@ -1,0 +1,8 @@
+'''tank.py
+The interface for the hardware parts of the robot.
+Access motors, ultrasonics from here.
+'''
+from serial import Serial
+import time
+import camera
+from settings import SERIAL_PORT, RGB_PINS

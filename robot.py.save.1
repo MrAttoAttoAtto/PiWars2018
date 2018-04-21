@@ -46,7 +46,6 @@ class Robot:
         GPIO.setup(self.flywheels_pin, GPIO.OUT)
 
         self.servo_angle = 90
-        self.set_servo(75)
         
 
     def set_tank(self, speed_left, speed_right):
@@ -67,11 +66,6 @@ class Robot:
     def disable_flywheel(self):
         '''Disables the flywheels'''
         GPIO.output(self.flywheels_pin, False)
-
-    def fire(self):
-        self.set_servo(-20)
-        time.sleep(0.5)
-        self.set_servo(75)
 
     def set_colour(self, hex_value):
         '''Change the LED colour'''

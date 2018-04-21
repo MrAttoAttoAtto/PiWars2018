@@ -13,12 +13,14 @@ def update(values, not_max=False):
     elif values["d_pad"]["Down"]:
         SPEED = 0.5
 
+    print(SPEED)
+
     left_speed = joyX + joyY
     right_speed = joyY - joyX
 
-    if not_max:
-        left_speed *= SPEED
-        right_speed *= SPEED
+    
+    left_speed *= SPEED
+    right_speed *= SPEED
 
     ROBOT.driver.turn_motors(0, int(left_speed))
     ROBOT.driver.turn_motors(1, int(right_speed))
