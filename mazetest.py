@@ -55,46 +55,35 @@ def follow_right_wall(last=False):
             ROBOT.set_tank(0.6, 0.45)
 
 def right_right():
-    """
-    while True:
-        ROBOT.right(duration=0.1)
-        distances= ROBOT.get_distances()
-        if distances[1] > thresh:
-            ROBOT.right(duration=0.1)
-            return
-    """
     ROBOT.right(duration=0.3)
 
-def left_left(specie=False):
-    if specie:
-        ROBOT.left(duration=0.2)
-    else:
-        ROBOT.left(duration=0.3)
+def left_left():
+    ROBOT.left(duration=0.2)
+
 
 start = time()
 
-#follow_left_wall()
-#right_right()
-#follow_left_wall()
-#right_right()
-#follow_left_wall)
-#right_right()
-#if ROBOT.get_distances()[1] <= 18:
-#left_left()
-#left_left()
-#annoying=True
-#else:
-"""
 follow_left_wall()
-ROBOT.set_tank(0.6, 0.45)
-sleep(0.6)
+right_right()
+follow_left_wall()
+right_right()
+follow_left_wall()
+right_right()
+
+follow_left_wall(True)
+
+
+distances = ROBOT.get_distances()
+while distances[1] > 15:
+    distances = ROBOT.get_distances()
+    ROBOT.set_tank(0.6, 0.4)
+ROBOT.halt()
+
 left_left()
-ROBOT.set_tank(0.6, 0.45)
-sleep(0.4)
 follow_right_wall()
 left_left()
-follow_right_wall(True)
-diff = time()-start
-print(diff)
-print(annoying)
-"""
+follow_right_wall()
+left_left()
+follow_right_wall()
+print(time()-start)
+
