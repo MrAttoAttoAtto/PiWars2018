@@ -84,6 +84,6 @@ follow_right_wall()
 left_left()
 follow_right_wall()
 left_left()
-
+follow_right_wall()
 print(time()-start)
 
