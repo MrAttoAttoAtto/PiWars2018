@@ -22,14 +22,14 @@ class Robot:
         try:
             self.ultrasonic_ser = Serial(SERIAL_PORT)
         except:
-            print("There is no camera or distance")
+            print("Failed to initialise ultrasonics")
         try:
             self.camera = camera.ConstantCamera()
             self.camera.start()
             self.camera.wait_for_ready()
         except Exception as e:
             self.camera = None
-            print("There is no camera")
+            print("Failed to initialise camera")
 
         self.driver = drive.Driver()
         atexit.register(self.shutdown)

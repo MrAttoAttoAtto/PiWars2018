@@ -15,24 +15,33 @@ def initialise():
 SENSITIVITY = 75 #lower less sensitive
 BEAR_NUM = 35 #le % of bear
 
-def update():
-    image = ROBOT.take_picture()
+def update(trigger_button):
+    if trigger_button:
+        ROBOT.halt()
+        return
+
+    try:
+        image = ROBOT.take_picture()
 
 
-    grayscale_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        grayscale_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-    # Clears the image of noise, makes it smaller (and cropped closer to the robot)
-    # Also constructs the contours from the boolean image
+        # Clears the image of noise, makes it smaller (and cropped closer to the robot)
+        # Also constructs the contours from the boolean image
 
-    noisy_image = grayscale_image[int(RESOLUTIONY/4):int(RESOLUTIONY/2), 0:RESOLUTIONX]
+        noisy_image = grayscale_image[int(RESOLUTIONY/4):int(RESOLUTIONY/2), 0:RESOLUTIONX]
 
-    clear_image = cv2.GaussianBlur(grayscale_image, (5, 5), 0)
+        clear_image = cv2.GaussianBlur(grayscale_image, (5, 5), 0)
 
-    reversed_image = cv2.bitwise_not(clear_image)
+        reversed_image = cv2.bitwise_not(clear_image)
 
-    ret, boolean_image = cv2.threshold(reversed_image, 120, 255, cv2.THRESH_BINARY_INV) #THRESH_BINARY_INV
+        ret, boolean_image = cv2.threshold(reversed_image, 120, 255, cv2.THRESH_BINARY_INV) #THRESH_BINARY_INV
 
-    center_x, center_y, max_contour, contours = get_centroid_and_max_contour(boolean_image, 1, cv2.CHAIN_APPROX_NONE)
+        center_x, center_y, max_contour, contours = get_centroid_and_max_contour(boolean_image, 1, cv2.CHAIN_APPROX_NONE)
+    except Exception as e:
+        print(e)
+        ROBOT.set_tank(1, 0.8)
+        return
 
     if False not in (center_x, center_y):
 

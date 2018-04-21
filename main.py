@@ -80,7 +80,7 @@ if __name__ == "__main__":
 
 
         if mode == "line":
-            line.update()
+            line.update(values["button_pad"]['A'])
 
         if mode == "rainbow":
             if not rainbow_begin:
@@ -88,7 +88,7 @@ if __name__ == "__main__":
                 rainbown = rainbow.Rainbow()
                 rainbown.running = True
             else:
-                rainbown.update(0)
+                rainbown.update(values["button_pad"]['A'])
 
         if mode == "maze":
             #if not maze2_begin:
